@@ -1,5 +1,6 @@
 package iryrwarosh.screens;
 
+import iryrwarosh.Tile;
 import iryrwarosh.WorldMap;
 import iryrwarosh.WorldScreen;
 
@@ -27,16 +28,18 @@ public class WorldMapScreen implements Screen {
 	private void displayScreen(int x, int y, WorldScreen screen, AsciiPanel terminal) {
 		char wall = screen.defaultWall.glyph();
 		char open = screen.defaultGround.glyph();
+		char water = Tile.WATER.glyph();
 		Color wallColor = screen.defaultWall.color();
 		Color openColor = screen.defaultGround.color();
+		Color waterColor = Tile.WATER.color();
 		terminal.write(open, x, y, openColor);
-		terminal.write(wall, x-1, y-1, wallColor);
+		terminal.write(screen.nwWater ? water : wall, x-1, y-1, screen.nwWater ? waterColor : wallColor);
 		terminal.write(screen.nEdge==WorldScreen.WALL ? wall : open, x, y-1, screen.nEdge==WorldScreen.WALL ? wallColor : openColor);
-		terminal.write(wall, x+1, y-1, wallColor);
+		terminal.write(screen.neWater ? water : wall, x+1, y-1, screen.neWater ? waterColor : wallColor);
 		terminal.write(screen.eEdge==WorldScreen.WALL ? wall : open, x+1, y, screen.eEdge==WorldScreen.WALL ? wallColor : openColor);
-		terminal.write(wall, x+1, y+1, wallColor);
+		terminal.write(screen.seWater ? water : wall, x+1, y+1, screen.seWater ? waterColor : wallColor);
 		terminal.write(screen.sEdge==WorldScreen.WALL ? wall : open, x, y+1, screen.sEdge==WorldScreen.WALL ? wallColor : openColor);
-		terminal.write(wall, x-1, y+1, wallColor);
+		terminal.write(screen.swWater ? water : wall, x-1, y+1, screen.swWater ? waterColor : wallColor);
 		terminal.write(screen.wEdge==WorldScreen.WALL ? wall : open, x-1, y, screen.wEdge==WorldScreen.WALL ? wallColor : openColor);
 	}
 

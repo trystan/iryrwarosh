@@ -6,8 +6,17 @@ public class WorldScreen {
 
 	public Tile defaultGround = Tile.GREEN_DIRT;
 	public Tile defaultWall   = Tile.GREEN_ROCK;
-	public int nEdge;
-	public int sEdge;
-	public int wEdge;
-	public int eEdge;
+	public int nEdge = WALL;
+	public int sEdge = WALL;
+	public int wEdge = WALL;
+	public int eEdge = WALL;
+	
+	public Boolean nWater = false;
+	public Boolean sWater = false;
+	public Boolean wWater = false;
+	public Boolean eWater = false;
+	public Boolean nwWater = false;
+	public Boolean neWater = false;
+	public Boolean swWater = false;
+	public Boolean seWater = false;
 }

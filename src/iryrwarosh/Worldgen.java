@@ -968,5 +968,10 @@ public class Worldgen {
 			  y * screenHeight - screenHeight/2, 
 			  screenWidth - 2 + 1, 
 			  screenHeight - 2 + 1, Tile.WATER);
+		
+		cells[x][y].seWater = true;
+		cells[x+1][y].swWater = true;
+		cells[x+1][y+1].nwWater = true;
+		cells[x][y+1].neWater = true;
 	}
 }

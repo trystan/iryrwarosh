@@ -13,7 +13,7 @@ public enum Tile {
 	BROWN_ROCK  (177, hsv( 30, 50, 50), hsv( 30, 50,  5)),
 	WHITE_ROCK  (177, hsv(  0,  0, 50), hsv(  0, 50,  5)),
 	DESERT_SAND (250, hsv( 60, 50, 50), hsv( 45, 50, 10)),
-	WATER       (247, hsv(210, 63, 70), hsv(210, 90, 20));
+	WATER       (247, hsv(210, 66, 75), hsv(210, 90, 20));
 
 	public static Color hsv(int h, int s, int v){
 		return Color.getHSBColor(h / 360f, s / 100f, v / 100f);
