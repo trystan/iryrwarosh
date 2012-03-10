@@ -27,6 +27,8 @@ public class Worldgen {
 		addThemes();
 		addDesert();
 		setTiles();
+		addLake();
+		addLake();
 		return new World(tiles, new WorldMap(cells));
 	}
 	
@@ -318,7 +320,7 @@ public class Worldgen {
 	}
 	
 	private void setTilesFull(int sx, int sy){
-		switch ((int)(Math.random() * 5)){
+		switch ((int)(Math.random() * 6)){
 		case 0:
 			addMap(sx, sy, 
 				    "###################"
@@ -379,11 +381,23 @@ public class Worldgen {
 				  + "#.................#"
 				  + "###################");
 			break;
+		case 5:
+			addMap(sx, sy, 
+				    "###################"
+				  + "#.................#"
+				  + "#.~~~~~~~~~~~~~~~.#"
+				  + "#.~~~~~~~~~~~~~~~.#"
+				  + "#.~~~~~~~~~~~~~~~.#"
+				  + "#.~~~~~~~~~~~~~~~.#"
+				  + "#.~~~~~~~~~~~~~~~.#"
+				  + "#.................#"
+				  + "###################");
+			break;
 		}
 	}
 	
 	private void setTilesInner(int sx, int sy){
-		switch ((int)(Math.random() * 5)){
+		switch ((int)(Math.random() * 6)){
 		case 0:
 			addMap(sx, sy, 
 					"                   "
@@ -444,6 +458,17 @@ public class Worldgen {
 				  + "                   "
 				  + "                   ");
 			break;
+		case 5:
+			addMap(sx, sy, 
+					"                   "
+				  + "                   "
+				  + "   ~~~~~~~~~~~~~   "
+				  + "   ~~~~~~~~~~~~~   "
+				  + "   ~~~~~~~~~~~~~   "
+				  + "   ~~~~~~~~~~~~~   "
+				  + "   ~~~~~~~~~~~~~   "
+				  + "                   "
+				  + "                   ");
 		}
 	}
 	
@@ -904,6 +929,7 @@ public class Worldgen {
 			case '.': tiles[mx+x][my+y] = floor; break;
 			case '#': tiles[mx+x][my+y] = wall; break;
 			case 'x': tiles[mx+x][my+y] = local; break;
+			case '~': tiles[mx+x][my+y] = Tile.WATER; break;
 			case ' ': break;
 			}
 		}
@@ -930,5 +956,17 @@ public class Worldgen {
 		for (int x2 = x; x2 < x + w; x2++)
 		for (int y2 = y; y2 < y + h; y2++)
 			tiles[x2][y2] = tile;
+	}
+	
+	public void addLake(){
+		int w = cells.length;
+		int h = cells[0].length;
+		int x = (int)(Math.random() * (w - 2) + 1);
+		int y = (int)(Math.random() * (h - 2) + 1);
+		
+		clear(x * screenWidth - screenWidth/2, 
+			  y * screenHeight - screenHeight/2, 
+			  screenWidth - 2 + 1, 
+			  screenHeight - 2 + 1, Tile.WATER);
 	}
 }
