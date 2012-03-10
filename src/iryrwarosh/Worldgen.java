@@ -10,6 +10,7 @@ public class Worldgen {
 	private Tile[][] tiles;
 	private int screenWidth = 19;
 	private int screenHeight = 9;
+	private String dirs = "NSWE";
 	
 	public Worldgen(int width, int height) {
 		this.cells = new WorldScreen[width][height];
@@ -1012,6 +1013,8 @@ public class Worldgen {
 		cells[x+1][y].swWater = true;
 		cells[x+1][y+1].nwWater = true;
 		cells[x][y+1].neWater = true;
+		
+		addRiver(x, y, 3, 3);
 	}
 
 	public void addShoreLine(){
@@ -1100,5 +1103,83 @@ public class Worldgen {
 			if (started)
 				length--;
 		}
+	}
+
+	public void addRiver(int x, int y, int offsetX, int offsetY){
+		char dir = dirs.charAt((int)(Math.random() * 4));
+		
+		while (x >= 0 && y >= 0 && x < cells.length+1 && y < cells[0].length+1){
+			dir = changeDirection(dir);
+			
+			if (x < 0 || y < 0 || x >= cells.length || y >= cells[0].length)
+				break;
+			
+			switch (dir){
+			case 'N':
+				clear(x*screenWidth + offsetX, --y*screenHeight + offsetY, 1, screenHeight+1, Tile.WATER1);
+				if (cells[x][y+1].wEdge != WorldScreen.WALL || cells[x][y+1].sEdge == WorldScreen.TOP_LEFT)
+					addBridge(x, y+1);
+				break;
+			case 'S': 
+				clear(x*screenWidth + offsetX, y++*screenHeight + offsetY, 1, screenHeight, Tile.WATER1);
+				if (cells[x][y-1].wEdge != WorldScreen.WALL || cells[x][y-1].sEdge == WorldScreen.TOP_LEFT)
+					addBridge(x, y-1);
+				break;
+			case 'W': 
+				clear(--x*screenWidth + offsetX, y*screenHeight + offsetY, screenWidth+1, 1, Tile.WATER1);
+				if (cells[x+1][y].nEdge != WorldScreen.WALL || cells[x+1][y].eEdge == WorldScreen.TOP_LEFT)
+					addBridge(x+1, y);
+				break;
+			case 'E': 
+				clear(x++*screenWidth + offsetX, y*screenHeight + offsetY, screenWidth, 1, Tile.WATER1);
+				if (cells[x-1][y].nEdge != WorldScreen.WALL || cells[x-1][y].eEdge == WorldScreen.TOP_LEFT)
+					addBridge(x-1, y);
+				break;
+			}
+		}
+	}
+
+	private char changeDirection(char dir) {
+		if (Math.random() < 0.66)
+			return dir;
+		
+		char dir2 = dirs.charAt((int)(Math.random() * 4));
+		if (dir2 == 'N' && dir != 'S'
+			 || dir2 == 'S' && dir != 'N'
+			 || dir2 == 'W' && dir != 'E'
+			 || dir2 == 'E' && dir != 'W')
+				dir = dir2;
+		
+		return dir;
+	}
+	
+	public void addBridge(int x, int y){
+		List<Point> candidates = getBridgeCandidates(x, y);
+		
+		if (candidates.size() == 0)
+			return;
+		
+		Point p = candidates.get((int)(Math.random() *  candidates.size()));
+		tiles[p.x][p.y] = Tile.BRIDGE; 
+	}
+
+	private List<Point> getBridgeCandidates(int x, int y) {
+		List<Point> candidates = new ArrayList<Point>();
+		
+		for (int rx = 1; rx < screenWidth-1; rx++)
+		for (int ry = 1; ry < screenHeight-1; ry++)
+			addLocationIfTileIsWater(x * screenWidth + rx, y * screenHeight + ry, candidates);
+		
+		return candidates;
+	}
+
+	private void addLocationIfTileIsWater(int tx, int ty, List<Point> candidates) {
+		if (!tiles[tx][ty].isWater())
+			return;
+		
+		if (tiles[tx][ty-1].isWater() && tiles[tx][ty+1].isWater() && tiles[tx-1][ty].isGround() && tiles[tx+1][ty].isGround())
+			candidates.add(new Point(tx, ty));
+		else if (tiles[tx][ty-1].isGround() && tiles[tx][ty+1].isGround() && tiles[tx-1][ty].isWater() && tiles[tx+1][ty].isWater())
+			candidates.add(new Point(tx, ty));
 	}
 }

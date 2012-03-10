@@ -6,28 +6,29 @@ public enum Tile {
 	GREEN_DIRT  (250, hsv(110, 50, 33), hsv(110, 50,  5)),
 	BROWN_DIRT  (250, hsv( 45, 50, 33), hsv( 45, 50,  5)),
 	WHITE_DIRT  (250, hsv(  0,  0, 33), hsv(  0, 50,  5)),
-	GREEN_TREE1 (  6, hsv(100, 66, 40), hsv(110, 50,  5)),
-	GREEN_TREE2 (  6, hsv(110, 66, 40), hsv(110, 50,  5)),
-	GREEN_TREE3 (  6, hsv(120, 66, 40), hsv(110, 50,  5)),
-	GREEN_TREE4 ('*', hsv(100, 66, 66), hsv(110, 50,  5)),
-	GREEN_TREE5 ('*', hsv(110, 66, 66), hsv(110, 50,  5)),
-	GREEN_TREE6 ('*', hsv(120, 66, 66), hsv(110, 50,  5)),
-	BROWN_TREE1 (  6, hsv( 20, 50, 66), hsv( 30, 50,  5)),
-	BROWN_TREE2 (  6, hsv( 30, 50, 66), hsv( 30, 50,  5)),
-	BROWN_TREE3 (  6, hsv( 40, 50, 66), hsv( 30, 50,  5)),
-	BROWN_TREE4 (  5, hsv( 30, 60, 40), hsv( 30, 50,  5)),
-	BROWN_TREE5 (  5, hsv( 30, 50, 50), hsv( 30, 50,  5)),
-	BROWN_TREE6 (  5, hsv( 30, 40, 60), hsv( 30, 50,  5)),
-	WHITE_TREE1 ('*', hsv(  0,  0, 55), hsv(  0, 50,  5)),
-	WHITE_TREE2 ('*', hsv(  0,  0, 66), hsv(  0, 50,  5)),
-	WHITE_TREE3 ('*', hsv(  0,  0, 77), hsv(  0, 50,  5)),
+	GREEN_TREE1 (  6, hsv(100, 40, 55), hsv(110, 50,  5)),
+	GREEN_TREE2 (  6, hsv(115, 40, 50), hsv(110, 50,  5)),
+	GREEN_TREE3 (  6, hsv(130, 40, 45), hsv(110, 50,  5)),
+	GREEN_TREE4 ( 30, hsv(100, 55, 40), hsv(110, 50,  5)),
+	GREEN_TREE5 ( 30, hsv(110, 50, 35), hsv(110, 50,  5)),
+	GREEN_TREE6 ( 30, hsv(120, 45, 30), hsv(110, 50,  5)),
+	BROWN_TREE1 (  6, hsv( 15, 55, 50), hsv( 30, 50,  5)),
+	BROWN_TREE2 (  6, hsv( 20, 55, 50), hsv( 30, 50,  5)),
+	BROWN_TREE3 (  6, hsv( 25, 55, 50), hsv( 30, 50,  5)),
+	BROWN_TREE4 (  5, hsv( 20, 75, 45), hsv( 30, 50,  5)),
+	BROWN_TREE5 (  5, hsv( 20, 70, 50), hsv( 30, 50,  5)),
+	BROWN_TREE6 (  5, hsv( 20, 65, 55), hsv( 30, 50,  5)),
+	WHITE_TREE1 (  6, hsv(  0,  0, 55), hsv(  0, 50,  5)),
+	WHITE_TREE2 (  6, hsv(  0,  0, 50), hsv(  0, 50,  5)),
+	WHITE_TREE3 (  6, hsv(  0,  0, 45), hsv(  0, 50,  5)),
 	GREEN_ROCK  (177, hsv(110, 50, 50), hsv(110, 50,  5)),
 	BROWN_ROCK  (177, hsv( 30, 50, 50), hsv( 30, 50,  5)),
-	WHITE_ROCK  (177, hsv(  0,  0, 50), hsv(  0, 50,  5)),
+	WHITE_ROCK  (177, hsv(  0,  0, 66), hsv(  0, 50,  5)),
 	DESERT_SAND (250, hsv( 60, 50, 50), hsv( 45, 50, 10)),
-	WATER1      (247, hsv(210, 63, 80), hsv(210, 80, 22)),
+	WATER1      (247, hsv(210, 63, 80), hsv(210, 80, 21)),
 	WATER2      (247, hsv(210, 66, 75), hsv(210, 80, 20)),
-	WATER3      (247, hsv(210, 69, 70), hsv(210, 80, 18));
+	WATER3      (247, hsv(210, 69, 70), hsv(210, 80, 19)),
+    BRIDGE      (240, hsv( 30, 66, 66), hsv( 30, 90, 20)),;
 
 	public static Color hsv(int h, int s, int v){
 		return Color.getHSBColor(h / 360f, s / 100f, v / 100f);
@@ -51,6 +52,11 @@ public enum Tile {
 		case BROWN_TREE2:
 		case BROWN_TREE3:
 			varieties = new Tile[]{ BROWN_TREE1, BROWN_TREE2, BROWN_TREE3 };
+			break;
+		case BROWN_TREE4:
+		case BROWN_TREE5:
+		case BROWN_TREE6:
+			varieties = new Tile[]{ BROWN_TREE4, BROWN_TREE5, BROWN_TREE6 };
 			break;
 		case WHITE_TREE1:
 		case WHITE_TREE2:
@@ -87,5 +93,9 @@ public enum Tile {
 
 	public boolean isWater() {
 		return this == WATER1 || this == WATER2 || this == WATER3;
+	}
+
+	public boolean isGround() {
+		return this == GREEN_DIRT || this == BROWN_DIRT || this == WHITE_DIRT;
 	}
 }
