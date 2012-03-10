@@ -134,11 +134,11 @@ public class Worldgen {
 	public void addThemes(){
 		Tile[][] themes = new Tile[cells.length][cells[0].length];
 		for (Tile theme : new Tile[]{ 
-				Tile.BROWN_ROCK, Tile.BROWN_TREE, 
-				Tile.BROWN_ROCK, Tile.BROWN_TREE, 
-				Tile.GREEN_ROCK, Tile.GREEN_TREE, 
-				Tile.GREEN_ROCK, Tile.GREEN_TREE, 
-				Tile.WHITE_ROCK, Tile.WHITE_TREE}){
+				Tile.BROWN_ROCK, Tile.BROWN_TREE1, 
+				Tile.BROWN_ROCK, Tile.BROWN_TREE1, 
+				Tile.GREEN_ROCK, Tile.GREEN_TREE1, 
+				Tile.GREEN_ROCK, Tile.GREEN_TREE1, 
+				Tile.WHITE_ROCK, Tile.WHITE_TREE1 }){
 		
 			while (true){
 				int x = (int)(Math.random() * themes.length);
@@ -224,15 +224,15 @@ public class Worldgen {
 		for (int y = 0; y < cells[0].length; y++){
 			switch (cells[x][y].defaultWall){
 			case BROWN_ROCK:
-			case BROWN_TREE:
+			case BROWN_TREE1:
 				cells[x][y].defaultGround = Tile.BROWN_DIRT;
 				break;
 			case GREEN_ROCK:
-			case GREEN_TREE:
+			case GREEN_TREE1:
 				cells[x][y].defaultGround = Tile.GREEN_DIRT;
 				break;
 			case WHITE_ROCK:
-			case WHITE_TREE:
+			case WHITE_TREE1:
 				cells[x][y].defaultGround = Tile.WHITE_DIRT;
 				break;
 			}
@@ -927,21 +927,21 @@ public class Worldgen {
 		for (int x = 0; x < screenWidth; x++)
 		for (int y = 0; y < screenHeight; y++) {
 			switch (data.charAt(x + y * screenWidth)){
-			case '.': tiles[mx+x][my+y] = floor; break;
-			case '#': tiles[mx+x][my+y] = wall; break;
-			case 'x': tiles[mx+x][my+y] = local; break;
-			case '~': tiles[mx+x][my+y] = Tile.WATER; break;
+			case '.': tiles[mx+x][my+y] = floor.variation(); break;
+			case '#': tiles[mx+x][my+y] = wall.variation(); break;
+			case 'x': tiles[mx+x][my+y] = local.variation(); break;
+			case '~': tiles[mx+x][my+y] = Tile.WATER1.variation(); break;
 			case ' ': break;
 			}
 		}
 	}
 	
 	private Tile getRandomWall(){
-		Tile[] tiles = { Tile.BROWN_ROCK, Tile.BROWN_TREE, 
-						 Tile.BROWN_ROCK, Tile.BROWN_TREE, 
-						 Tile.GREEN_ROCK, Tile.GREEN_TREE, 
-						 Tile.GREEN_ROCK, Tile.GREEN_TREE, 
-						 Tile.WHITE_ROCK, Tile.WHITE_TREE };
+		Tile[] tiles = { Tile.BROWN_ROCK, Tile.BROWN_TREE1, 
+						 Tile.BROWN_ROCK, Tile.BROWN_TREE1, 
+						 Tile.GREEN_ROCK, Tile.GREEN_TREE1, 
+						 Tile.GREEN_ROCK, Tile.GREEN_TREE1, 
+						 Tile.WHITE_ROCK, Tile.WHITE_TREE1 };
 		
 		return tiles[(int)(Math.random() * tiles.length)];
 	}
@@ -957,7 +957,7 @@ public class Worldgen {
 		for (int x2 = x; x2 < x + w; x2++)
 		for (int y2 = y; y2 < y + h; y2++)
 			if (x2 >= 0 && y2 >= 0 && x2 < tiles.length && y2 < tiles[0].length)
-				tiles[x2][y2] = tile;
+				tiles[x2][y2] = tile.variation();
 	}
 	
 	public void addLake(){
@@ -969,7 +969,7 @@ public class Worldgen {
 		clear(x * screenWidth - screenWidth/2, 
 			  y * screenHeight - screenHeight/2, 
 			  screenWidth - 2 + 1, 
-			  screenHeight - 2 + 1, Tile.WATER);
+			  screenHeight - 2 + 1, Tile.WATER1);
 		
 		cells[x][y].seWater = true;
 		cells[x+1][y].swWater = true;
@@ -997,7 +997,7 @@ public class Worldgen {
 			switch (dir){
 			case 'N':
 				if (started) {
-					clear(x, y, screenWidth, 4, Tile.WATER);
+					clear(x, y, screenWidth, 4, Tile.WATER1);
 					cells[sx][sy].nWater = true;
 					cells[sx][sy].neWater = true;
 					if (sx+1 < cells.length)
@@ -1005,7 +1005,7 @@ public class Worldgen {
 				}
 				x += screenWidth;
 				if (x > totalWidth){
-					if (started) clear(totalWidth-4, 0, 4, screenHeight / 2, Tile.WATER);
+					if (started) clear(totalWidth-4, 0, 4, screenHeight / 2, Tile.WATER1);
 					x = totalWidth - 4;
 					y = screenHeight / 2;
 					dir = 'E';
@@ -1013,7 +1013,7 @@ public class Worldgen {
 				break;
 			case 'E':
 				if (started) {
-					clear(x, y, 4, screenHeight, Tile.WATER);
+					clear(x, y, 4, screenHeight, Tile.WATER1);
 					cells[sx][sy].eWater = true;
 					cells[sx][sy].seWater = true;
 					if (sy+1 < cells[0].length)
@@ -1021,7 +1021,7 @@ public class Worldgen {
 				}
 				y += screenHeight;
 				if (y > totalHeight){
-					if (started) clear(totalWidth-screenWidth/2, totalHeight-4, screenWidth/2, 4, Tile.WATER);
+					if (started) clear(totalWidth-screenWidth/2, totalHeight-4, screenWidth/2, 4, Tile.WATER1);
 					x = totalWidth - screenWidth / 2;
 					y = totalHeight - 4;
 					dir = 'S';
@@ -1029,7 +1029,7 @@ public class Worldgen {
 				break;
 			case 'S':
 				if (started) {
-					clear(x-screenWidth, y, screenWidth, 4, Tile.WATER);
+					clear(x-screenWidth, y, screenWidth, 4, Tile.WATER1);
 					cells[sx][sy].sWater = true;
 					cells[sx][sy].swWater = true;
 					if (sx > 0)
@@ -1037,7 +1037,7 @@ public class Worldgen {
 				}
 				x -= screenWidth;
 				if (x < 0){
-					if (started) clear(0, totalHeight-screenHeight/2, 4, screenHeight / 2, Tile.WATER);
+					if (started) clear(0, totalHeight-screenHeight/2, 4, screenHeight / 2, Tile.WATER1);
 					x = 0;
 					y = totalHeight - screenHeight / 2;
 					dir = 'W';
@@ -1045,7 +1045,7 @@ public class Worldgen {
 				break;
 			case 'W':
 				if (started) {
-					clear(x, y-screenHeight, 4, screenHeight, Tile.WATER);
+					clear(x, y-screenHeight, 4, screenHeight, Tile.WATER1);
 					cells[sx][sy].wWater = true;
 					cells[sx][sy].nwWater = true;
 					if (sy > 0)
@@ -1053,7 +1053,7 @@ public class Worldgen {
 				}
 				y -= screenHeight;
 				if (y < 0){
-					clear(0, 0, screenWidth/2, 4, Tile.WATER);
+					clear(0, 0, screenWidth/2, 4, Tile.WATER1);
 					x = screenWidth / 2;
 					y = 0;
 					dir = 'N';

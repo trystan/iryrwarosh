@@ -4,7 +4,6 @@ import iryrwarosh.Tile;
 import iryrwarosh.WorldMap;
 import iryrwarosh.WorldScreen;
 
-import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import asciiPanel.AsciiPanel;
@@ -28,17 +27,17 @@ public class WorldMapScreen implements Screen {
 	private void displayScreen(int x, int y, WorldScreen screen, AsciiPanel terminal) {
 		int wall = WorldScreen.WALL;
 
-		displayTile(terminal, x-1, y-1, screen.nwWater ? Tile.WATER : screen.defaultWall);
-		displayTile(terminal, x,   y-1, screen.nWater ? Tile.WATER : (screen.nEdge==wall ? screen.defaultWall : screen.defaultGround));
-		displayTile(terminal, x+1, y-1, screen.neWater ? Tile.WATER : screen.defaultWall);
+		displayTile(terminal, x-1, y-1, screen.nwWater ? Tile.WATER1 : screen.defaultWall);
+		displayTile(terminal, x,   y-1, screen.nWater ? Tile.WATER1 : (screen.nEdge==wall ? screen.defaultWall : screen.defaultGround));
+		displayTile(terminal, x+1, y-1, screen.neWater ? Tile.WATER1 : screen.defaultWall);
 
-		displayTile(terminal, x-1, y,   screen.wWater ? Tile.WATER : (screen.wEdge==wall ? screen.defaultWall : screen.defaultGround));
+		displayTile(terminal, x-1, y,   screen.wWater ? Tile.WATER1 : (screen.wEdge==wall ? screen.defaultWall : screen.defaultGround));
 		displayTile(terminal, x,   y,   screen.defaultGround);
-		displayTile(terminal, x+1, y,   screen.eWater ? Tile.WATER : (screen.eEdge==wall ? screen.defaultWall : screen.defaultGround));
+		displayTile(terminal, x+1, y,   screen.eWater ? Tile.WATER1 : (screen.eEdge==wall ? screen.defaultWall : screen.defaultGround));
 
-		displayTile(terminal, x-1, y+1, screen.swWater ? Tile.WATER : screen.defaultWall);
-		displayTile(terminal, x,   y+1, screen.sWater ? Tile.WATER : (screen.sEdge==wall ? screen.defaultWall : screen.defaultGround));
-		displayTile(terminal, x+1, y+1, screen.seWater ? Tile.WATER : screen.defaultWall);
+		displayTile(terminal, x-1, y+1, screen.swWater ? Tile.WATER1 : screen.defaultWall);
+		displayTile(terminal, x,   y+1, screen.sWater ? Tile.WATER1 : (screen.sEdge==wall ? screen.defaultWall : screen.defaultGround));
+		displayTile(terminal, x+1, y+1, screen.seWater ? Tile.WATER1 : screen.defaultWall);
 
 	}
 	
@@ -50,5 +49,4 @@ public class WorldMapScreen implements Screen {
 	public Screen respondToUserInput(KeyEvent key) {
 		return previous;
 	}
-
 }
