@@ -29,6 +29,7 @@ public class Worldgen {
 		setTiles();
 		addLake();
 		addLake();
+		addShoreLine();
 		return new World(tiles, new WorldMap(cells));
 	}
 	
@@ -955,7 +956,8 @@ public class Worldgen {
 	private void clear(int x, int y, int w, int h, Tile tile) {
 		for (int x2 = x; x2 < x + w; x2++)
 		for (int y2 = y; y2 < y + h; y2++)
-			tiles[x2][y2] = tile;
+			if (x2 >= 0 && y2 >= 0 && x2 < tiles.length && y2 < tiles[0].length)
+				tiles[x2][y2] = tile;
 	}
 	
 	public void addLake(){
@@ -973,5 +975,93 @@ public class Worldgen {
 		cells[x+1][y].swWater = true;
 		cells[x+1][y+1].nwWater = true;
 		cells[x][y+1].neWater = true;
+	}
+
+	public void addShoreLine(){
+		char dir = 'N';
+		int totalWidth = cells.length * screenWidth;
+		int totalHeight = cells[0].length * screenHeight;
+		int x = screenWidth / 2;
+		int y = 0;
+		int start = (int)(Math.random() * (cells.length + cells[0].length) * 2);
+		int length = 5 + (int)(Math.random() * (cells.length + cells[0].length - 5));
+		boolean started = false;
+		
+		while (length > 0){
+			if (!started)
+				started = --start < 1;
+			
+			int sx = x / screenWidth;
+			int sy = y / screenHeight;
+			
+			switch (dir){
+			case 'N':
+				if (started) {
+					clear(x, y, screenWidth, 4, Tile.WATER);
+					cells[sx][sy].nWater = true;
+					cells[sx][sy].neWater = true;
+					if (sx+1 < cells.length)
+						cells[sx+1][sy].nwWater = true;
+				}
+				x += screenWidth;
+				if (x > totalWidth){
+					if (started) clear(totalWidth-4, 0, 4, screenHeight / 2, Tile.WATER);
+					x = totalWidth - 4;
+					y = screenHeight / 2;
+					dir = 'E';
+				}
+				break;
+			case 'E':
+				if (started) {
+					clear(x, y, 4, screenHeight, Tile.WATER);
+					cells[sx][sy].eWater = true;
+					cells[sx][sy].seWater = true;
+					if (sy+1 < cells[0].length)
+						cells[sx][sy+1].neWater = true;
+				}
+				y += screenHeight;
+				if (y > totalHeight){
+					if (started) clear(totalWidth-screenWidth/2, totalHeight-4, screenWidth/2, 4, Tile.WATER);
+					x = totalWidth - screenWidth / 2;
+					y = totalHeight - 4;
+					dir = 'S';
+				}
+				break;
+			case 'S':
+				if (started) {
+					clear(x-screenWidth, y, screenWidth, 4, Tile.WATER);
+					cells[sx][sy].sWater = true;
+					cells[sx][sy].swWater = true;
+					if (sx > 0)
+						cells[sx-1][sy].seWater = true;
+				}
+				x -= screenWidth;
+				if (x < 0){
+					if (started) clear(0, totalHeight-screenHeight/2, 4, screenHeight / 2, Tile.WATER);
+					x = 0;
+					y = totalHeight - screenHeight / 2;
+					dir = 'W';
+				}
+				break;
+			case 'W':
+				if (started) {
+					clear(x, y-screenHeight, 4, screenHeight, Tile.WATER);
+					cells[sx][sy].wWater = true;
+					cells[sx][sy].nwWater = true;
+					if (sy > 0)
+						cells[sx][sy-1].swWater = true;
+				}
+				y -= screenHeight;
+				if (y < 0){
+					clear(0, 0, screenWidth/2, 4, Tile.WATER);
+					x = screenWidth / 2;
+					y = 0;
+					dir = 'N';
+				}
+				break;
+			}
+			if (started)
+				length--;
+		}
 	}
 }
