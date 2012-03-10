@@ -270,29 +270,510 @@ public class Worldgen {
 		for (int y = 0; y < cells[0].length; y++)
 			addBorderOpenings(x, y);
 	}
-	
+
 	private void setTiles(int sx, int sy){
-		addMap(sx*screenWidth, sy*screenHeight, 19, 9, 
-			    "###################"
-			  + "#.................#"
-			  + "#.................#"
-			  + "#.................#"
-			  + "#.................#"
-			  + "#.................#"
-			  + "#.................#"
-			  + "#.................#"
-			  + "###################", 
-			  cells[sx][sy].defaultGround, cells[sx][sy].defaultWall);
+		if (cells[sx][sy].defaultGround == Tile.DESERT_SAND){
+			addMap(sx, sy, 
+				    "###################"
+				  + "#.................#"
+				  + "#.................#"
+				  + "#.................#"
+				  + "#.................#"
+				  + "#.................#"
+				  + "#.................#"
+				  + "#.................#"
+				  + "###################");
+			return;
+		}
+		
+		switch ((int)(Math.random() * 5)){
+		case 0:
+			setTilesFull(sx, sy);
+			break;
+		case 1:
+		case 2:
+			setTilesOuter(sx, sy);
+			setTilesInner(sx, sy);
+			break;
+		case 3:
+		case 4:
+			setTilesLeft(sx, sy);
+			setTilesRight(sx, sy);
+			break;
+		}
+	}
+	
+	private void setTilesFull(int sx, int sy){
+		switch ((int)(Math.random() * 5)){
+		case 0:
+			addMap(sx, sy, 
+				    "###################"
+				  + "#.................#"
+				  + "#.................#"
+				  + "#.................#"
+				  + "#.................#"
+				  + "#.................#"
+				  + "#.................#"
+				  + "#.................#"
+				  + "###################");
+			break;
+		case 1:
+			addMap(sx, sy, 
+				    "###################"
+				  + "#.................#"
+				  + "#.x.............x.#"
+				  + "#.................#"
+				  + "#.................#"
+				  + "#.................#"
+				  + "#.x.............x.#"
+				  + "#.................#"
+				  + "###################");
+			break;
+		case 2:
+			addMap(sx, sy, 
+				    "###################"
+				  + "#.................#"
+				  + "#.xxxxxxxxxxxxxxx.#"
+				  + "#.xxxxxxxxxxxxxxx.#"
+				  + "#.xxxxxxxxxxxxxxx.#"
+				  + "#.xxxxxxxxxxxxxxx.#"
+				  + "#.xxxxxxxxxxxxxxx.#"
+				  + "#.................#"
+				  + "###################");
+			break;
+		case 3:
+			addMap(sx, sy, 
+				    "###################"
+				  + "#..x...x...x...x..#"
+				  + "#x...x...x...x...x#"
+				  + "#..x...x...x...x..#"
+				  + "#x...x...x...x...x#"
+				  + "#..x...x...x...x..#"
+				  + "#x...x...x...x...x#"
+				  + "#..x...x...x...x..#"
+				  + "###################");
+			break;
+		case 4:
+			addMap(sx, sy, 
+				    "###################"
+				  + "#.................#"
+				  + "#.x.x.x.x.x.x.x.x.#"
+				  + "#.................#"
+				  + "#..x.x.x.x.x.x.x..#"
+				  + "#.................#"
+				  + "#.x.x.x.x.x.x.x.x.#"
+				  + "#.................#"
+				  + "###################");
+			break;
+		}
+	}
+	
+	private void setTilesInner(int sx, int sy){
+		switch ((int)(Math.random() * 5)){
+		case 0:
+			addMap(sx, sy, 
+					"                   "
+				  + "                   "
+				  + "                   "
+				  + "   .............   "
+				  + "   .............   "
+				  + "   .............   "
+				  + "                   "
+				  + "                   "
+				  + "                   ");
+			break;
+		case 1:
+			addMap(sx, sy, 
+					"                   "
+				  + "                   "
+				  + "                   "
+				  + "   x...........x   "
+				  + "   .............   "
+				  + "   x...........x   "
+				  + "                   "
+				  + "                   "
+				  + "                   ");
+			break;
+		case 2:
+			addMap(sx, sy, 
+					"                   "
+				  + "                   "
+				  + "                   "
+				  + "   x...x...x...x   "
+				  + "   ..x...x...x..   "
+				  + "   x...x...x...x   "
+				  + "                   "
+				  + "                   "
+				  + "                   ");
+			break;
+		case 3:
+			addMap(sx, sy, 
+					"                   "
+				  + "                   "
+				  + "                   "
+				  + "   xxxxxxxxxxxxx   "
+				  + "   xxxxxxxxxxxxx   "
+				  + "   xxxxxxxxxxxxx   "
+				  + "                   "
+				  + "                   "
+				  + "                   ");
+			break;
+		case 4:
+			addMap(sx, sy, 
+					"                   "
+				  + "                   "
+				  + "                   "
+				  + "   .............   "
+				  + "   .xxxxxxxxxxx.   "
+				  + "   .............   "
+				  + "                   "
+				  + "                   "
+				  + "                   ");
+			break;
+		}
+	}
+	
+	private void setTilesOuter(int sx, int sy){
+		switch ((int)(Math.random() * 5)){
+		case 0:
+			addMap(sx, sy, 
+				    "###################"
+				  + "#.................#"
+				  + "#.................#"
+				  + "#..             ..#"
+				  + "#..             ..#"
+				  + "#..             ..#"
+				  + "#.................#"
+				  + "#.................#"
+				  + "###################");
+			break;
+		case 1:
+			addMap(sx, sy, 
+				    "###################"
+				  + "#.................#"
+				  + "#.x.x.x.x.x.x.x.x.#"
+				  + "#..             ..#"
+				  + "#.x             x.#"
+				  + "#..             ..#"
+				  + "#.x.x.x.x.x.x.x.x.#"
+				  + "#.................#"
+				  + "###################");
+			break;
+		case 2:
+			addMap(sx, sy, 
+				    "###################"
+				  + "#xx.............xx#"
+				  + "#x...............x#"
+				  + "#..             ..#"
+				  + "#..             ..#"
+				  + "#..             ..#"
+				  + "#x...............x#"
+				  + "#xx.............xx#"
+				  + "###################");
+			break;
+		case 3:
+			addMap(sx, sy, 
+				    "###################"
+				  + "#.................#"
+				  + "#.xxxx.......xxxx.#"
+				  + "#.x             x.#"
+				  + "#..             ..#"
+				  + "#.x             x.#"
+				  + "#.xxxx.......xxxx.#"
+				  + "#.................#"
+				  + "###################");
+			break;
+		case 4:
+			addMap(sx, sy,  
+				    "###################"
+				  + "#.................#"
+				  + "#...x.x.....x.x...#"
+				  + "#.x             x.#"
+				  + "#..             ..#"
+				  + "#.x             x.#"
+				  + "#...x.x.....x.x...#"
+				  + "#.................#"
+				  + "###################");
+			break;
+		}
 	}
 
-	private void addMap(int mx, int my, int mw, int mh, String data, Tile floor, Tile wall) {
-		for (int x = 0; x < mw; x++)
-		for (int y = 0; y < mh; y++) {
-			switch (data.charAt(x + y * mw)){
+	private void setTilesLeft(int sx, int sy){
+		switch ((int)(Math.random() * 10)){
+		case 0:
+			addMap(sx, sy, 
+					"##########         "
+			      + "#.........         "
+			      + "#.........         "
+			      + "#.........         "
+			      + "#.........         "
+			      + "#.........         "
+			      + "#.........         "
+			      + "#.........         "
+			      + "##########         ");
+			break;
+		case 1:
+			addMap(sx, sy, 
+					"##########         "
+			      + "##xx....xx         "
+			      + "#x.......x         "
+			      + "#.........         "
+			      + "#.........         "
+			      + "#.........         "
+			      + "#x.......x         "
+			      + "##xx....xx         "
+			      + "##########         ");
+			break;
+		case 2:
+			addMap(sx, sy, 
+					"##########         "
+			      + "#.........         "
+			      + "#.xxx.....         "
+			      + "#.xxx.....         "
+			      + "#.........         "
+			      + "#.xxx.....         "
+			      + "#.xxx.....         "
+			      + "#.........         "
+			      + "##########         ");
+			break;
+		case 3:
+			addMap(sx, sy, 
+					"##########         "
+			      + "#.........         "
+			      + "#.........         "
+			      + "#.x.......         "
+			      + "#.........         "
+			      + "#.x.......         "
+			      + "#.........         "
+			      + "#.........         "
+			      + "##########         ");
+			break;
+		case 4:
+			addMap(sx, sy, 
+					"##########         "
+			      + "#.........         "
+			      + "#..xxxxx..         "
+			      + "#.........         "
+			      + "#..xxxxx..         "
+			      + "#.........         "
+			      + "#..xxxxx..         "
+			      + "#.........         "
+			      + "##########         ");
+			break;
+		case 5:
+			addMap(sx, sy, 
+					"##########         "
+			      + "#.........         "
+			      + "#.....xxx.         "
+			      + "#.xxx.....         "
+			      + "#.....xxx.         "
+			      + "#.xxx.....         "
+			      + "#.....xxx.         "
+			      + "#.........         "
+			      + "##########         ");
+			break;
+		case 6:
+			addMap(sx, sy, 
+					"##########         "
+			      + "#.........         "
+			      + "#.xxx.....         "
+			      + "#.....xxx.         "
+			      + "#.xxx.....         "
+			      + "#.....xxx.         "
+			      + "#.xxx.....         "
+			      + "#.........         "
+			      + "##########         ");
+			break;
+		case 7:
+			addMap(sx, sy, 
+					"##########         "
+			      + "#.........         "
+			      + "#.xxxxxx..         "
+			      + "#.xxxxxx..         "
+			      + "#.xxxxxx..         "
+			      + "#.xxxxxx..         "
+			      + "#.xxxxxx..         "
+			      + "#.........         "
+			      + "##########         ");
+			break;
+		case 8:
+			addMap(sx, sy, 
+					"##########         "
+			      + "#.........         "
+			      + "#.x.....x.         "
+			      + "#...xxx...         "
+			      + "#.x.....x.         "
+			      + "#...xxx...         "
+			      + "#.x.....x.         "
+			      + "#.........         "
+			      + "##########         ");
+			break;
+		case 9:
+			addMap(sx, sy, 
+					"##########         "
+			      + "#..xxxxx..         "
+			      + "#.........         "
+			      + "#.........         "
+			      + "#...xxx...         "
+			      + "#.........         "
+			      + "#.........         "
+			      + "#..xxxxx..         "
+			      + "##########         ");
+			break;
+		}
+	}
+
+	private void setTilesRight(int sx, int sy){
+		switch ((int)(Math.random() * 10)){
+		case 0:
+			addMap(sx, sy,
+					"          #########"
+			      + "          ........#"
+			      + "          ........#"
+			      + "          ........#"
+			      + "          ........#"
+			      + "          ........#"
+			      + "          ........#"
+			      + "          ........#"
+			      + "          #########");
+			break;
+		case 1:
+			addMap(sx, sy, 
+					"          #########"
+			      + "          xx...xx##"
+			      + "          x......x#"
+			      + "          ........#"
+			      + "          ........#"
+			      + "          ........#"
+			      + "          x......x#"
+			      + "          xx...xx##"
+			      + "          #########");
+			break;
+		case 2:
+			addMap(sx, sy, 
+					"          #########"
+			      + "          ........#"
+			      + "          ....xxx.#"
+			      + "          ....xxx.#"
+			      + "          ........#"
+			      + "          ....xxx.#"
+			      + "          ....xxx.#"
+			      + "          ........#"
+			      + "          #########");
+			break;
+		case 3:
+			addMap(sx, sy, 
+					"          #########"
+			      + "          ........#"
+			      + "          ........#"
+			      + "          ......x.#"
+			      + "          ........#"
+			      + "          ......x.#"
+			      + "          ........#"
+			      + "          ........#"
+			      + "          #########");
+			break;
+		case 4:
+			addMap(sx, sy, 
+					"          #########"
+			      + "          ........#"
+			      + "          ..xxxx..#"
+			      + "          ........#"
+			      + "          ..xxxx..#"
+			      + "          ........#"
+			      + "          ..xxxx..#"
+			      + "          ........#"
+			      + "          #########");
+			break;
+		case 5:
+			addMap(sx, sy, 
+					"          #########"
+			      + "          ........#"
+			      + "          ....xxx.#"
+			      + "          xxx.....#"
+			      + "          ....xxx.#"
+			      + "          xxx.....#"
+			      + "          ....xxx.#"
+			      + "          ........#"
+			      + "          #########");
+			break;
+		case 6:
+			addMap(sx, sy, 
+					"          #########"
+			      + "          ........#"
+			      + "          xxx.....#"
+			      + "          ....xxx.#"
+			      + "          xxx.....#"
+			      + "          ....xxx.#"
+			      + "          xxx.....#"
+			      + "          ........#"
+			      + "          #########");
+			break;
+		case 7:
+			addMap(sx, sy, 
+					"          #########"
+			      + "          ........#"
+			      + "          .xxxxxx.#"
+			      + "          .xxxxxx.#"
+			      + "          .xxxxxx.#"
+			      + "          .xxxxxx.#"
+			      + "          .xxxxxx.#"
+			      + "          ........#"
+			      + "          #########");
+			break;
+		case 8:
+			addMap(sx, sy, 
+					"          #########"
+			      + "          ........#"
+			      + "          x.....x.#"
+			      + "          ..xxx...#"
+			      + "          x.....x.#"
+			      + "          ..xxx...#"
+			      + "          x.....x.#"
+			      + "          ........#"
+			      + "          #########");
+			break;
+		case 9:
+			addMap(sx, sy, 
+					"          #########"
+			      + "          .xxxxx..#"
+			      + "          ........#"
+			      + "          ........#"
+			      + "          ..xxx...#"
+			      + "          ........#"
+			      + "          ........#"
+			      + "          .xxxxx..#"
+			      + "          #########");
+			break;
+		}
+	}
+	
+
+	private void addMap(int sx, int sy, String data) {
+		int mx = sx * screenWidth;
+		int my = sy * screenHeight;
+		Tile floor = cells[sx][sy].defaultGround;
+		Tile wall  = cells[sx][sy].defaultWall;
+		Tile local  = Math.random() < 0.66 ? wall : getRandomWall();
+		for (int x = 0; x < screenWidth; x++)
+		for (int y = 0; y < screenHeight; y++) {
+			switch (data.charAt(x + y * screenWidth)){
 			case '.': tiles[mx+x][my+y] = floor; break;
 			case '#': tiles[mx+x][my+y] = wall; break;
+			case 'x': tiles[mx+x][my+y] = local; break;
+			case ' ': break;
 			}
 		}
+	}
+	
+	private Tile getRandomWall(){
+		Tile[] tiles = { Tile.BROWN_ROCK, Tile.BROWN_TREE, 
+						 Tile.BROWN_ROCK, Tile.BROWN_TREE, 
+						 Tile.GREEN_ROCK, Tile.GREEN_TREE, 
+						 Tile.GREEN_ROCK, Tile.GREEN_TREE, 
+						 Tile.WHITE_ROCK, Tile.WHITE_TREE };
+		
+		return tiles[(int)(Math.random() * tiles.length)];
 	}
 	
 	private void addBorderOpenings(int x, int y){
