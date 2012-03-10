@@ -286,7 +286,7 @@ public class Worldgen {
 			return;
 		}
 		
-		switch ((int)(Math.random() * 5)){
+		switch ((int)(Math.random() * 7)){
 		case 0:
 			setTilesFull(sx, sy);
 			break;
@@ -300,6 +300,20 @@ public class Worldgen {
 			setTilesLeft(sx, sy);
 			setTilesRight(sx, sy);
 			break;
+		case 5:
+		case 6:
+			setTilesTop(sx, sy);
+			setTilesBottom(sx, sy);
+			break;
+		}
+
+		switch ((int)(Math.random() * 60)){
+		case 0: setTilesOuter(sx, sy); break;
+		case 1: setTilesInner(sx, sy); break;
+		case 2: setTilesLeft(sx, sy); break;
+		case 3: setTilesRight(sx, sy); break;
+		case 4: setTilesTop(sx, sy); break;
+		case 5: setTilesBottom(sx, sy); break;
 		}
 	}
 	
@@ -747,8 +761,137 @@ public class Worldgen {
 			break;
 		}
 	}
-	
 
+	private void setTilesTop(int sx, int sy){
+		switch ((int)(Math.random() * 5)){
+		case 0:
+			addMap(sx, sy,
+					"###################"
+			      + "#.................#"
+			      + "#.................#"
+			      + "#.................#"
+			      + "#.................#"
+			      + "                   "
+			      + "                   "
+			      + "                   "
+			      + "                   ");
+			break;
+		case 1:
+			addMap(sx, sy,
+					"###################"
+			      + "####...........####"
+			      + "##...............##"
+			      + "#.................#"
+			      + "#.................#"
+			      + "                   "
+			      + "                   "
+			      + "                   "
+			      + "                   ");
+			break;
+		case 2:
+			addMap(sx, sy,
+					"###################"
+			      + "#.................#"
+			      + "#.x.............x.#"
+			      + "#.................#"
+			      + "#.................#"
+			      + "                   "
+			      + "                   "
+			      + "                   "
+			      + "                   ");
+			break;
+		case 3:
+			addMap(sx, sy,
+					"###################"
+			      + "#.................#"
+			      + "#.x.x.x.x.x.x.x.x.#"
+			      + "#.................#"
+			      + "#.................#"
+			      + "                   "
+			      + "                   "
+			      + "                   "
+			      + "                   ");
+			break;
+		case 4:
+			addMap(sx, sy,
+					"###################"
+				  + "#.x.x.x.x.x.x.x.x.#"
+				  + "#.x.x.x.x.x.x.x.x.#"
+			      + "#.................#"
+			      + "#.................#"
+			      + "                   "
+			      + "                   "
+			      + "                   "
+			      + "                   ");
+			break;
+		}
+	}
+
+	private void setTilesBottom(int sx, int sy){
+		switch ((int)(Math.random() * 5)){
+		case 0:
+			addMap(sx, sy,
+				    "                   "
+				  + "                   "
+				  + "                   "
+				  + "                   "
+			      + "#.................#"
+			      + "#.................#"
+			      + "#.................#"
+			      + "#.................#"
+				  + "###################");
+			break;
+		case 1:
+			addMap(sx, sy,
+				    "                   "
+				  + "                   "
+				  + "                   "
+				  + "                   "
+			      + "#.................#"
+			      + "#.................#"
+			      + "##...............##"
+			      + "####...........####"
+				  + "###################");
+			break;
+		case 2:
+			addMap(sx, sy,
+				    "                   "
+				  + "                   "
+				  + "                   "
+				  + "                   "
+			      + "#.................#"
+			      + "#.................#"
+			      + "#.x.............x.#"
+			      + "#.................#"
+				  + "###################");
+			break;
+		case 3:
+			addMap(sx, sy,
+				    "                   "
+				  + "                   "
+				  + "                   "
+				  + "                   "
+			      + "#.................#"
+			      + "#.................#"
+			      + "#.x.x.x.x.x.x.x.x.#"
+			      + "#.................#"
+				  + "###################");
+			break;
+		case 4:
+			addMap(sx, sy,
+				    "                   "
+				  + "                   "
+				  + "                   "
+				  + "                   "
+			      + "#.................#"
+			      + "#.................#"
+				  + "#.x.x.x.x.x.x.x.x.#"
+				  + "#.x.x.x.x.x.x.x.x.#"
+				  + "###################");
+			break;
+		}
+	}
+	
 	private void addMap(int sx, int sy, String data) {
 		int mx = sx * screenWidth;
 		int my = sy * screenHeight;
