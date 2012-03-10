@@ -30,6 +30,7 @@ public class Worldgen {
 		setTiles();
 		addExtraQuarterScreens();
 		addShoreLine();
+		addShoreLine();
 		addLake();
 		addLake();
 		return new World(tiles, new WorldMap(cells));
@@ -555,7 +556,7 @@ public class Worldgen {
 				  + "                   "
 				  + "                   "
 				  + "   .............   "
-				  + "   .&&&&xxx&&&&.   "
+				  + "   .&xxx###xxx&.   "
 				  + "   .............   "
 				  + "                   "
 				  + "                   "
@@ -1112,7 +1113,7 @@ public class Worldgen {
 		Tile wall    = cells[sx][sy].defaultWall;
 		Tile local   = Math.random() < 0.66 ? wall : getRandomWall();
 		
-		if (Math.random() < 0.05) local = Tile.STATUE;
+		if (Math.random() < 0.025) local = Tile.STATUE;
 		
 		Tile special = Math.random() < 0.10 ? Tile.STATUE : (Math.random() < 0.50 ? floor : wall);
 		
@@ -1210,7 +1211,7 @@ public class Worldgen {
 		int x = screenWidth / 2;
 		int y = 0;
 		int start = (int)(Math.random() * (cells.length + cells[0].length) * 2);
-		int length = 5 + (int)(Math.random() * (cells.length + cells[0].length - 5));
+		int length = 5 + (int)(Math.random() * (cells.length + cells[0].length - 5)) / 2;
 		boolean started = false;
 		
 		while (length > 0){
