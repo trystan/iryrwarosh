@@ -29,9 +29,9 @@ public class Worldgen {
 		addDesert();
 		setTiles();
 		addExtraQuarterScreens();
-		addLake();
-		addLake();
 		addShoreLine();
+		addLake();
+		addLake();
 		return new World(tiles, new WorldMap(cells));
 	}
 
@@ -114,6 +114,15 @@ public class Worldgen {
 		case 1: pathType = WorldScreen.BOTTOM_RIGHT; break;
 		case 2: pathType = WorldScreen.WIDE; break;
 		}
+		
+		if (p.x == 0 && pathType == WorldScreen.TOP_LEFT)
+			pathType = WorldScreen.CENTER;
+		else if (p.y == 0 && pathType == WorldScreen.TOP_LEFT)
+			pathType = WorldScreen.CENTER;
+		else if (p.x == cells.length-1 && pathType == WorldScreen.BOTTOM_RIGHT)
+			pathType = WorldScreen.CENTER;
+		else if (p.y == cells[0].length-1 && pathType == WorldScreen.BOTTOM_RIGHT)
+			pathType = WorldScreen.CENTER;
 		
 		switch (direction){
 		case 'N':
@@ -254,25 +263,25 @@ public class Worldgen {
 		int y = (int)(Math.random() * cells[0].length - 2) + 1;
 		
 		cells[x][y].canAddQuarterWall = false;
-		cells[x][y].defaultGround = Tile.DESERT_SAND;
+		cells[x][y].defaultGround = Tile.DESERT_SAND1;
 		cells[x][y].defaultWall = Tile.BROWN_ROCK;
 		cells[x][y].sEdge = WorldScreen.WIDE;
 		cells[x][y].eEdge = WorldScreen.WIDE;
 
 		cells[x+1][y].canAddQuarterWall = false;
-		cells[x+1][y].defaultGround = Tile.DESERT_SAND;
+		cells[x+1][y].defaultGround = Tile.DESERT_SAND1;
 		cells[x+1][y].defaultWall = Tile.BROWN_ROCK;
 		cells[x+1][y].sEdge = WorldScreen.WIDE;
 		cells[x+1][y].wEdge = WorldScreen.WIDE;
 
 		cells[x][y+1].canAddQuarterWall = false;
-		cells[x][y+1].defaultGround = Tile.DESERT_SAND;
+		cells[x][y+1].defaultGround = Tile.DESERT_SAND1;
 		cells[x][y+1].defaultWall = Tile.BROWN_ROCK;
 		cells[x][y+1].nEdge = WorldScreen.WIDE;
 		cells[x][y+1].eEdge = WorldScreen.WIDE;
 
 		cells[x+1][y+1].canAddQuarterWall = false;
-		cells[x+1][y+1].defaultGround = Tile.DESERT_SAND;
+		cells[x+1][y+1].defaultGround = Tile.DESERT_SAND1;
 		cells[x+1][y+1].defaultWall = Tile.BROWN_ROCK;
 		cells[x+1][y+1].nEdge = WorldScreen.WIDE;
 		cells[x+1][y+1].wEdge = WorldScreen.WIDE;
@@ -300,7 +309,7 @@ public class Worldgen {
 			  + "#.................#"
 			  + "###################");
 		
-		if (cells[sx][sy].defaultGround == Tile.DESERT_SAND)
+		if (cells[sx][sy].defaultGround == Tile.DESERT_SAND1)
 			return;
 		
 		switch ((int)(Math.random() * 7)){
@@ -531,11 +540,11 @@ public class Worldgen {
 			addMap(sx, sy, 
 					"                   "
 				  + "                   "
+				  + "   .~~~~~~~~~~~.   "
 				  + "   ~~~~~~~~~~~~~   "
 				  + "   ~~~~~~~~~~~~~   "
 				  + "   ~~~~~~~~~~~~~   "
-				  + "   ~~~~~~~~~~~~~   "
-				  + "   ~~~~~~~~~~~~~   "
+				  + "   .~~~~~~~~~~~.   "
 				  + "                   "
 				  + "                   ");
 			cells[sx][sy].canAddQuarterWall = false;
@@ -984,8 +993,8 @@ public class Worldgen {
 			addMap(sx, sy,
 					"###################"
 			      + "####...........####"
-			      + "##...............##"
-			      + "#.................#"
+			      + "##....x.....x....##"
+			      + "#..x...........x..#"
 			      + "#.................#"
 			      + "                   "
 			      + "                   "
@@ -996,9 +1005,9 @@ public class Worldgen {
 			addMap(sx, sy,
 					"###################"
 			      + "###.............###"
-			      + "#...&.........&...#"
-			      + "#.................#"
-			      + "#.................#"
+			      + "#...&...xxx...&...#"
+			      + "#.......xxx.......#"
+			      + "#.......xxx.......#"
 			      + "                   "
 			      + "                   "
 			      + "                   "
@@ -1052,8 +1061,8 @@ public class Worldgen {
 				  + "                   "
 				  + "                   "
 			      + "#.................#"
-			      + "#.................#"
-			      + "##...............##"
+			      + "#..x...........x..#"
+			      + "##....x.....x....##"
 			      + "####...........####"
 				  + "###################");
 			break;
@@ -1063,9 +1072,9 @@ public class Worldgen {
 				  + "                   "
 				  + "                   "
 				  + "                   "
-			      + "#.................#"
-			      + "#.................#"
-			      + "#...&.........&...#"
+			      + "#.......xxx.......#"
+			      + "#.......xxx.......#"
+			      + "#...&...xxx...&...#"
 			      + "###.............###"
 				  + "###################");
 			break;
@@ -1186,10 +1195,10 @@ public class Worldgen {
 			  screenWidth - 2 + 1, 
 			  screenHeight - 2 + 1, Tile.WATER1);
 		
-		cells[x][y].seWater = true;
-		cells[x+1][y].swWater = true;
-		cells[x+1][y+1].nwWater = true;
-		cells[x][y+1].neWater = true;
+		cells[x-1][y-1].seWater = true;
+		cells[x][y-1].swWater = true;
+		cells[x][y].nwWater = true;
+		cells[x-1][y].neWater = true;
 		
 		addRiver(x, y, 3, 3);
 	}

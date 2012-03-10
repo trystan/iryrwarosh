@@ -1,5 +1,6 @@
 package iryrwarosh.screens;
 
+import iryrwarosh.Point;
 import iryrwarosh.Tile;
 import iryrwarosh.WorldMap;
 import iryrwarosh.WorldScreen;
@@ -11,10 +12,12 @@ import asciiPanel.AsciiPanel;
 public class WorldMapScreen implements Screen {
 	private Screen previous;
 	private WorldMap map;
+	private Point playerPosition;
 	
-	public WorldMapScreen(Screen previous, WorldMap map){
+	public WorldMapScreen(Screen previous, WorldMap map, Point playerPosition){
 		this.previous = previous;
 		this.map = map;
+		this.playerPosition = playerPosition;
 	}
 	
 	@Override
@@ -38,6 +41,8 @@ public class WorldMapScreen implements Screen {
 		displayTile(terminal, x-1, y+1, screen.swWater ? Tile.WATER1 : screen.defaultWall);
 		displayTile(terminal, x,   y+1, screen.sWater ? Tile.WATER1 : (screen.sEdge==wall ? screen.defaultWall : screen.defaultGround));
 		displayTile(terminal, x+1, y+1, screen.seWater ? Tile.WATER1 : screen.defaultWall);
+		
+		terminal.write('@', playerPosition.x / 19 * 3 + 1, playerPosition.y / 9 * 3 + 1);
 
 	}
 	

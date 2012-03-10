@@ -24,12 +24,14 @@ public enum Tile {
 	GREEN_ROCK  (177, hsv(110, 50, 50), hsv(110, 50,  5)),
 	BROWN_ROCK  (177, hsv( 30, 50, 50), hsv( 30, 50,  5)),
 	WHITE_ROCK  (177, hsv(  0,  0, 66), hsv(  0, 50,  5)),
-	DESERT_SAND (250, hsv( 60, 50, 50), hsv( 45, 50, 10)),
+	DESERT_SAND1(250, hsv( 60, 50, 55), hsv( 45, 50, 11)),
+	DESERT_SAND2(250, hsv( 60, 50, 50), hsv( 45, 50, 10)),
+	DESERT_SAND3(250, hsv( 60, 50, 45), hsv( 45, 50,  9)),
 	WATER1      (247, hsv(210, 63, 80), hsv(210, 80, 21)),
 	WATER2      (247, hsv(210, 66, 75), hsv(210, 80, 20)),
 	WATER3      (247, hsv(210, 69, 70), hsv(210, 80, 19)),
     BRIDGE      (240, hsv( 30, 66, 66), hsv( 30, 90, 20)),
-    STATUE      ('&', hsv(  0,  0, 90), hsv(  0,  0,  5)),;
+    STATUE      ('&', hsv( 20, 33, 90), hsv(  0,  0,  5)),;
 
 	public static Color hsv(int h, int s, int v){
 		return Color.getHSBColor(h / 360f, s / 100f, v / 100f);
@@ -69,6 +71,11 @@ public enum Tile {
 		case WATER3:
 			varieties = new Tile[]{ WATER1, WATER2, WATER3 };
 			break;
+		case DESERT_SAND1:
+		case DESERT_SAND2:
+		case DESERT_SAND3:
+			varieties = new Tile[]{ DESERT_SAND1, DESERT_SAND2, DESERT_SAND3 };
+			break;
 		}
 		
 		if (varieties == null)
@@ -97,6 +104,8 @@ public enum Tile {
 	}
 
 	public boolean isGround() {
-		return this == GREEN_DIRT || this == BROWN_DIRT || this == WHITE_DIRT;
+		return this == GREEN_DIRT || this == BROWN_DIRT || this == WHITE_DIRT 
+		  || this == DESERT_SAND1 || this == DESERT_SAND2 || this == DESERT_SAND3
+		  || this == BRIDGE;
 	}
 }

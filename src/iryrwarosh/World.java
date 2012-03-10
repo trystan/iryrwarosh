@@ -37,4 +37,14 @@ public class World {
         		tiles[x][y] = Tile.WATER1.variation();
         }
     }
+
+	public void add(Creature player) {
+		while (player.position == null){
+			int x = (int)(Math.random() * tiles.length);
+			int y = (int)(Math.random() * tiles[0].length);
+			
+			if (tile(x,y).isGround())
+				player.position = new Point(x, y);
+		}
+	}
 }
