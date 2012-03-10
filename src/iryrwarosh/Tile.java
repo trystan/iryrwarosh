@@ -6,9 +6,9 @@ public enum Tile {
 	GREEN_DIRT  (250, hsv(110, 50, 33), hsv(110, 50,  5)),
 	BROWN_DIRT  (250, hsv( 45, 50, 33), hsv( 45, 50,  5)),
 	WHITE_DIRT  (250, hsv(  0,  0, 33), hsv(  0, 50,  5)),
-	GREEN_TREE1 ('*', hsv(110, 30, 66), hsv(110, 50,  5)),
-	GREEN_TREE2 ('*', hsv(110, 50, 66), hsv(110, 50,  5)),
-	GREEN_TREE3 ('*', hsv(110, 70, 66), hsv(110, 50,  5)),
+	GREEN_TREE1 (  6, hsv(100, 66, 50), hsv(110, 50,  5)),
+	GREEN_TREE2 (  6, hsv(110, 66, 50), hsv(110, 50,  5)),
+	GREEN_TREE3 (  6, hsv(120, 66, 50), hsv(110, 50,  5)),
 	BROWN_TREE1 ('*', hsv( 20, 50, 66), hsv( 30, 50,  5)),
 	BROWN_TREE2 ('*', hsv( 30, 50, 66), hsv( 30, 50,  5)),
 	BROWN_TREE3 ('*', hsv( 40, 50, 66), hsv( 30, 50,  5)),
@@ -19,9 +19,9 @@ public enum Tile {
 	BROWN_ROCK  (177, hsv( 30, 50, 50), hsv( 30, 50,  5)),
 	WHITE_ROCK  (177, hsv(  0,  0, 50), hsv(  0, 50,  5)),
 	DESERT_SAND (250, hsv( 60, 50, 50), hsv( 45, 50, 10)),
-	WATER1      (247, hsv(210, 63, 80), hsv(210, 80, 25)),
+	WATER1      (247, hsv(210, 63, 80), hsv(210, 80, 22)),
 	WATER2      (247, hsv(210, 66, 75), hsv(210, 80, 20)),
-	WATER3      (247, hsv(210, 69, 70), hsv(210, 80, 15));
+	WATER3      (247, hsv(210, 69, 70), hsv(210, 80, 18));
 
 	public static Color hsv(int h, int s, int v){
 		return Color.getHSBColor(h / 360f, s / 100f, v / 100f);
@@ -72,5 +72,9 @@ public enum Tile {
 		this.glyph = (char)glyph;
 		this.color = color;
 		this.background = background;
+	}
+
+	public boolean isWater() {
+		return this == WATER1 || this == WATER2 || this == WATER3;
 	}
 }

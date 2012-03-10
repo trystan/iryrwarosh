@@ -16,9 +16,6 @@ public class PlayScreen implements Screen {
 	
 	@Override
 	public void displayOutput(AsciiPanel terminal) {
-		terminal.write("You are having fun.", 1, 1);
-		terminal.write("Press [m] to see a map.", 1, 3);
-		
 		displayTiles(terminal);
 	}
 	
@@ -70,6 +67,8 @@ public class PlayScreen implements Screen {
         case KeyEvent.VK_N: scrollBy( 1, 1); break;
 		case KeyEvent.VK_M: return new WorldMapScreen(this, world.map());
 		}
+		
+		world.update();
 		return this;
 	}
 }
