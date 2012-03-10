@@ -1,8 +1,14 @@
 package iryrwarosh;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class World {
 	private WorldMap map;
 	private Tile[][] tiles;
+	private List<Creature> creatures;
+	
+	public List<Creature> creatures() { return creatures; }
 	
 	public int width() { return tiles.length; }
 	
@@ -11,6 +17,7 @@ public class World {
 	public World(Tile[][] tiles, WorldMap map){
 		this.tiles = tiles;
 		this.map = map;
+		this.creatures = new ArrayList<Creature>();
 	}
 	
 	public WorldMap map(){
@@ -23,6 +30,9 @@ public class World {
 
     public void update(){
     	updateWater();
+    	
+    	for (Creature c : creatures)
+    		c.update();
     }
     
     private void updateWater(){
@@ -38,13 +48,14 @@ public class World {
         }
     }
 
-	public void add(Creature player) {
-		while (player.position == null){
+	public void add(Creature creature) {
+		while (creature.position == null){
 			int x = (int)(Math.random() * tiles.length);
 			int y = (int)(Math.random() * tiles[0].length);
 			
 			if (tile(x,y).isGround())
-				player.position = new Point(x, y);
+				creature.position = new Point(x, y);
 		}
+		creatures.add(creature);
 	}
 }

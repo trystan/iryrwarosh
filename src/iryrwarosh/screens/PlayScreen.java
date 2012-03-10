@@ -19,6 +19,20 @@ public class PlayScreen implements Screen {
 		this.world = world;
 		this.player = new Creature('@', AsciiPanel.brightWhite);
 		world.add(player);
+		
+		addGoblins();
+	}
+	
+	private void addGoblins(){
+		for (int i = 0; i < 100; i++){
+			int hue = 30 + (int)(Math.random() * 90);
+			Creature goblin = new Creature('g', Tile.hsv(hue, 50, 50)){
+				public void update(){
+					moveBy(world, (int)(Math.random() * 3) - 1, (int)(Math.random() * 3) - 1);
+				}
+			};
+			world.add(goblin);
+		}
 	}
 	
 	@Override
@@ -38,11 +52,18 @@ public class PlayScreen implements Screen {
 					t.background());
 		}
 		
-		terminal.write(player.glyph(), 
-				player.position.x - getScrollX(), 
-				player.position.y - getScrollY(), 
-				player.color(), 
-				world.tile(player.position.x, player.position.y).background());
+		for (Creature c : world.creatures()){
+			int x = c.position.x - getScrollX();
+			int y = c.position.y - getScrollY();
+			
+			if (x < 0 || x >= screenWidth || y < 0 || y >= screenHeight)
+				continue;
+			
+			terminal.write(c.glyph(), 
+					x, y, 
+					c.color(), 
+					world.tile(c.position.x, c.position.y).background());
+		}
 	}
 	
 	public int getScrollX() {

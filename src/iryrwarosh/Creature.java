@@ -23,4 +23,8 @@ public class Creature {
 		position.x += x;
 		position.y += y;
 	}
+	
+	public void update(){
+		
+	}
 }
