@@ -28,7 +28,8 @@ public enum Tile {
 	WATER1      (247, hsv(210, 63, 80), hsv(210, 80, 21)),
 	WATER2      (247, hsv(210, 66, 75), hsv(210, 80, 20)),
 	WATER3      (247, hsv(210, 69, 70), hsv(210, 80, 19)),
-    BRIDGE      (240, hsv( 30, 66, 66), hsv( 30, 90, 20)),;
+    BRIDGE      (240, hsv( 30, 66, 66), hsv( 30, 90, 20)),
+    STATUE      ('&', hsv(  0,  0, 90), hsv(  0,  0,  5)),;
 
 	public static Color hsv(int h, int s, int v){
 		return Color.getHSBColor(h / 360f, s / 100f, v / 100f);
