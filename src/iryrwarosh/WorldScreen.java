@@ -2,7 +2,10 @@ package iryrwarosh;
 
 public class WorldScreen {
 	public static final int WALL = 0,
-	                        CENTER = 2;
+	                        TOP_LEFT = 1,
+	                        CENTER = 2,
+	                        BOTTOM_RIGHT = 3,
+	                        WIDE = 4;
 
 	public Tile defaultGround = Tile.GREEN_DIRT;
 	public Tile defaultWall   = Tile.GREEN_ROCK;

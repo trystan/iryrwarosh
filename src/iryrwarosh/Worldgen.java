@@ -107,6 +107,13 @@ public class Worldgen {
 
 	private void connectScreens(Point p, char direction) {
 		int pathType = WorldScreen.CENTER;
+		switch ((int)(Math.random() * 7)){
+		case 0: pathType = WorldScreen.TOP_LEFT; break;
+		case 1: pathType = WorldScreen.BOTTOM_RIGHT; break;
+		case 2: pathType = WorldScreen.WIDE; break;
+		case 3: pathType = WorldScreen.WIDE; break;
+		}
+		
 		switch (direction){
 		case 'N':
 			cells[p.x][p.y-1].sEdge = pathType;
@@ -245,23 +252,23 @@ public class Worldgen {
 		
 		cells[x][y].defaultGround = Tile.DESERT_SAND;
 		cells[x][y].defaultWall = Tile.BROWN_ROCK;
-		cells[x][y].sEdge = WorldScreen.CENTER;
-		cells[x][y].eEdge = WorldScreen.CENTER;
+		cells[x][y].sEdge = WorldScreen.WIDE;
+		cells[x][y].eEdge = WorldScreen.WIDE;
 
 		cells[x+1][y].defaultGround = Tile.DESERT_SAND;
 		cells[x+1][y].defaultWall = Tile.BROWN_ROCK;
-		cells[x+1][y].sEdge = WorldScreen.CENTER;
-		cells[x+1][y].wEdge = WorldScreen.CENTER;
+		cells[x+1][y].sEdge = WorldScreen.WIDE;
+		cells[x+1][y].wEdge = WorldScreen.WIDE;
 
 		cells[x][y+1].defaultGround = Tile.DESERT_SAND;
 		cells[x][y+1].defaultWall = Tile.BROWN_ROCK;
-		cells[x][y+1].nEdge = WorldScreen.CENTER;
-		cells[x][y+1].eEdge = WorldScreen.CENTER;
+		cells[x][y+1].nEdge = WorldScreen.WIDE;
+		cells[x][y+1].eEdge = WorldScreen.WIDE;
 
 		cells[x+1][y+1].defaultGround = Tile.DESERT_SAND;
 		cells[x+1][y+1].defaultWall = Tile.BROWN_ROCK;
-		cells[x+1][y+1].nEdge = WorldScreen.CENTER;
-		cells[x+1][y+1].wEdge = WorldScreen.CENTER;
+		cells[x+1][y+1].nEdge = WorldScreen.WIDE;
+		cells[x+1][y+1].wEdge = WorldScreen.WIDE;
 	}
 	
 	private void setTiles(){
@@ -947,10 +954,41 @@ public class Worldgen {
 	}
 	
 	private void addBorderOpenings(int x, int y){
-		if (cells[x][y].nEdge == WorldScreen.CENTER) clear(x * screenWidth + screenWidth/2, y * screenHeight, 1, 2, cells[x][y].defaultGround);
-		if (cells[x][y].sEdge == WorldScreen.CENTER) clear(x * screenWidth + screenWidth/2, (y+1) * screenHeight - 2, 1, 2, cells[x][y].defaultGround);
-		if (cells[x][y].wEdge == WorldScreen.CENTER) clear(x * screenWidth, y * screenHeight + screenHeight/2, 2, 1, cells[x][y].defaultGround);
-		if (cells[x][y].eEdge == WorldScreen.CENTER) clear((x+1) * screenWidth - 2, y * screenHeight + screenHeight/2, 2, 1, cells[x][y].defaultGround);
+		if (cells[x][y].nEdge == WorldScreen.CENTER)
+			clear(x * screenWidth + screenWidth/2, y * screenHeight, 1, 2, cells[x][y].defaultGround);
+		else if (cells[x][y].nEdge == WorldScreen.TOP_LEFT)
+			clear(x * screenWidth + screenWidth/3-1, y * screenHeight, 1, 2, cells[x][y].defaultGround);
+		else if (cells[x][y].nEdge == WorldScreen.BOTTOM_RIGHT)
+			clear(x * screenWidth + screenWidth/3*2, y * screenHeight, 1, 2, cells[x][y].defaultGround);
+		else if (cells[x][y].nEdge == WorldScreen.WIDE)
+				clear(x * screenWidth + 1, y * screenHeight, screenWidth - 2, 2, cells[x][y].defaultGround);
+		
+		if (cells[x][y].sEdge == WorldScreen.CENTER)
+			clear(x * screenWidth + screenWidth/2, (y+1) * screenHeight - 2, 1, 2, cells[x][y].defaultGround);
+		else if (cells[x][y].sEdge == WorldScreen.TOP_LEFT)
+			clear(x * screenWidth + screenWidth/3-1, (y+1) * screenHeight - 2, 1, 2, cells[x][y].defaultGround);
+		else if (cells[x][y].sEdge == WorldScreen.BOTTOM_RIGHT)
+			clear(x * screenWidth + screenWidth/3*2, (y+1) * screenHeight - 2, 1, 2, cells[x][y].defaultGround);
+		else if (cells[x][y].sEdge == WorldScreen.WIDE)
+			clear(x * screenWidth + 1, (y+1) * screenHeight - 2, screenWidth - 2, 2, cells[x][y].defaultGround);
+		
+		if (cells[x][y].wEdge == WorldScreen.CENTER) 
+			clear(x * screenWidth, y * screenHeight + screenHeight/2, 2, 1, cells[x][y].defaultGround);
+		else if (cells[x][y].wEdge == WorldScreen.TOP_LEFT) 
+			clear(x * screenWidth, y * screenHeight + screenHeight/3-1, 2, 1, cells[x][y].defaultGround);
+		else if (cells[x][y].wEdge == WorldScreen.BOTTOM_RIGHT) 
+			clear(x * screenWidth, y * screenHeight + screenHeight/3*2, 2, 1, cells[x][y].defaultGround);
+		else if (cells[x][y].wEdge == WorldScreen.WIDE) 
+			clear(x * screenWidth, y * screenHeight + 1, 2, screenHeight - 2, cells[x][y].defaultGround);
+		
+		if (cells[x][y].eEdge == WorldScreen.CENTER)
+			clear((x+1) * screenWidth - 2, y * screenHeight + screenHeight/2, 2, 1, cells[x][y].defaultGround);
+		else if (cells[x][y].eEdge == WorldScreen.TOP_LEFT) 
+			clear((x+1) * screenWidth - 2, y * screenHeight + screenHeight/3-1, 2, 1, cells[x][y].defaultGround);
+		else if (cells[x][y].eEdge == WorldScreen.BOTTOM_RIGHT) 
+			clear((x+1) * screenWidth - 2, y * screenHeight + screenHeight/3*2, 2, 1, cells[x][y].defaultGround);
+		else if (cells[x][y].eEdge == WorldScreen.WIDE)
+			clear((x+1) * screenWidth - 2, y * screenHeight + 1, 2, screenHeight - 2, cells[x][y].defaultGround);
 	}
 
 	private void clear(int x, int y, int w, int h, Tile tile) {
