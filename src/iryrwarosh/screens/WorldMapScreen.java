@@ -3,6 +3,7 @@ package iryrwarosh.screens;
 import iryrwarosh.WorldMap;
 import iryrwarosh.WorldScreen;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import asciiPanel.AsciiPanel;
@@ -24,17 +25,19 @@ public class WorldMapScreen implements Screen {
 	}
 
 	private void displayScreen(int x, int y, WorldScreen screen, AsciiPanel terminal) {
-		char wall = '#';
-		char open = '.';
-		terminal.write(open, x, y);
-		terminal.write(wall, x-1, y-1);
-		terminal.write(screen.nEdge==WorldScreen.WALL ? wall : open, x, y-1);
-		terminal.write(wall, x+1, y-1);
-		terminal.write(screen.eEdge==WorldScreen.WALL ? wall : open, x+1, y);
-		terminal.write(wall, x+1, y+1);
-		terminal.write(screen.sEdge==WorldScreen.WALL ? wall : open, x, y+1);
-		terminal.write(wall, x-1, y+1);
-		terminal.write(screen.wEdge==WorldScreen.WALL ? wall : open, x-1, y);
+		char wall = screen.defaultWall.glyph();
+		char open = screen.defaultGround.glyph();
+		Color wallColor = screen.defaultWall.color();
+		Color openColor = screen.defaultGround.color();
+		terminal.write(open, x, y, openColor);
+		terminal.write(wall, x-1, y-1, wallColor);
+		terminal.write(screen.nEdge==WorldScreen.WALL ? wall : open, x, y-1, screen.nEdge==WorldScreen.WALL ? wallColor : openColor);
+		terminal.write(wall, x+1, y-1, wallColor);
+		terminal.write(screen.eEdge==WorldScreen.WALL ? wall : open, x+1, y, screen.eEdge==WorldScreen.WALL ? wallColor : openColor);
+		terminal.write(wall, x+1, y+1, wallColor);
+		terminal.write(screen.sEdge==WorldScreen.WALL ? wall : open, x, y+1, screen.sEdge==WorldScreen.WALL ? wallColor : openColor);
+		terminal.write(wall, x-1, y+1, wallColor);
+		terminal.write(screen.wEdge==WorldScreen.WALL ? wall : open, x-1, y, screen.wEdge==WorldScreen.WALL ? wallColor : openColor);
 	}
 
 	@Override
