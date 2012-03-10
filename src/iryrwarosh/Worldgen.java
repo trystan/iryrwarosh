@@ -28,12 +28,13 @@ public class Worldgen {
 		addThemes();
 		addDesert();
 		setTiles();
+		addExtraQuarterScreens();
 		addLake();
 		addLake();
 		addShoreLine();
 		return new World(tiles, new WorldMap(cells));
 	}
-	
+
 	private void makePerfectMaze(){
 		int width = cells.length;
 		int height = cells[0].length;
@@ -252,21 +253,25 @@ public class Worldgen {
 		int x = (int)(Math.random() * cells.length - 2) + 1;
 		int y = (int)(Math.random() * cells[0].length - 2) + 1;
 		
+		cells[x][y].canAddQuarterWall = false;
 		cells[x][y].defaultGround = Tile.DESERT_SAND;
 		cells[x][y].defaultWall = Tile.BROWN_ROCK;
 		cells[x][y].sEdge = WorldScreen.WIDE;
 		cells[x][y].eEdge = WorldScreen.WIDE;
 
+		cells[x+1][y].canAddQuarterWall = false;
 		cells[x+1][y].defaultGround = Tile.DESERT_SAND;
 		cells[x+1][y].defaultWall = Tile.BROWN_ROCK;
 		cells[x+1][y].sEdge = WorldScreen.WIDE;
 		cells[x+1][y].wEdge = WorldScreen.WIDE;
 
+		cells[x][y+1].canAddQuarterWall = false;
 		cells[x][y+1].defaultGround = Tile.DESERT_SAND;
 		cells[x][y+1].defaultWall = Tile.BROWN_ROCK;
 		cells[x][y+1].nEdge = WorldScreen.WIDE;
 		cells[x][y+1].eEdge = WorldScreen.WIDE;
 
+		cells[x+1][y+1].canAddQuarterWall = false;
 		cells[x+1][y+1].defaultGround = Tile.DESERT_SAND;
 		cells[x+1][y+1].defaultWall = Tile.BROWN_ROCK;
 		cells[x+1][y+1].nEdge = WorldScreen.WIDE;
@@ -366,6 +371,7 @@ public class Worldgen {
 				  + "#.xxxxxxxxxxxxxxx.#"
 				  + "#.................#"
 				  + "###################");
+			cells[sx][sy].canAddQuarterWall = false;
 			break;
 		case 3:
 			addMap(sx, sy, 
@@ -402,6 +408,7 @@ public class Worldgen {
 				  + "#.~~~~~~~~~~~~~~~.#"
 				  + "#.................#"
 				  + "###################");
+			cells[sx][sy].canAddQuarterWall = false;
 			break;
 		case 6:
 			addMap(sx, sy, 
@@ -414,6 +421,7 @@ public class Worldgen {
 				  + "#......&.&.&......#"
 				  + "#.................#"
 				  + "###################");
+			cells[sx][sy].canAddQuarterWall = false;
 			break;
 		case 7:
 			addMap(sx, sy, 
@@ -426,6 +434,7 @@ public class Worldgen {
 				  + "#.................#"
 				  + "##...............##"
 				  + "###################");
+			cells[sx][sy].canAddQuarterWall = false;
 			break;
 		case 8:
 			addMap(sx, sy, 
@@ -450,6 +459,7 @@ public class Worldgen {
 				  + "##...............##"
 				  + "###################"
 				  + "###################");
+			cells[sx][sy].canAddQuarterWall = false;
 			break;
 		}
 	}
@@ -503,6 +513,7 @@ public class Worldgen {
 				  + "                   "
 				  + "                   "
 				  + "                   ");
+			cells[sx][sy].canAddQuarterWall = false;
 			break;
 		case 4:
 			addMap(sx, sy, 
@@ -527,6 +538,7 @@ public class Worldgen {
 				  + "   ~~~~~~~~~~~~~   "
 				  + "                   "
 				  + "                   ");
+			cells[sx][sy].canAddQuarterWall = false;
 			break;
 		case 6:
 			addMap(sx, sy, 
@@ -1346,5 +1358,31 @@ public class Worldgen {
 			candidates.add(new Point(tx, ty));
 		else if (tiles[tx][ty-1].isGround() && tiles[tx][ty+1].isGround() && tiles[tx-1][ty].isWater() && tiles[tx+1][ty].isWater())
 			candidates.add(new Point(tx, ty));
+	}
+
+	private void addExtraQuarterScreens() {
+		for (int x = 0; x < cells.length; x++)
+		for (int y = 0; y < cells[0].length; y++)
+			addExtraQuarterScreens(x,y);
+	}
+
+	private void addExtraQuarterScreens(int x, int y) {
+		if (!cells[x][y].canAddQuarterWall)
+			return;
+		
+		int hw = screenWidth / 2;
+		int hh = screenHeight / 2;
+		
+		if (Math.random() < 0.1 && cells[x][y].nEdge != WorldScreen.TOP_LEFT && cells[x][y].wEdge != WorldScreen.TOP_LEFT)
+			clear(x*screenWidth, y*screenHeight, hw, hh, cells[x][y].defaultWall);
+		
+		if (Math.random() < 0.1 && cells[x][y].sEdge != WorldScreen.BOTTOM_RIGHT && cells[x][y].wEdge != WorldScreen.TOP_LEFT)
+			clear(x*screenWidth+hw+1, y*screenHeight, hw, hh, cells[x][y].defaultWall);
+		
+		if (Math.random() < 0.1 && cells[x][y].sEdge != WorldScreen.BOTTOM_RIGHT && cells[x][y].eEdge != WorldScreen.BOTTOM_RIGHT)
+			clear(x*screenWidth+hw+1, y*screenHeight+hh+1, hw, hh, cells[x][y].defaultWall);
+		
+		if (Math.random() < 0.1 && cells[x][y].nEdge != WorldScreen.TOP_LEFT && cells[x][y].eEdge != WorldScreen.BOTTOM_RIGHT)
+			clear(x*screenWidth, y*screenHeight+hh+1, hw, hh, cells[x][y].defaultWall);
 	}
 }
