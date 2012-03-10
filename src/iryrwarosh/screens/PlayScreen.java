@@ -1,5 +1,6 @@
 package iryrwarosh.screens;
 
+import iryrwarosh.Tile;
 import iryrwarosh.World;
 
 import java.awt.event.KeyEvent;
@@ -26,8 +27,15 @@ public class PlayScreen implements Screen {
 	private int scrollY = 0;
 	private void displayTiles(AsciiPanel terminal){
 		for (int x = 0; x < 80; x++)
-		for (int y = 0; y < 24; y++)
-			terminal.write(world.tile(x+scrollX, y+scrollY).glyph(), x, y, world.tile(x+scrollX, y+scrollY).color());
+		for (int y = 0; y < 24; y++){
+			Tile t = world.tile(x+scrollX, y+scrollY);
+			terminal.write(
+					t.glyph(), 
+					x, 
+					y, 
+					t.color(),
+					t.background());
+		}
 	}
 
 	private void scrollBy(int x, int y){
