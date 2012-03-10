@@ -1,0 +1,6 @@
+# Java class files
+*.class
+*.DS_Store
+
+# generated files
+bin/
