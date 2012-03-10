@@ -6,12 +6,18 @@ public enum Tile {
 	GREEN_DIRT  (250, hsv(110, 50, 33), hsv(110, 50,  5)),
 	BROWN_DIRT  (250, hsv( 45, 50, 33), hsv( 45, 50,  5)),
 	WHITE_DIRT  (250, hsv(  0,  0, 33), hsv(  0, 50,  5)),
-	GREEN_TREE1 (  6, hsv(100, 66, 50), hsv(110, 50,  5)),
-	GREEN_TREE2 (  6, hsv(110, 66, 50), hsv(110, 50,  5)),
-	GREEN_TREE3 (  6, hsv(120, 66, 50), hsv(110, 50,  5)),
-	BROWN_TREE1 ('*', hsv( 20, 50, 66), hsv( 30, 50,  5)),
-	BROWN_TREE2 ('*', hsv( 30, 50, 66), hsv( 30, 50,  5)),
-	BROWN_TREE3 ('*', hsv( 40, 50, 66), hsv( 30, 50,  5)),
+	GREEN_TREE1 (  6, hsv(100, 66, 40), hsv(110, 50,  5)),
+	GREEN_TREE2 (  6, hsv(110, 66, 40), hsv(110, 50,  5)),
+	GREEN_TREE3 (  6, hsv(120, 66, 40), hsv(110, 50,  5)),
+	GREEN_TREE4 ('*', hsv(100, 66, 66), hsv(110, 50,  5)),
+	GREEN_TREE5 ('*', hsv(110, 66, 66), hsv(110, 50,  5)),
+	GREEN_TREE6 ('*', hsv(120, 66, 66), hsv(110, 50,  5)),
+	BROWN_TREE1 (  6, hsv( 20, 50, 66), hsv( 30, 50,  5)),
+	BROWN_TREE2 (  6, hsv( 30, 50, 66), hsv( 30, 50,  5)),
+	BROWN_TREE3 (  6, hsv( 40, 50, 66), hsv( 30, 50,  5)),
+	BROWN_TREE4 (  5, hsv( 30, 60, 40), hsv( 30, 50,  5)),
+	BROWN_TREE5 (  5, hsv( 30, 50, 50), hsv( 30, 50,  5)),
+	BROWN_TREE6 (  5, hsv( 30, 40, 60), hsv( 30, 50,  5)),
 	WHITE_TREE1 ('*', hsv(  0,  0, 55), hsv(  0, 50,  5)),
 	WHITE_TREE2 ('*', hsv(  0,  0, 66), hsv(  0, 50,  5)),
 	WHITE_TREE3 ('*', hsv(  0,  0, 77), hsv(  0, 50,  5)),
@@ -35,6 +41,11 @@ public enum Tile {
 		case GREEN_TREE2:
 		case GREEN_TREE3:
 			varieties = new Tile[]{ GREEN_TREE1, GREEN_TREE2, GREEN_TREE3 };
+			break;
+		case GREEN_TREE4:
+		case GREEN_TREE5:
+		case GREEN_TREE6:
+			varieties = new Tile[]{ GREEN_TREE4, GREEN_TREE5, GREEN_TREE6 };
 			break;
 		case BROWN_TREE1:
 		case BROWN_TREE2:

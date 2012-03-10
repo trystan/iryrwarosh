@@ -111,7 +111,6 @@ public class Worldgen {
 		case 0: pathType = WorldScreen.TOP_LEFT; break;
 		case 1: pathType = WorldScreen.BOTTOM_RIGHT; break;
 		case 2: pathType = WorldScreen.WIDE; break;
-		case 3: pathType = WorldScreen.WIDE; break;
 		}
 		
 		switch (direction){
@@ -141,10 +140,10 @@ public class Worldgen {
 	public void addThemes(){
 		Tile[][] themes = new Tile[cells.length][cells[0].length];
 		for (Tile theme : new Tile[]{ 
-				Tile.BROWN_ROCK, Tile.BROWN_TREE1, 
-				Tile.BROWN_ROCK, Tile.BROWN_TREE1, 
-				Tile.GREEN_ROCK, Tile.GREEN_TREE1, 
-				Tile.GREEN_ROCK, Tile.GREEN_TREE1, 
+				Tile.BROWN_ROCK, Tile.BROWN_TREE1, Tile.BROWN_TREE4, 
+				Tile.GREEN_ROCK, Tile.GREEN_TREE1, Tile.GREEN_TREE4,
+				Tile.BROWN_ROCK, Tile.BROWN_TREE1, Tile.BROWN_TREE4, 
+				Tile.GREEN_ROCK, Tile.GREEN_TREE1, Tile.GREEN_TREE4, 
 				Tile.WHITE_ROCK, Tile.WHITE_TREE1 }){
 		
 			while (true){
@@ -282,19 +281,19 @@ public class Worldgen {
 	}
 
 	private void setTiles(int sx, int sy){
-		if (cells[sx][sy].defaultGround == Tile.DESERT_SAND){
-			addMap(sx, sy, 
-				    "###################"
-				  + "#.................#"
-				  + "#.................#"
-				  + "#.................#"
-				  + "#.................#"
-				  + "#.................#"
-				  + "#.................#"
-				  + "#.................#"
-				  + "###################");
+		addMap(sx, sy, 
+			    "###################"
+			  + "#.................#"
+			  + "#.................#"
+			  + "#.................#"
+			  + "#.................#"
+			  + "#.................#"
+			  + "#.................#"
+			  + "#.................#"
+			  + "###################");
+		
+		if (cells[sx][sy].defaultGround == Tile.DESERT_SAND)
 			return;
-		}
 		
 		switch ((int)(Math.random() * 7)){
 		case 0:
@@ -509,13 +508,13 @@ public class Worldgen {
 		case 2:
 			addMap(sx, sy, 
 				    "###################"
-				  + "#xx.............xx#"
-				  + "#x...............x#"
+				  + "###.............###"
+				  + "##...............##"
 				  + "#..             ..#"
 				  + "#..             ..#"
 				  + "#..             ..#"
-				  + "#x...............x#"
-				  + "#xx.............xx#"
+				  + "##...............##"
+				  + "###.............###"
 				  + "###################");
 			break;
 		case 3:
@@ -562,13 +561,13 @@ public class Worldgen {
 		case 1:
 			addMap(sx, sy, 
 					"##########         "
-			      + "##xx....xx         "
-			      + "#x.......x         "
+			      + "####....##         "
+			      + "##.......#         "
 			      + "#.........         "
 			      + "#.........         "
 			      + "#.........         "
-			      + "#x.......x         "
-			      + "##xx....xx         "
+			      + "##.......#         "
+			      + "####....##         "
 			      + "##########         ");
 			break;
 		case 2:
@@ -687,13 +686,13 @@ public class Worldgen {
 		case 1:
 			addMap(sx, sy, 
 					"          #########"
-			      + "          xx...xx##"
-			      + "          x......x#"
+			      + "          ##...####"
+			      + "          #......##"
 			      + "          ........#"
 			      + "          ........#"
 			      + "          ........#"
-			      + "          x......x#"
-			      + "          xx...xx##"
+			      + "          #......##"
+			      + "          ##...####"
 			      + "          #########");
 			break;
 		case 2:
