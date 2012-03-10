@@ -7,9 +7,13 @@ import java.util.List;
 
 public class Worldgen {
 	private WorldScreen[][] cells;
+	private Tile[][] tiles;
+	private int screenWidth = 19;
+	private int screenHeight = 9;
 	
 	public Worldgen(int width, int height) {
 		this.cells = new WorldScreen[width][height];
+		this.tiles = new Tile[width * screenWidth][height * screenHeight];
 
 		for (int x = 0; x < cells.length; x++)
 		for (int y = 0; y < cells[0].length; y++){
@@ -21,7 +25,9 @@ public class Worldgen {
 		makePerfectMaze();
 		addExtraConnections();
 		addThemes();
-		return new World(new WorldMap(cells));
+		addDesert();
+		setTiles();
+		return new World(tiles, new WorldMap(cells));
 	}
 	
 	private void makePerfectMaze(){
@@ -228,5 +234,77 @@ public class Worldgen {
 				break;
 			}
 		}
+	}
+	
+	private void addDesert(){
+		int x = (int)(Math.random() * cells.length - 2) + 1;
+		int y = (int)(Math.random() * cells[0].length - 2) + 1;
+		
+		cells[x][y].defaultGround = Tile.DESERT_SAND;
+		cells[x][y].defaultWall = Tile.BROWN_ROCK;
+		cells[x][y].sEdge = WorldScreen.CENTER;
+		cells[x][y].eEdge = WorldScreen.CENTER;
+
+		cells[x+1][y].defaultGround = Tile.DESERT_SAND;
+		cells[x+1][y].defaultWall = Tile.BROWN_ROCK;
+		cells[x+1][y].sEdge = WorldScreen.CENTER;
+		cells[x+1][y].wEdge = WorldScreen.CENTER;
+
+		cells[x][y+1].defaultGround = Tile.DESERT_SAND;
+		cells[x][y+1].defaultWall = Tile.BROWN_ROCK;
+		cells[x][y+1].nEdge = WorldScreen.CENTER;
+		cells[x][y+1].eEdge = WorldScreen.CENTER;
+
+		cells[x+1][y+1].defaultGround = Tile.DESERT_SAND;
+		cells[x+1][y+1].defaultWall = Tile.BROWN_ROCK;
+		cells[x+1][y+1].nEdge = WorldScreen.CENTER;
+		cells[x+1][y+1].wEdge = WorldScreen.CENTER;
+	}
+	
+	private void setTiles(){
+		for (int x = 0; x < cells.length; x++)
+		for (int y = 0; y < cells[0].length; y++)
+			setTiles(x, y);
+
+		for (int x = 0; x < cells.length; x++)
+		for (int y = 0; y < cells[0].length; y++)
+			addBorderOpenings(x, y);
+	}
+	
+	private void setTiles(int sx, int sy){
+		addMap(sx*screenWidth, sy*screenHeight, 19, 9, 
+			    "###################"
+			  + "#.................#"
+			  + "#.................#"
+			  + "#.................#"
+			  + "#.................#"
+			  + "#.................#"
+			  + "#.................#"
+			  + "#.................#"
+			  + "###################", 
+			  cells[sx][sy].defaultGround, cells[sx][sy].defaultWall);
+	}
+
+	private void addMap(int mx, int my, int mw, int mh, String data, Tile floor, Tile wall) {
+		for (int x = 0; x < mw; x++)
+		for (int y = 0; y < mh; y++) {
+			switch (data.charAt(x + y * mw)){
+			case '.': tiles[mx+x][my+y] = floor; break;
+			case '#': tiles[mx+x][my+y] = wall; break;
+			}
+		}
+	}
+	
+	private void addBorderOpenings(int x, int y){
+		if (cells[x][y].nEdge == WorldScreen.CENTER) clear(x * screenWidth + screenWidth/2, y * screenHeight, 1, 2, cells[x][y].defaultGround);
+		if (cells[x][y].sEdge == WorldScreen.CENTER) clear(x * screenWidth + screenWidth/2, (y+1) * screenHeight - 2, 1, 2, cells[x][y].defaultGround);
+		if (cells[x][y].wEdge == WorldScreen.CENTER) clear(x * screenWidth, y * screenHeight + screenHeight/2, 2, 1, cells[x][y].defaultGround);
+		if (cells[x][y].eEdge == WorldScreen.CENTER) clear((x+1) * screenWidth - 2, y * screenHeight + screenHeight/2, 2, 1, cells[x][y].defaultGround);
+	}
+
+	private void clear(int x, int y, int w, int h, Tile tile) {
+		for (int x2 = x; x2 < x + w; x2++)
+		for (int y2 = y; y2 < y + h; y2++)
+			tiles[x2][y2] = tile;
 	}
 }

@@ -13,7 +13,8 @@ public enum Tile {
 	WHITE_TREE  ('*', AsciiPanel.white),
 	GREEN_ROCK  (177, AsciiPanel.green),
 	BROWN_ROCK  (177, AsciiPanel.yellow),
-	WHITE_ROCK  (177, AsciiPanel.white);
+	WHITE_ROCK  (177, AsciiPanel.white),
+	DESERT_SAND (250, AsciiPanel.brightYellow);
 	
 	private char glyph;
 	public char glyph() { return glyph; }
