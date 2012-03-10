@@ -1,5 +1,8 @@
 package iryrwarosh.screens;
 
+import iryrwarosh.World;
+import iryrwarosh.Worldgen;
+
 import java.awt.event.KeyEvent;
 
 import asciiPanel.AsciiPanel;
@@ -15,6 +18,11 @@ public class StartScreen implements Screen {
 
 	@Override
 	public Screen respondToUserInput(KeyEvent key) {
-		return key.getKeyCode() == KeyEvent.VK_ENTER ? new PlayScreen() : this;
+		return key.getKeyCode() == KeyEvent.VK_ENTER ? newGame() : this;
+	}
+	
+	private PlayScreen newGame(){
+		World world = new Worldgen(48 / 3, 24 / 3).build();
+		return new PlayScreen(world);
 	}
 }
