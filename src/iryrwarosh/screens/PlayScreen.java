@@ -16,6 +16,7 @@ public class PlayScreen implements Screen {
 	@Override
 	public void displayOutput(AsciiPanel terminal) {
 		terminal.write("You are having fun.", 1, 1);
+		terminal.write("Press [m] to see a map.", 1, 3);
 	}
 
 	@Override
