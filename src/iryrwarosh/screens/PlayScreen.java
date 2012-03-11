@@ -4,6 +4,7 @@ import iryrwarosh.Creature;
 import iryrwarosh.Tile;
 import iryrwarosh.World;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import asciiPanel.AsciiPanel;
@@ -13,11 +14,11 @@ public class PlayScreen implements Screen {
 	private Creature player;
 	
 	private int screenWidth = 80;
-	private int screenHeight = 24;
+	private int screenHeight = 23;
 	
 	public PlayScreen(World world){
 		this.world = world;
-		this.player = new Creature('@', AsciiPanel.brightWhite);
+		this.player = new Creature('@', AsciiPanel.brightWhite, 6);
 		world.add(player);
 		
 		addGoblins();
@@ -26,7 +27,7 @@ public class PlayScreen implements Screen {
 	private void addGoblins(){
 		for (int i = 0; i < 100; i++){
 			int hue = 30 + (int)(Math.random() * 90);
-			Creature goblin = new Creature('g', Tile.hsv(hue, 50, 50)){
+			Creature goblin = new Creature('g', Tile.hsv(hue, 50, 50), 1){
 				public void update(){
 					moveBy(world, (int)(Math.random() * 3) - 1, (int)(Math.random() * 3) - 1);
 				}
@@ -38,6 +39,12 @@ public class PlayScreen implements Screen {
 	@Override
 	public void displayOutput(AsciiPanel terminal) {
 		displayTiles(terminal);
+		
+		Color bg = Tile.hsv(30, 15, 15);
+		terminal.clear(' ', 0, 0, 80, 1, Tile.hsv(0, 0, 15), bg);
+		for (int i = 0; i < player.maxHp(); i++){
+			terminal.write((char)3, 70+i, 0, i < player.hp() ? AsciiPanel.red : AsciiPanel.brightBlack, bg);
+		}
 	}
 	
 	private void displayTiles(AsciiPanel terminal){
@@ -47,7 +54,7 @@ public class PlayScreen implements Screen {
 			terminal.write(
 					t.glyph(), 
 					x, 
-					y, 
+					y+1, 
 					t.color(),
 					t.background());
 		}
@@ -60,7 +67,7 @@ public class PlayScreen implements Screen {
 				continue;
 			
 			terminal.write(c.glyph(), 
-					x, y, 
+					x, y+1, 
 					c.color(), 
 					world.tile(c.position.x, c.position.y).background());
 		}
@@ -97,6 +104,10 @@ public class PlayScreen implements Screen {
 		}
 		
 		world.update();
+		
+		if (player.hp() < 1)
+			return new DeadScreen();
+		
 		return this;
 	}
 }

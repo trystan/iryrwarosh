@@ -27,12 +27,28 @@ public class World {
 	public Tile tile(int x, int y){
 		return tiles[x][y];
  	}
+	
+	public Creature creature(int x, int y){
+		for (Creature c : creatures)
+    		if (c.position.x == x && c.position.y == y)
+    			return c;
+		
+		return null;
+	}
 
     public void update(){
     	updateWater();
     	
     	for (Creature c : creatures)
     		c.update();
+    	
+    	List<Creature> stillAlive = new ArrayList<Creature>();
+    	
+    	for (Creature c : creatures)
+    		if (c.hp() > 0)
+    			stillAlive.add(c);
+    	
+    	creatures = stillAlive;
     }
     
     private void updateWater(){
