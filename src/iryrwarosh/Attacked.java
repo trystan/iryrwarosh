@@ -6,10 +6,10 @@ public class Attacked extends Message {
 	public boolean isSpecial;
 	
 	public Attacked(World world, Creature attacker, Creature attacked, String specialType){
-		super(world, "The " + attacker.name() + (specialType==null ? "" : " " + specialType) + " attacked the " + attacked.name());
+		super(world, "The " + attacker.name() + " attacked the " + attacked.name() + (specialType==null ? "" : " " + specialType) );
 		this.attacker = attacker;
 		this.attacked = attacked;
-		this.isSpecial = specialType != null;
+		this.isSpecial = specialType != null && !specialType.equals("normally");
 	}
 
 	@Override

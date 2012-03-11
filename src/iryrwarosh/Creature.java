@@ -168,7 +168,7 @@ public class Creature {
 				&& other.evadeCheck(world)){
 			other.evade(world, this);
 		} else if (hasDoubleAttackedThisTurn == false){
-			attack(world, other, "normal");
+			attack(world, other, "");
 		}
 	}
 	
@@ -199,7 +199,7 @@ public class Creature {
 				&& !hasDoubleAttackedThisTurn
 				&& other.hp > 0) {
 			hasDoubleAttackedThisTurn = true;
-			attack(world, other, "double");
+			attack(world, other, "again");
 		}
 	}
 	
@@ -345,7 +345,7 @@ public class Creature {
 		if (candidates.size() == 0)
 			wanderForReal(world);
 		else
-			attack(world, candidates.get((int)(Math.random() * candidates.size())), "aggressive");
+			attack(world, candidates.get((int)(Math.random() * candidates.size())), "aggressively");
 	}
 	
 	public void fleeFromNearby(World world){
