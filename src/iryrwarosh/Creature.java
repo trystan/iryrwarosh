@@ -27,6 +27,9 @@ public class Creature {
 	private int maxHp;
 	public int maxHp() { return maxHp; }
 
+	private int money;
+	public int money() { return money; }
+	
 	private List<CreatureTrait> traits = new ArrayList<CreatureTrait>();
 
 	public void addTrait(CreatureTrait trait) {
@@ -239,5 +242,9 @@ public class Creature {
 
 	public void heal(int i) {
 		hp = Math.min(hp + i, maxHp);
+	}
+
+	public void gainMoney(int i) {
+		money = Math.min(money + i, 255);
 	}
 }

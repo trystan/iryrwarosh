@@ -73,11 +73,13 @@ public class PlayScreen implements Screen, Handler {
 		
 		terminal.write("Holding a " + player.weapon().name(), 1, 0, player.weapon().color(), bg);
 		
-		terminal.write("evade: " + player.evadePercent(world) + "%", 50, 0, AsciiPanel.yellow, bg);
+		terminal.write("evade: " + player.evadePercent(world) + "%", 45, 0, AsciiPanel.yellow, bg);
+
+		terminal.write(player.money() + "" + (char)4, 65, 0, Tile.hsv(60, 25, 75), bg);
 		
 		Item item = world.item(player.position.x, player.position.y);
 		if (item != null)
-			terminal.write("(here: " + item.name() + ")", 34, 0, item.color(), bg);
+			terminal.write("(here: " + item.name() + ")", 29, 0, item.color(), bg);
 		
 		Color heartColor = player.isPoisoned() ? AsciiPanel.green : AsciiPanel.red;
 		for (int i = 0; i < player.maxHp(); i++)

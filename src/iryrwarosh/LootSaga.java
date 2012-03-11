@@ -20,8 +20,10 @@ public class LootSaga implements Handler {
 	}
 	
 	public void handle(Killed message){
-		if (Math.random() < 0.33)
-			message.world.add(heart(), message.attacked.position.x, message.attacked.position.y);
+		switch ((int)(Math.random() * 4)){
+		case 0: message.world.add(heart(), message.attacked.position.x, message.attacked.position.y); break;
+		case 1: message.world.add(rupies(), message.attacked.position.x, message.attacked.position.y); break;
+		}
 	}
 	
 	public Item heart(){
@@ -29,6 +31,15 @@ public class LootSaga implements Handler {
 			public void onCollide(World world, Creature collider){
 				world.removeItem(collider.position.x, collider.position.y);
 				collider.heal(1);
+			}
+		};
+	}
+	
+	public Item rupies(){
+		return new Item("rupies", 4, AsciiPanel.red){
+			public void onCollide(World world, Creature collider){
+				world.removeItem(collider.position.x, collider.position.y);
+				collider.gainMoney(1);
 			}
 		};
 	}
