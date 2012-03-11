@@ -5,6 +5,7 @@ import iryrwarosh.Factory;
 import iryrwarosh.Handler;
 import iryrwarosh.Message;
 import iryrwarosh.MessageBus;
+import iryrwarosh.Moved;
 import iryrwarosh.Tile;
 import iryrwarosh.Weapon;
 import iryrwarosh.World;
@@ -44,7 +45,7 @@ public class PlayScreen implements Screen, Handler {
 	private void addGoblins(Factory factory){
 		for (int i = 0; i < 100; i++){
 			int hue = 30 + (int)(Math.random() * 90);
-			Creature goblin = new Creature('g', Tile.hsv(hue, 50, 50), 1){
+			Creature goblin = new Creature('g', Tile.hsv(hue, 50, 50), 2){
 				public void update(){
 					moveBy(world, (int)(Math.random() * 3) - 1, (int)(Math.random() * 3) - 1);
 				}
@@ -70,9 +71,13 @@ public class PlayScreen implements Screen, Handler {
 		Color bg = Tile.hsv(30, 30, 15);
 		terminal.clear(' ', 0, 0, 80, 1, Tile.hsv(0, 0, 15), bg);
 		
-		terminal.write(player.weapon().name(), 20, 0, player.weapon().color(), bg);
+		terminal.write("Holding a " + player.weapon().name(), 1, 0, player.weapon().color(), bg);
 		
 		terminal.write("evade: " + player.evadePercent(world) + "%", 50, 0, AsciiPanel.yellow, bg);
+		
+		Weapon w = world.item(player.position.x, player.position.y);
+		if (w != null)
+			terminal.write("(here: " + w.name() + ")", 34, 0, w.color(), bg);
 		
 		for (int i = 0; i < player.maxHp(); i++)
 			terminal.write((char)3, 69+i, 0, i < player.hp() ? AsciiPanel.red : AsciiPanel.brightBlack, bg);
@@ -169,7 +174,7 @@ public class PlayScreen implements Screen, Handler {
 
 	@Override
 	public void handle(Message message) {
-		if (message.involves(player))
+		if (message.involves(player) && !Moved.class.isAssignableFrom(message.getClass()))
 			messages.add(message);
 	}
 }

@@ -112,7 +112,7 @@ public class Creature {
 		if (other.hp < 1)
 			return;
 		
-		other.hp--;
+		other.hp -= Math.max(1, attack - other.defense);
 		MessageBus.publish(new Attacked(world, this, other));
 		
 		if (other.hp < 1)

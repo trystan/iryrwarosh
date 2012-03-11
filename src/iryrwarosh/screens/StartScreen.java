@@ -1,6 +1,7 @@
 package iryrwarosh.screens;
 
 import iryrwarosh.Handler;
+import iryrwarosh.HelpSaga;
 import iryrwarosh.Message;
 import iryrwarosh.MessageBus;
 import iryrwarosh.SpecialAttackSaga;
@@ -22,7 +23,8 @@ public class StartScreen implements Screen {
 			}
 			
 		});
-		
+
+		MessageBus.subscribe(new HelpSaga());
 		MessageBus.subscribe(new SpecialAttackSaga());
 	}
 	
