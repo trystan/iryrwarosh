@@ -7,6 +7,10 @@ import java.util.List;
 
 public class Creature {
 	public Point position;
+	
+	private int regenerateCounter;
+	private int poisonCounter;
+	public boolean isPoisoned() { return poisonCounter > 0; }
 
 	private String name;
 	public String name() { return name; }
@@ -30,7 +34,7 @@ public class Creature {
 		
 		switch (trait){
 		case EXTRA_HP: maxHp += 3; hp += 3; break;
-		case EXTRA_ATTACK: attack += 2; break;
+		case EXTRA_ATTACK: attack += 1; break;
 		case EXTRA_DEFENSE: defense += 1; break;
 		case EXTRA_EVADE: evade += 2; break;
 		}
@@ -40,13 +44,18 @@ public class Creature {
 		return traits.contains(trait);
 	}
 	
-	public String describeTraits(){
+	public String describe(){
 		String text = "";
 		
 		for (CreatureTrait trait : traits)
-			text += ", " + trait.name();
+			text += ", " + trait.description();
 		
-		return text.substring(2);
+		text = name + " (" + text.substring(2) + ")";
+
+		if (weapon != null)
+			text += " weilding a " + weapon.name();
+		
+		return text;
 	}
 	
 	public int attack  = 2;
@@ -156,11 +165,27 @@ public class Creature {
 	
 	private boolean hasDoubleAttackedThisTurn = false;
 	public void attack(World world, Creature other){
+		attack(world, other, 1);
+	}
+	
+	public void attack(World world, Creature other, int multiplier){
 		if (other.hp < 1)
 			return;
 		
 		other.hp -= Math.max(1, attack - other.defense);
-		MessageBus.publish(new Attacked(world, this, other));
+		if (multiplier == 1)
+			MessageBus.publish(new Attacked(world, this, other));
+		
+		if (hasTrait(CreatureTrait.POISONOUS)) {
+			other.poisonCounter += 10;
+			if (multiplier == 1)
+				MessageBus.publish(new Poisoned(world, this, other));
+		}
+		
+		if (other.hasTrait(CreatureTrait.SPIKED)){
+			this.hp--;
+			MessageBus.publish(new HitSpikes(world, this, other));
+		}
 		
 		if (other.hp < 1)
 			MessageBus.publish(new Killed(world, this, other));
@@ -193,5 +218,16 @@ public class Creature {
 	
 	public void update(){
 		hasDoubleAttackedThisTurn = false;
+		
+		if (poisonCounter > 0){
+			if (poisonCounter-- % 5 == 0)
+				hp--;
+		}
+		
+		if (hasTrait(CreatureTrait.REGENERATES) && --regenerateCounter < 0){
+			regenerateCounter = 10;
+			if (hp < maxHp)
+				hp++;
+		}
 	}
 }

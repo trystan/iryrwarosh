@@ -1,6 +1,8 @@
 package iryrwarosh.screens;
 
 import iryrwarosh.Creature;
+import iryrwarosh.Tile;
+import iryrwarosh.Weapon;
 import iryrwarosh.World;
 
 import java.awt.event.KeyEvent;
@@ -28,18 +30,20 @@ public class LookAtScreen implements Screen {
 		
 		terminal.write('X', lookX, lookY+1, AsciiPanel.magenta, world.tile(startX + lookX, startY + lookY).background());
 		
-		Creature c = world.creature(startX + lookX, startY + lookY);
+		Creature creature = world.creature(startX + lookX, startY + lookY);
+		Weapon weapon = world.item(startX + lookX, startY + lookY);
+		Tile tile = world.tile(startX + lookX, startY + lookY);
 		
-		if (c != null){
-			String text = c.name() + " (" + c.describeTraits() + ")";
-			
-			if (c.weapon() != null)
-				text += " weilding a " + c.weapon().name();
-			
-			terminal.write(text, 1, 23);
-		} else {
-			terminal.write(world.tile(startX + lookX, startY + lookY).name(), 1, 23);
-		}
+		String text = null;
+		
+		if (creature != null)
+			text = creature.describe();
+		else if (weapon != null)
+			text = weapon.name();
+		else
+			text = tile.name();
+
+		terminal.write(text, 1, 23);
 	}
 
 	@Override
@@ -65,8 +69,8 @@ public class LookAtScreen implements Screen {
 	}
 
 	private void moveBy(int x, int y) {
-		lookX += x;
-		lookY += y;
+		lookX = Math.max(0, Math.min(lookX + x, 79));
+		lookY = Math.max(0, Math.min(lookY + y, 23));
 	}
 
 }

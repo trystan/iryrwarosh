@@ -22,8 +22,11 @@ public class Factory {
 			
 			List<CreatureTrait> traits = new ArrayList<CreatureTrait>();
 			
-			for (int i = 0; i < 3; i++)
-				traits.add(CreatureTrait.getRandom());
+			while (traits.size() < 3){
+				CreatureTrait trait = CreatureTrait.getRandom();
+				if (!traits.contains(trait))
+					traits.add(trait);
+			}
 			
 			monsterTraits.put(biome, traits);
 			
@@ -83,6 +86,7 @@ public class Factory {
 		int hue = 30 + (int)(Math.random() * 90);
 		Creature goblin = new Creature("goblin", 'g', Tile.hsv(hue, 50, 50), 2){
 			public void update(){
+				super.update();
 				moveBy(world, (int)(Math.random() * 3) - 1, (int)(Math.random() * 3) - 1);
 			}
 		};
@@ -162,6 +166,7 @@ public class Factory {
 		
 		Creature monster = new Creature(name, 'm', color, 3){
 			public void update(){
+				super.update();
 				moveBy(world, (int)(Math.random() * 3) - 1, (int)(Math.random() * 3) - 1);
 				
 				if (hasTrait(CreatureTrait.DOUBLE_MOVE))

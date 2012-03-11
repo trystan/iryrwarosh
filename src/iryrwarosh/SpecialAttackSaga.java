@@ -51,7 +51,7 @@ public class SpecialAttackSaga implements Handler {
 	private void checkFinishingAttack(Attacked m) {
 		if (m.attacker.finishingAttackPercent() > Math.random() * 100 && m.attacked.hp() > 0){
 			if ((m.attacker.attack - m.attacked.defense) * 2 >= m.attacked.hp()){
-				m.attacker.attack(m.world, m.attacked);
+				m.attacker.attack(m.world, m.attacked, 2);
 			}
 		}
 	}

@@ -78,8 +78,9 @@ public class PlayScreen implements Screen, Handler {
 		if (w != null)
 			terminal.write("(here: " + w.name() + ")", 34, 0, w.color(), bg);
 		
+		Color heartColor = player.isPoisoned() ? AsciiPanel.green : AsciiPanel.red;
 		for (int i = 0; i < player.maxHp(); i++)
-			terminal.write((char)3, 69+i, 0, i < player.hp() ? AsciiPanel.red : AsciiPanel.brightBlack, bg);
+			terminal.write((char)3, 69+i, 0, i < player.hp() ? heartColor : AsciiPanel.brightBlack, bg);
 	}
 	
 	private void displayTiles(AsciiPanel terminal){
