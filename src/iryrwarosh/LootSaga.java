@@ -20,7 +20,7 @@ public class LootSaga implements Handler {
 	}
 	
 	public void handle(Killed message){
-		switch ((int)(Math.random() * 4)){
+		switch ((int)(Math.random() * 3)){
 		case 0: message.world.add(heart(), message.attacked.position.x, message.attacked.position.y); break;
 		case 1: message.world.add(rupies(), message.attacked.position.x, message.attacked.position.y); break;
 		}

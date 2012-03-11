@@ -17,6 +17,10 @@ public class Point {
 	public Point copy() {
 		return new Point(x, y);
 	}
+	
+	public int distanceTo(Point other){
+		return (int)Math.sqrt((x-other.x)*(x-other.x) + (y-other.y)*(y-other.y)); 
+	}
 
 	public Collection<? extends Point> neighbors() {
 		List<Point> neighbors = Arrays.asList(

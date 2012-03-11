@@ -1,6 +1,7 @@
 package iryrwarosh.screens;
 
 import iryrwarosh.Creature;
+import iryrwarosh.CreatureTrait;
 import iryrwarosh.Factory;
 import iryrwarosh.Handler;
 import iryrwarosh.Item;
@@ -116,9 +117,29 @@ public class PlayScreen implements Screen, Handler {
 			if (x < 0 || x >= screenWidth || y < 0 || y >= screenHeight)
 				continue;
 			
-			terminal.write(c.glyph(), 
+			Color color = c.color();
+			if (c.hasTrait(CreatureTrait.CAMOUFLAGED)){
+				switch (player.position.distanceTo(c.position)){
+				case 0:
+				case 1:
+				case 2:
+				case 3:
+					break;
+				case 4:
+					color = color.darker();
+					break;
+				case 5:
+					color = color.darker().darker();
+					break;
+				default:
+					color = null;
+				}
+			}
+			
+			if (color != null)
+				terminal.write(c.glyph(), 
 					x, y+1, 
-					c.color(), 
+					color, 
 					world.tile(c.position.x, c.position.y).background());
 		}
 	}
