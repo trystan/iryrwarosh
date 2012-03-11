@@ -56,9 +56,12 @@ public class Creature {
 			return;
 		
 		Creature other = world.creature(position.x+x, position.y+y);
+		
 		if (other == null) {
 			position.x += x;
 			position.y += y;
+		} else if (isFriend(other)) {
+			return;
 		} else if (other.evadeCheck(world)){
 			MessageBus.publish(new Evaded(other, this));
 			other.evade(world);
@@ -66,6 +69,10 @@ public class Creature {
 			MessageBus.publish(new Attacked(this, other));
 			attack(other);
 		}
+	}
+	
+	public boolean isFriend(Creature other){
+		return other.glyph == this.glyph;
 	}
 	
 	public void attack(Creature other){
