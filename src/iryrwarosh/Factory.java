@@ -32,9 +32,6 @@ public class Factory {
 			}
 			
 			monsterTraits.put(biome, traits);
-			
-			for (CreatureTrait trait : traits)
-				System.out.println(biome.name() + " monster has " + trait.name());
 		}
 	}
 	
@@ -90,8 +87,8 @@ public class Factory {
 	public Creature goblin(final World world){
 		int hue = 30 + (int)(Math.random() * 90);
 		Creature goblin = new Creature("goblin", 'g', Tile.hsv(hue, 50, 50), 2){
-			public void update(){
-				super.update();
+			public void update(World world){
+				super.update(world);
 				wander(world);
 			}
 		};
@@ -114,54 +111,72 @@ public class Factory {
 			name = "evergreen monster";
 			color = biome.color();
 			candidates = world.screensOfType(biome);
+			if (candidates.size() == 0)
+				return null;
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case PINE_TREE1:
 			name = "pine monster";
 			color = biome.color().darker();
 			candidates = world.screensOfType(biome);
+			if (candidates.size() == 0)
+				return null;
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case BROWN_TREE1:
 			name = "broadleaf monster";
 			color = biome.color().darker();
 			candidates = world.screensOfType(biome);
+			if (candidates.size() == 0)
+				return null;
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case BROWN_TREE4:
 			name = "forest monster";
 			color = biome.color();
 			candidates = world.screensOfType(biome);
+			if (candidates.size() == 0)
+				return null;
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case WHITE_TREE1:
 			name = "pale monster";
 			color = biome.color().brighter();
 			candidates = world.screensOfType(biome);
+			if (candidates.size() == 0)
+				return null;
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case GREEN_ROCK:
 			name = "hill monster";
 			color = biome.background().brighter();
 			candidates = world.screensOfType(biome);
+			if (candidates.size() == 0)
+				return null;
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case BROWN_ROCK:
 			name = "mountan monster";
 			color = biome.background().brighter();
 			candidates = world.screensOfType(biome);
+			if (candidates.size() == 0)
+				return null;
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case WHITE_ROCK:
 			name = "snow monster";
 			color = biome.background().brighter();
 			candidates = world.screensOfType(biome);
+			if (candidates.size() == 0)
+				return null;
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case DESERT_SAND1:
 			name = "desert monster";
 			color = biome.color();
 			candidates = world.screensOfType(biome);
+			if (candidates.size() == 0)
+				return null;
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case WATER1:
@@ -173,8 +188,8 @@ public class Factory {
 		boolean isBigMonster = Math.random() * 1000 < monstersCreated;
 		
 		Creature monster = new Creature(name, isBigMonster ? 'M' : 'm', color, 3){
-			public void update(){
-				super.update();
+			public void update(World world){
+				super.update(world);
 				wander(world);
 			}
 		};
@@ -212,5 +227,15 @@ public class Factory {
 		player.addTrait(CreatureTrait.WALKER);
 		world.add(player);
 		return player;
+	}
+	
+	public Creature zora(World world){
+		Creature zora = new Creature("zora", 'z', Tile.WATER1.color(), 1);
+		zora.addTrait(CreatureTrait.SWIMMER);
+		zora.addTrait(CreatureTrait.HIDER);
+		zora.addTrait(CreatureTrait.TERRITORIAL);
+		zora.addTrait(CreatureTrait.ROCK_SPITTER);
+		world.add(zora);
+		return zora;
 	}
 }

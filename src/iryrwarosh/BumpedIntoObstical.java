@@ -6,7 +6,7 @@ public class BumpedIntoObstical extends Message {
 	public int y;
 	
 	public BumpedIntoObstical(World world, Creature creature, int x, int y) {
-		super(world, creature.name() + " bumped into " + world.tile(x, y).name());
+		super(world, creature.name() + " bumped into " + world.tile(x, y).description());
 		this.creature = creature;
 		this.x = x;
 		this.y = y;

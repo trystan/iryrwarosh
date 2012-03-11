@@ -5,36 +5,36 @@ import java.awt.Color;
 import asciiPanel.AsciiPanel;
 
 public enum Tile {
-	GREEN_DIRT  (250, hsv(110, 50, 33), hsv(110, 50,  5)),
-	BROWN_DIRT  (250, hsv( 45, 50, 33), hsv( 45, 50,  5)),
-	WHITE_DIRT  (250, hsv(  0,  0, 33), hsv(  0, 50,  5)),
-	GREEN_TREE1 (  6, hsv(100, 40, 55), hsv(110, 50,  5)),
-	GREEN_TREE2 (  6, hsv(115, 40, 50), hsv(110, 50,  5)),
-	GREEN_TREE3 (  6, hsv(130, 40, 45), hsv(110, 50,  5)),
-	PINE_TREE1  ( 30, hsv(100, 55, 40), hsv(110, 50,  5)),
-	PINE_TREE2  ( 30, hsv(110, 50, 35), hsv(110, 50,  5)),
-	PINE_TREE3  ( 30, hsv(120, 45, 30), hsv(110, 50,  5)),
-	BROWN_TREE1 (  6, hsv( 15, 55, 50), hsv( 30, 50,  5)),
-	BROWN_TREE2 (  6, hsv( 20, 55, 50), hsv( 30, 50,  5)),
-	BROWN_TREE3 (  6, hsv( 25, 55, 50), hsv( 30, 50,  5)),
-	BROWN_TREE4 (  5, hsv( 20, 75, 45), hsv( 30, 50,  5)),
-	BROWN_TREE5 (  5, hsv( 20, 70, 50), hsv( 30, 50,  5)),
-	BROWN_TREE6 (  5, hsv( 20, 65, 55), hsv( 30, 50,  5)),
-	WHITE_TREE1 (  6, hsv(  0,  0, 55), hsv(  0, 50,  5)),
-	WHITE_TREE2 (  6, hsv(  0,  0, 50), hsv(  0, 50,  5)),
-	WHITE_TREE3 (  6, hsv(  0,  0, 45), hsv(  0, 50,  5)),
-	GREEN_ROCK  (177, hsv(110, 50,  5), hsv(110, 50, 50)),
-	BROWN_ROCK  (177, hsv( 30, 50,  5), hsv( 30, 50, 50)),
-	WHITE_ROCK  (177, hsv(  0, 50,  5), hsv(  0,  0, 66)),
-	DESERT_SAND1(250, hsv( 60, 50, 55), hsv( 45, 50, 11)),
-	DESERT_SAND2(250, hsv( 60, 50, 50), hsv( 45, 50, 10)),
-	DESERT_SAND3(250, hsv( 60, 50, 45), hsv( 45, 50,  9)),
-	WATER1      (247, hsv(210, 63, 80), hsv(210, 80, 21)),
-	WATER2      (247, hsv(210, 66, 75), hsv(210, 80, 20)),
-	WATER3      (247, hsv(210, 69, 70), hsv(210, 80, 19)),
-    BRIDGE      (240, hsv( 30, 66, 66), hsv( 30, 90, 20)),
-    STATUE      ('&', hsv( 20, 33, 90), hsv(  0,  0,  5)),
-    OUT_OF_BOUNDS ('x', AsciiPanel.brightBlack, AsciiPanel.black),;
+	GREEN_DIRT  (250, hsv(110, 50, 33), hsv(110, 50,  5), "dirt"),
+	BROWN_DIRT  (250, hsv( 45, 50, 33), hsv( 45, 50,  5), "dirt"),
+	WHITE_DIRT  (250, hsv(  0,  0, 33), hsv(  0, 50,  5), "dirt"),
+	GREEN_TREE1 (  6, hsv(100, 40, 55), hsv(110, 50,  5), "green tree"),
+	GREEN_TREE2 (  6, hsv(115, 40, 50), hsv(110, 50,  5), "green tree"),
+	GREEN_TREE3 (  6, hsv(130, 40, 45), hsv(110, 50,  5), "green tree"),
+	PINE_TREE1  ( 30, hsv(100, 55, 40), hsv(110, 50,  5), "pine tree"),
+	PINE_TREE2  ( 30, hsv(110, 50, 35), hsv(110, 50,  5), "pine tree"),
+	PINE_TREE3  ( 30, hsv(120, 45, 30), hsv(110, 50,  5), "pine tree"),
+	BROWN_TREE1 (  6, hsv( 15, 55, 50), hsv( 30, 50,  5), "brown tree"),
+	BROWN_TREE2 (  6, hsv( 20, 55, 50), hsv( 30, 50,  5), "brown tree"),
+	BROWN_TREE3 (  6, hsv( 25, 55, 50), hsv( 30, 50,  5), "brown tree"),
+	BROWN_TREE4 (  5, hsv( 20, 75, 45), hsv( 30, 50,  5), "brown tree"),
+	BROWN_TREE5 (  5, hsv( 20, 70, 50), hsv( 30, 50,  5), "brown tree"),
+	BROWN_TREE6 (  5, hsv( 20, 65, 55), hsv( 30, 50,  5), "brown tree"),
+	WHITE_TREE1 (  6, hsv(  0,  0, 55), hsv(  0, 50,  5), "white tree"),
+	WHITE_TREE2 (  6, hsv(  0,  0, 50), hsv(  0, 50,  5), "white tree"),
+	WHITE_TREE3 (  6, hsv(  0,  0, 45), hsv(  0, 50,  5), "white tree"),
+	GREEN_ROCK  (177, hsv(110, 50,  5), hsv(110, 50, 50), "hill rock"),
+	BROWN_ROCK  (177, hsv( 30, 50,  5), hsv( 30, 50, 50), "mountain rock"),
+	WHITE_ROCK  (177, hsv(  0, 50,  5), hsv(  0,  0, 66), "white rock"),
+	DESERT_SAND1(250, hsv( 60, 50, 55), hsv( 45, 50, 11), "desert sand"),
+	DESERT_SAND2(250, hsv( 60, 50, 50), hsv( 45, 50, 10), "desert sand"),
+	DESERT_SAND3(250, hsv( 60, 50, 45), hsv( 45, 50,  9), "desert sand"),
+	WATER1      (247, hsv(210, 63, 80), hsv(210, 80, 21), "water"),
+	WATER2      (247, hsv(210, 66, 75), hsv(210, 80, 20), "water"),
+	WATER3      (247, hsv(210, 69, 70), hsv(210, 80, 19), "water"),
+    BRIDGE      (240, hsv( 30, 66, 66), hsv( 30, 90, 20), "bridge"),
+    STATUE      ('&', hsv( 20, 33, 90), hsv(  0,  0,  5), "statue"),
+    OUT_OF_BOUNDS ('x', AsciiPanel.brightBlack, AsciiPanel.black, "OUT OF BOUNDS"),;
 
 	public static Color hsv(int h, int s, int v){
 		return Color.getHSBColor(h / 360f, s / 100f, v / 100f);
@@ -87,6 +87,10 @@ public enum Tile {
 			return varieties[(int)(Math.random() * varieties.length)];
 	}
 	
+
+	private String description;
+	public String description() { return description; }
+	
 	private char glyph;
 	public char glyph() { return glyph; }
 	
@@ -96,10 +100,11 @@ public enum Tile {
 	private Color background;
 	public Color background() { return background; }
 	
-	Tile(int glyph, Color color, Color background){
+	Tile(int glyph, Color color, Color background, String description){
 		this.glyph = (char)glyph;
 		this.color = color;
 		this.background = background;
+		this.description = description;
 	}
 
 	public boolean isWater() {

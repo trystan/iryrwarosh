@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import asciiPanel.AsciiPanel;
+
 public class Creature {
 	public Point position;
+	public Point homeScreenPosition;
 	
 	private int regenerateCounter;
 	private int poisonCounter;
@@ -38,7 +41,6 @@ public class Creature {
 		switch (trait){
 		case EXTRA_HP: maxHp += 3; hp += 3; break;
 		case EXTRA_ATTACK: attack += 1; break;
-		case EXTRA_DEFENSE: defense += 1; break;
 		case EXTRA_EVADE: evade += 2; break;
 		}
 	}
@@ -61,8 +63,7 @@ public class Creature {
 		return text;
 	}
 	
-	public int attack  = 2;
-	public int defense = 1;
+	public int attack  = 1;
 	public int evade   = 5;
 	
 	public int comboAttackPercent     = 0;
@@ -107,7 +108,7 @@ public class Creature {
 			if (ox==0 && oy==0)
 				continue;
 			
-			if (world.tile(position.x+ox, position.y+oy).isGround()
+			if (canEnter(world.tile(position.x+ox, position.y+oy))
 					&& world.creature(position.x+ox, position.y+oy) == null)
 				moveable++;
 		}
@@ -144,6 +145,10 @@ public class Creature {
 		if (x==0 && y==0)
 			return;
 		
+		if (hasTrait(CreatureTrait.TERRITORIAL)
+				&& (x / 19 != homeScreenPosition.x || y / 9 != homeScreenPosition.y))
+			return;
+		
 		Creature other = world.creature(position.x+x, position.y+y);
 		
 		if (other == null) {
@@ -152,6 +157,8 @@ public class Creature {
 				position.y += y;
 				MessageBus.publish(new Moved(world, this));
 			} else {
+				lastWanderX = (int)(Math.random() * 3) - 1;
+				lastWanderY = (int)(Math.random() * 3) - 1;
 				MessageBus.publish(new BumpedIntoObstical(world, this, position.x+x, position.y+y));
 			}
 		} else if (isFriend(other)) {
@@ -178,19 +185,16 @@ public class Creature {
 		
 		Boolean isSpecial = specialType != null;
 		
-		other.hp -= Math.max(1, attack - other.defense);
-		
+		MessageBus.publish(new Attacked(world, this, other, specialType));
+
+		other.hurt(world, this, attack);
+
 		if (!isSpecial && other.hasTrait(CreatureTrait.SPIKED)){
 			if (weapon == null || !weapon.isImuneToSpikes){
 				this.hp--;
 				MessageBus.publish(new HitSpikes(world, this, other));
 			}
 		}
-		
-		if (other.hp < 1)
-			MessageBus.publish(new Killed(world, this, other));
-		else
-			MessageBus.publish(new Attacked(world, this, other, specialType));
 
 		if (!isSpecial && hasTrait(CreatureTrait.POISONOUS) && other.hp > 0) {
 			other.poisonCounter += 10;
@@ -213,7 +217,7 @@ public class Creature {
 			if (ox==0 && oy==0)
 				continue;
 			
-			if (world.tile(position.x+ox, position.y+oy).isGround()
+			if (canEnter(world.tile(position.x+ox, position.y+oy))
 					&& world.creature(position.x+ox, position.y+oy) == null)
 				evadeTo.add(new Point(position.x+ox, position.y+oy));
 		}
@@ -223,9 +227,17 @@ public class Creature {
 		MessageBus.publish(new Evaded(world, other, this));
 	}
 	
-	public void update(){
+	private Point hiddenPoint;
+	private int hiddenCounter;
+	private int projectileCooldown;
+	
+	public void update(World world){
 		hasDoubleAttackedThisTurn = false;
+		hasDoubleMovedThisTurn = false;
 		
+		if (homeScreenPosition == null)
+			homeScreenPosition = new Point(position.x / 19, position.y / 9); 
+				
 		if (poisonCounter > 0){
 			if (poisonCounter-- % 5 == 0)
 				hp--;
@@ -236,21 +248,105 @@ public class Creature {
 			if (hp < maxHp)
 				hp++;
 		}
+		
+		if (hasTrait(CreatureTrait.HIDER) && hiddenCounter-- < 1){
+			hiddenCounter = 5 + (int)(Math.random() * 5);
+			if (hiddenPoint == null)
+				hide(world);
+			else
+				unhide(world);
+		}
+		
+		if (hasTrait(CreatureTrait.ROCK_SPITTER) 
+				&& projectileCooldown-- < 1 
+				&& Math.random() < 0.1)
+			spitRock(world);
+	}
+
+	private void spitRock(World world) {
+		while (lastWanderX == 0 && lastWanderY == 0){
+			lastWanderX = (int)(Math.random() * 3) - 1;
+			lastWanderY = (int)(Math.random() * 3) - 1;
+		}
+		
+		projectileCooldown += 15;
+		world.add(new Projectile(this,   7, AsciiPanel.brightYellow, 1, position.plus(lastWanderX, lastWanderY), new Point(lastWanderX, lastWanderY)));
+		world.add(new Projectile(this, 250, AsciiPanel.brightYellow, 0, position.copy(), new Point(lastWanderX, lastWanderY)));
+	}
+
+	private void unhide(World world) {
+		int x = 0;
+		int y = 0;
+		while (hiddenPoint != null){
+			if (hasTrait(CreatureTrait.TERRITORIAL)){
+				x = homeScreenPosition.x * 19 + (int)(Math.random() * 19);
+				y = homeScreenPosition.y *  9 + (int)(Math.random() * 9);	
+			} else {
+				x = hiddenPoint.x + (int)(Math.random() * 7) - 3;
+				y = hiddenPoint.y + (int)(Math.random() * 7) - 3;
+			}
+			
+			if (!canEnter(world.tile(x, y)) || world.creature(x, y) != null)
+				continue;
+			
+			position.x = x;
+			position.y = y;
+			hiddenPoint = null;
+		}
+		
+		MessageBus.publish(new Unhid(world, this));
+		if (hasTrait(CreatureTrait.ROCK_SPITTER))
+			spitRock(world);
+	}
+
+	private void hide(World world) {
+		hiddenPoint = new Point(position.x, position.y);
+		MessageBus.publish(new Hid(world, this));
+		position.x = -100;
+		position.y = -100;
 	}
 
 	public void wander(World world){
-		moveBy(world, (int)(Math.random() * 3) - 1, (int)(Math.random() * 3) - 1);
+		if (hasTrait(CreatureTrait.AGGRESSIVE))
+			fightNearby(world);
 		
-		if (hasTrait(CreatureTrait.DOUBLE_MOVE))
-			moveBy(world, (int)(Math.random() * 3) - 1, (int)(Math.random() * 3) - 1);
+		wanderForReal(world);
+	}
+
+	private int lastWanderX;
+	private int lastWanderY;
+	private boolean hasDoubleMovedThisTurn = false;
+	private void wanderForReal(World world) {
+		if (Math.random() < 0.33)
+			lastWanderX = (int)(Math.random() * 3) - 1;
+		if (Math.random() < 0.33)
+			lastWanderY = (int)(Math.random() * 3) - 1;
+		
+		moveBy(world, lastWanderX, lastWanderY);
+		
+		if (hasTrait(CreatureTrait.DOUBLE_MOVE) && !hasDoubleMovedThisTurn){
+			hasDoubleMovedThisTurn = true;
+			wanderForReal(world);
+		}
+	}
+	
+	public void fightNearby(World world){
+		List<Creature> candidates = new ArrayList<Creature>();
+		
+		for (Point p : position.neighbors()){
+			Creature other = world.creature(p.x, p.y);
+			if (other != null && !isFriend(other))
+				candidates.add(other);
+		}
+		
+		if (candidates.size() == 0)
+			wanderForReal(world);
+		else
+			attack(world, candidates.get((int)(Math.random() * candidates.size())), null);
 	}
 	
 	public void finishingKill(World world, Creature other) {
-		if (other.hp < 1)
-			return;
-		
-		other.hp = -1;
-		MessageBus.publish(new Killed(world, this, other));
+		other.hurt(world, this, 1000);
 	}
 
 	public void heal(int i) {
@@ -259,5 +355,12 @@ public class Creature {
 
 	public void gainMoney(int i) {
 		money = Math.min(money + i, 255);
+	}
+
+	public void hurt(World world, Creature attacker, int i) {
+		hp -= i;
+		
+		if (hp < 1)
+			MessageBus.publish(new Killed(world, attacker, this));
 	}
 }

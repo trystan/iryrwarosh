@@ -45,7 +45,7 @@ public class LookAtScreen implements Screen {
 		else if (item != null)
 			text = item.name();
 		else
-			text = tile.name();
+			text = tile.description();
 
 		terminal.write(text, 1, 23);
 	}

@@ -9,6 +9,7 @@ import iryrwarosh.Killed;
 import iryrwarosh.Message;
 import iryrwarosh.MessageBus;
 import iryrwarosh.Moved;
+import iryrwarosh.Projectile;
 import iryrwarosh.Tile;
 import iryrwarosh.Weapon;
 import iryrwarosh.World;
@@ -38,11 +39,18 @@ public class PlayScreen implements Screen, Handler {
 		this.world = world;
 		this.player = factory.player(world); 
 		
+		addZoras(20);
 		addGoblins(100);
 		addWeapons();
 		addMonsters(20);
 
 		this.player.equip(world, factory.weapon());
+		world.update();
+	}
+	
+	private void addZoras(int total){
+		for (int i = 0; i < total; i++)
+			factory.zora(world);
 	}
 	
 	private void addMonsters(int perBiome) {
@@ -142,12 +150,25 @@ public class PlayScreen implements Screen, Handler {
 					color, 
 					world.tile(c.position.x, c.position.y).background());
 		}
+
+		for (Projectile p : world.projectiles()){
+			int x = p.position.x - getScrollX();
+			int y = p.position.y - getScrollY();
+			
+			if (x < 0 || x >= screenWidth || y < 0 || y >= screenHeight)
+				continue;
+			
+			terminal.write(p.glyph(), 
+				x, y+1, 
+				p.color(), 
+				world.tile(p.position.x, p.position.y).background());
+		}
 	}
 
 	private void displayMessages(AsciiPanel terminal) {
 		int i = terminal.getHeightInCharacters() - messages.size();
 		for (Message m : messages)
-			terminal.writeCenter(m.text().replace("The player", "You").replace("the player", "you"), i++);
+			terminal.writeCenter(m.text().replace("The player", "You").replace("the player", "you").replace("player", "you"), i++);
 		messages.clear();
 	}
 	

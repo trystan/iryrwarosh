@@ -31,4 +31,8 @@ public class Point {
 		Collections.shuffle(neighbors);
 		return neighbors;
 	}
+
+	public Point plus(int dx, int dy) {
+		return new Point(x+dx, y+dy);
+	}
 }

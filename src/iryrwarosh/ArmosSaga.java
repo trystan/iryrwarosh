@@ -9,16 +9,17 @@ public class ArmosSaga implements Handler {
 	}
 
 	public void handle(BumpedIntoObstical message) {
-		if (message.world.tile(message.x, message.y) == Tile.STATUE)
+		if (message.world.tile(message.x, message.y) == Tile.STATUE 
+				&& message.creature.name().equals("player"))
 			makeArmos(message.world, message.x, message.y);
 	}
 
-	private void makeArmos(final World world, int x, int y) {
+	private void makeArmos(World world, int x, int y) {
 		Tile statue = Tile.STATUE;
 		world.setTile(Tile.WHITE_DIRT, x, y);
 		Creature armos = new Creature("armos", statue.glyph(), statue.color(), 2){
-			public void update(){
-				super.update();
+			public void update(World world){
+				super.update(world);
 				wander(world);
 			}
 		};

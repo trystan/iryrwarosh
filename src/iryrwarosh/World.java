@@ -6,10 +6,14 @@ import java.util.List;
 public class World {
 	private WorldMap map;
 	private Tile[][] tiles;
+	
 	private List<Creature> creatures;
+	public List<Creature> creatures() { return creatures; }
+	
 	private Item[][] items;
 	
-	public List<Creature> creatures() { return creatures; }
+	private List<Projectile> projectiles;
+	public List<Projectile> projectiles() { return projectiles; }
 	
 	public int width() { return tiles.length; }
 	
@@ -20,6 +24,7 @@ public class World {
 		this.map = map;
 		this.creatures = new ArrayList<Creature>();
 		this.items = new Item[tiles.length][tiles[0].length];
+		this.projectiles = new ArrayList<Projectile>();
 	}
 	
 	public WorldMap map(){
@@ -34,7 +39,10 @@ public class World {
  	}
 	
 	public Item item(int x, int y){
-		return items[x][y];
+		if (x < 0 || x >= tiles.length || y < 0 || y >= tiles[0].length)
+			return null;
+		else
+			return items[x][y];
  	}
 	
 	public Creature creature(int x, int y){
@@ -44,7 +52,7 @@ public class World {
 		
 		return null;
 	}
-
+	
     public void update(){
     	updateWater();
     	
@@ -52,8 +60,18 @@ public class World {
     	toUpdate.addAll(creatures);
     	for (Creature c : toUpdate)
     		if (c.hp() > 0)
-    			c.update();
+    			c.update(this);
     	
+    	
+    	List<Projectile> stillFlying = new ArrayList<Projectile>();
+    	for (Projectile p : projectiles){
+    		p.update(this);
+    		if (!p.isDone())
+    			stillFlying.add(p);
+    	}
+    	projectiles = stillFlying;
+    	
+
     	List<Creature> stillAlive = new ArrayList<Creature>();
     	
     	for (Creature c : creatures)
@@ -108,6 +126,9 @@ public class World {
 
             if (item(dest.x, dest.y) == null && tile(dest.x, dest.y).isGround()){
                 items[dest.x][dest.y] = item;
+                Creature here = creature(dest.x, dest.y);
+                if (here != null)
+                	item.onCollide(this, here);
                 return;
             } else {
                 candidates.addAll(dest.neighbors());
@@ -136,5 +157,9 @@ public class World {
 
 	public void setTile(Tile tile, int x, int y) {
 		tiles[x][y] = tile;
+	}
+
+	public void add(Projectile projectile) {
+		projectiles.add(projectile);
 	}
 }
