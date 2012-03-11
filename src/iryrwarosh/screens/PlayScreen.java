@@ -5,6 +5,7 @@ import iryrwarosh.Handler;
 import iryrwarosh.Message;
 import iryrwarosh.MessageBus;
 import iryrwarosh.Tile;
+import iryrwarosh.Weapon;
 import iryrwarosh.World;
 
 import java.awt.Color;
@@ -28,9 +29,15 @@ public class PlayScreen implements Screen, Handler {
 		
 		this.world = world;
 		this.player = new Creature('@', AsciiPanel.brightWhite, 10);
+		
 		world.add(player);
 		
 		addGoblins();
+		addWeapons();
+
+		Weapon sword = new Weapon("Sword", ')', AsciiPanel.white);
+		sword.finishingAttackPercent = 80;
+		this.player.equip(world, sword);
 	}
 	
 	private void addGoblins(){
@@ -45,6 +52,13 @@ public class PlayScreen implements Screen, Handler {
 		}
 	}
 	
+	private void addWeapons(){
+		for (int i = 0; i < 100; i++){
+			Weapon weapon = new Weapon("Sword", ')', AsciiPanel.white);
+			world.add(weapon);
+		}
+	}
+	
 	@Override
 	public void displayOutput(AsciiPanel terminal) {
 		displayHud(terminal);
@@ -55,6 +69,9 @@ public class PlayScreen implements Screen, Handler {
 	private void displayHud(AsciiPanel terminal) {
 		Color bg = Tile.hsv(30, 30, 15);
 		terminal.clear(' ', 0, 0, 80, 1, Tile.hsv(0, 0, 15), bg);
+		
+		terminal.write(player.weapon().name(), 20, 0, player.weapon().color(), bg);
+		
 		terminal.write("evade: " + player.evadePercent(world) + "%", 50, 0, AsciiPanel.yellow, bg);
 		
 		for (int i = 0; i < player.maxHp(); i++)
@@ -65,11 +82,21 @@ public class PlayScreen implements Screen, Handler {
 		for (int x = 0; x < screenWidth; x++)
 		for (int y = 0; y < screenHeight; y++){
 			Tile t = world.tile(x + getScrollX(), y + getScrollY());
-			terminal.write(
-					t.glyph(), 
-					x, y+1, 
-					t.color(),
-					t.background());
+			Weapon w = world.item(x + getScrollX(), y + getScrollY());
+			
+			if (w == null) {
+				terminal.write(
+						t.glyph(), 
+						x, y+1, 
+						t.color(),
+						t.background());
+			} else {
+				terminal.write(
+						w.glyph(), 
+						x, y+1, 
+						w.color(),
+						t.background());
+			}
 		}
 		
 		for (Creature c : world.creatures()){
@@ -120,6 +147,13 @@ public class PlayScreen implements Screen, Handler {
         case KeyEvent.VK_U: moveBy( 1,-1); break;
         case KeyEvent.VK_B: moveBy(-1, 1); break;
         case KeyEvent.VK_N: moveBy( 1, 1); break;
+        case KeyEvent.VK_COMMA:
+        case KeyEvent.VK_G:
+        	Weapon w = world.item(player.position.x, player.position.y);
+        	if (w != null){
+        		player.equip(world, w);
+        	}
+        	break;
 		case KeyEvent.VK_M: return new WorldMapScreen(this, world.map(), player.position);
 		}
 		

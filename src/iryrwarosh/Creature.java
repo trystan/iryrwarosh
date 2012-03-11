@@ -24,6 +24,27 @@ public class Creature {
 	public int defense = 1;
 	public int evade   = 5;
 	
+	public int comboAttackPercent     = 0;
+	public int evadeAttackPercent     = 0;
+	public int circleAttackPercent    = 0;
+	public int finishingAttackPercent = 0;
+	public int distantAttackPercent   = 0;
+	public int counterAttackPercent   = 0;
+
+	private Weapon weapon;
+	public Weapon weapon() { return weapon; }
+	
+	public void equip(World world, Weapon newWeapon) {
+		if (weapon != null) {
+			MessageBus.publish(new DroppedWeapon(this, weapon));
+			world.add(weapon, position.x, position.y);
+		}
+		
+		world.removeItem(position.x, position.y);
+		weapon = newWeapon;
+		MessageBus.publish(new EquipedWeapon(this, weapon));
+	}
+	
 	public int evadePercent(World world){
 		int moveable = 0;
 		
