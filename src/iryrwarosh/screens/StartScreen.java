@@ -1,5 +1,8 @@
 package iryrwarosh.screens;
 
+import iryrwarosh.Handler;
+import iryrwarosh.Message;
+import iryrwarosh.MessageBus;
 import iryrwarosh.World;
 import iryrwarosh.Worldgen;
 
@@ -22,6 +25,15 @@ public class StartScreen implements Screen {
 	}
 	
 	private PlayScreen newGame(){
+		MessageBus.subscribe(new Handler(){
+
+			@Override
+			public void handle(Message message) {
+				System.out.println(message.text());
+			}
+			
+		});
+		
 		World world = new Worldgen(48 / 3, 24 / 3).build();
 		return new PlayScreen(world);
 	}

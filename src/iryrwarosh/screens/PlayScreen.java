@@ -18,7 +18,7 @@ public class PlayScreen implements Screen {
 	
 	public PlayScreen(World world){
 		this.world = world;
-		this.player = new Creature('@', AsciiPanel.brightWhite, 6);
+		this.player = new Creature('@', AsciiPanel.brightWhite, 10);
 		world.add(player);
 		
 		addGoblins();
@@ -40,11 +40,12 @@ public class PlayScreen implements Screen {
 	public void displayOutput(AsciiPanel terminal) {
 		displayTiles(terminal);
 		
-		Color bg = Tile.hsv(30, 15, 15);
+		Color bg = Tile.hsv(30, 30, 15);
 		terminal.clear(' ', 0, 0, 80, 1, Tile.hsv(0, 0, 15), bg);
-		for (int i = 0; i < player.maxHp(); i++){
-			terminal.write((char)3, 70+i, 0, i < player.hp() ? AsciiPanel.red : AsciiPanel.brightBlack, bg);
-		}
+		terminal.write("evade: " + player.evadePercent(world) + "%", 50, 0, AsciiPanel.yellow, bg);
+		
+		for (int i = 0; i < player.maxHp(); i++)
+			terminal.write((char)3, 69+i, 0, i < player.hp() ? AsciiPanel.red : AsciiPanel.brightBlack, bg);
 	}
 	
 	private void displayTiles(AsciiPanel terminal){
@@ -53,8 +54,7 @@ public class PlayScreen implements Screen {
 			Tile t = world.tile(x + getScrollX(), y + getScrollY());
 			terminal.write(
 					t.glyph(), 
-					x, 
-					y+1, 
+					x, y+1, 
 					t.color(),
 					t.background());
 		}
