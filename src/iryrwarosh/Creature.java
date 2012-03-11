@@ -40,6 +40,15 @@ public class Creature {
 		return traits.contains(trait);
 	}
 	
+	public String describeTraits(){
+		String text = "";
+		
+		for (CreatureTrait trait : traits)
+			text += ", " + trait.name();
+		
+		return text.substring(2);
+	}
+	
 	public int attack  = 2;
 	public int defense = 1;
 	public int evade   = 5;

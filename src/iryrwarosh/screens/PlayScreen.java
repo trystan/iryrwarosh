@@ -159,6 +159,7 @@ public class PlayScreen implements Screen, Handler {
         	}
         	break;
 		case KeyEvent.VK_M: return new WorldMapScreen(this, world.map(), player.position);
+		case KeyEvent.VK_X: return new LookAtScreen(this, world, getScrollX(), getScrollY());
 		}
 		
 		world.update();
