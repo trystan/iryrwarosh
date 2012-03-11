@@ -181,8 +181,10 @@ public class Creature {
 		other.hp -= Math.max(1, attack - other.defense);
 		
 		if (!isSpecial && other.hasTrait(CreatureTrait.SPIKED)){
-			this.hp--;
-			MessageBus.publish(new HitSpikes(world, this, other));
+			if (weapon == null || !weapon.isImuneToSpikes){
+				this.hp--;
+				MessageBus.publish(new HitSpikes(world, this, other));
+			}
 		}
 		
 		if (other.hp < 1)

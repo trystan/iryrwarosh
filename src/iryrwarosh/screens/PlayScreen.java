@@ -4,6 +4,7 @@ import iryrwarosh.Creature;
 import iryrwarosh.Factory;
 import iryrwarosh.Handler;
 import iryrwarosh.Item;
+import iryrwarosh.Killed;
 import iryrwarosh.Message;
 import iryrwarosh.MessageBus;
 import iryrwarosh.Moved;
@@ -21,6 +22,7 @@ import asciiPanel.AsciiPanel;
 public class PlayScreen implements Screen, Handler {
 	private World world;
 	private Creature player;
+	private Factory factory;
 	
 	private int screenWidth = 80;
 	private int screenHeight = 23;
@@ -30,32 +32,32 @@ public class PlayScreen implements Screen, Handler {
 	public PlayScreen(World world){
 		MessageBus.subscribe(this);
 		
-		Factory factory = new Factory();
+		factory = new Factory();
 		
 		this.world = world;
 		this.player = factory.player(world); 
 		
-		addGoblins(factory);
-		addWeapons(factory);
-		addMonsters(factory);
+		addGoblins(100);
+		addWeapons();
+		addMonsters(20);
 
 		this.player.equip(world, factory.weapon());
 	}
 	
-	private void addMonsters(Factory factory) {
+	private void addMonsters(int perBiome) {
 		for (Tile biome : new Tile[]{ Tile.GREEN_TREE1, Tile.PINE_TREE1, Tile.BROWN_TREE1, Tile.BROWN_TREE4, Tile.WHITE_TREE1, 
 				Tile.GREEN_ROCK, Tile.BROWN_ROCK, Tile.WHITE_ROCK, Tile.DESERT_SAND1, Tile.WATER1 }){
-			for (int i = 0; i < 20; i++)
+			for (int i = 0; i < perBiome; i++)
 				factory.monster(world, biome);
 		}
 	}
 
-	private void addGoblins(Factory factory){
-		for (int i = 0; i < 100; i++)
+	private void addGoblins(int total){
+		for (int i = 0; i < total; i++)
 			factory.goblin(world);
 	}
 	
-	private void addWeapons(Factory factory){
+	private void addWeapons(){
 		for (int i = 0; i < 20; i++)
 			world.add(factory.weapon());
 	}
@@ -180,5 +182,19 @@ public class PlayScreen implements Screen, Handler {
 	public void handle(Message message) {
 		if (message.involves(player) && !Moved.class.isAssignableFrom(message.getClass()))
 			messages.add(message);
+		
+		if (Killed.class.isAssignableFrom(message.getClass()))
+			addRandomBadGuy();
+	}
+
+	private void addRandomBadGuy() {
+		if (Math.random() < 0.25){
+			factory.goblin(world);
+		} else {
+			Tile[] biomes = { Tile.GREEN_TREE1, Tile.PINE_TREE1, Tile.BROWN_TREE1, Tile.BROWN_TREE4, Tile.WHITE_TREE1, 
+				Tile.GREEN_ROCK, Tile.BROWN_ROCK, Tile.WHITE_ROCK, Tile.DESERT_SAND1, Tile.WATER1 };
+			Tile biome = biomes[(int)(Math.random() * biomes.length)];
+			factory.monster(world, biome);
+		}
 	}
 }

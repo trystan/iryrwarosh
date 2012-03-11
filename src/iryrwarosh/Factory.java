@@ -43,31 +43,33 @@ public class Factory {
 	
 	public Weapon knife(){
 		Weapon w = new Weapon("Knife", ')', AsciiPanel.white);
-		w.evadeAttackPercent = 66;
+		w.evadeAttackPercent = 75;
 		return w;
 	}
 	
 	public Weapon club(){
 		Weapon w = new Weapon("Club", ')', AsciiPanel.white);
-		w.circleAttackPercent = 50;
+		w.circleAttackPercent = 75;
 		return w;
 	}
 	
 	public Weapon sword(){
 		Weapon w = new Weapon("Sword", ')', AsciiPanel.white);
-		w.finishingAttackPercent = 80;
+		w.finishingAttackPercent = 75;
 		return w;
 	}
 	
 	public Weapon spear(){
 		Weapon w = new Weapon("Spear", ')', AsciiPanel.white);
-		w.distantAttackPercent = 75;
+		w.distantAttackPercent = 25;
+		w.isImuneToSpikes = true;
 		return w;
 	}
 	
 	public Weapon staff(){
 		Weapon w = new Weapon("Staff", ')', AsciiPanel.white);
-		w.counterAttackPercent = 75;
+		w.counterAttackPercent = 25;
+		w.isImuneToSpikes = true;
 		return w;
 	}
 

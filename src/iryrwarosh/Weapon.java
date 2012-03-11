@@ -13,4 +13,6 @@ public class Weapon extends Item {
 	public int finishingAttackPercent = 0;
 	public int distantAttackPercent   = 0;
 	public int counterAttackPercent   = 0;
+	
+	public boolean isImuneToSpikes    = false;
 }

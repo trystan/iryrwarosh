@@ -81,7 +81,7 @@ public class World {
 			int x = (int)(Math.random() * tiles.length);
 			int y = (int)(Math.random() * tiles[0].length);
 			
-			if (creature.canEnter(tile(x,y)))
+			if (creature.canEnter(tile(x,y)) && creature(x,y) == null)
 				creature.position = new Point(x, y);
 		}
 		creatures.add(creature);
@@ -92,7 +92,7 @@ public class World {
 			int x = sx * 19 + (int)(Math.random() * 19);
 			int y = sy *  9 + (int)(Math.random() * 9);
 			
-			if (creature.canEnter(tile(x,y)))
+			if (creature.canEnter(tile(x,y)) && creature(x,y) == null)
 				creature.position = new Point(x, y);
 		}
 		creatures.add(creature);
