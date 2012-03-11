@@ -12,8 +12,8 @@ import asciiPanel.AsciiPanel;
 public class LookAtScreen implements Screen {
 	private Screen previous;
 	private World world;
-	private int lookX;
-	private int lookY;
+	private int lookX = 40;
+	private int lookY = 11;
 	private int startX;
 	private int startY;
 	

@@ -138,20 +138,23 @@ public class Creature {
 	}
 
 	public void moveBy(World world, int x, int y) {
-		if (x==0 && y==0 || !canEnter(world.tile(position.x+x, position.y+y)))
+		if (x==0 && y==0)
 			return;
 		
 		Creature other = world.creature(position.x+x, position.y+y);
 		
 		if (other == null) {
-			position.x += x;
-			position.y += y;
-			MessageBus.publish(new Moved(world, this));
+			if (canEnter(world.tile(position.x+x, position.y+y))){
+				position.x += x;
+				position.y += y;
+				MessageBus.publish(new Moved(world, this));
+			}
 		} else if (isFriend(other)) {
 			return;
-		} else if (other.evadeCheck(world)){
+		} else if (hasDoubleAttackedThisTurn == false 
+				&& other.evadeCheck(world)){
 			other.evade(world, this);
-		} else {
+		} else if (hasDoubleAttackedThisTurn == false){
 			attack(world, other);
 			
 			if (other.hp < 1)
@@ -165,22 +168,10 @@ public class Creature {
 	
 	private boolean hasDoubleAttackedThisTurn = false;
 	public void attack(World world, Creature other){
-		attack(world, other, 1);
-	}
-	
-	public void attack(World world, Creature other, int multiplier){
 		if (other.hp < 1)
 			return;
 		
 		other.hp -= Math.max(1, attack - other.defense);
-		if (multiplier == 1)
-			MessageBus.publish(new Attacked(world, this, other));
-		
-		if (hasTrait(CreatureTrait.POISONOUS)) {
-			other.poisonCounter += 10;
-			if (multiplier == 1)
-				MessageBus.publish(new Poisoned(world, this, other));
-		}
 		
 		if (other.hasTrait(CreatureTrait.SPIKED)){
 			this.hp--;
@@ -189,6 +180,13 @@ public class Creature {
 		
 		if (other.hp < 1)
 			MessageBus.publish(new Killed(world, this, other));
+		else
+			MessageBus.publish(new Attacked(world, this, other));
+
+		if (hasTrait(CreatureTrait.POISONOUS) && other.hp > 0) {
+			other.poisonCounter += 10;
+			MessageBus.publish(new Poisoned(world, this, other));
+		}
 		
 		if (hasTrait(CreatureTrait.DOUBLE_ATTACK)
 				&& !hasDoubleAttackedThisTurn
@@ -213,7 +211,7 @@ public class Creature {
 		
 		Collections.shuffle(evadeTo);
 		position = evadeTo.get(0);
-		MessageBus.publish(new Evaded(world, this, other));
+		MessageBus.publish(new Evaded(world, other, this));
 	}
 	
 	public void update(){
@@ -229,5 +227,13 @@ public class Creature {
 			if (hp < maxHp)
 				hp++;
 		}
+	}
+
+	public void finishingKill(World world, Creature other) {
+		if (other.hp < 1)
+			return;
+		
+		other.hp = -1;
+		MessageBus.publish(new Killed(world, this, other));
 	}
 }
