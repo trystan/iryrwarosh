@@ -2,21 +2,9 @@ package iryrwarosh;
 
 import java.awt.Color;
 
-public class Weapon {
-
-	private String name;
-	public String name() { return name; }
-
-	private char glyph;
-	public char glyph() { return glyph; }
-	
-	private Color color;
-	public Color color(){ return color; }
-	
+public class Weapon extends Item {
 	public Weapon(String name, char glyph, Color color){
-		this.name = name;
-		this.glyph = glyph;
-		this.color = color;
+		super(name, glyph, color);
 	}
 	
 	public int comboAttackPercent     = 0;

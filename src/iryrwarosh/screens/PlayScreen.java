@@ -3,6 +3,7 @@ package iryrwarosh.screens;
 import iryrwarosh.Creature;
 import iryrwarosh.Factory;
 import iryrwarosh.Handler;
+import iryrwarosh.Item;
 import iryrwarosh.Message;
 import iryrwarosh.MessageBus;
 import iryrwarosh.Moved;
@@ -74,9 +75,9 @@ public class PlayScreen implements Screen, Handler {
 		
 		terminal.write("evade: " + player.evadePercent(world) + "%", 50, 0, AsciiPanel.yellow, bg);
 		
-		Weapon w = world.item(player.position.x, player.position.y);
-		if (w != null)
-			terminal.write("(here: " + w.name() + ")", 34, 0, w.color(), bg);
+		Item item = world.item(player.position.x, player.position.y);
+		if (item != null)
+			terminal.write("(here: " + item.name() + ")", 34, 0, item.color(), bg);
 		
 		Color heartColor = player.isPoisoned() ? AsciiPanel.green : AsciiPanel.red;
 		for (int i = 0; i < player.maxHp(); i++)
@@ -87,9 +88,9 @@ public class PlayScreen implements Screen, Handler {
 		for (int x = 0; x < screenWidth; x++)
 		for (int y = 0; y < screenHeight; y++){
 			Tile t = world.tile(x + getScrollX(), y + getScrollY());
-			Weapon w = world.item(x + getScrollX(), y + getScrollY());
+			Item item = world.item(x + getScrollX(), y + getScrollY());
 			
-			if (w == null) {
+			if (item == null) {
 				terminal.write(
 						t.glyph(), 
 						x, y+1, 
@@ -97,9 +98,9 @@ public class PlayScreen implements Screen, Handler {
 						t.background());
 			} else {
 				terminal.write(
-						w.glyph(), 
+						item.glyph(), 
 						x, y+1, 
-						w.color(),
+						item.color(),
 						t.background());
 			}
 		}
@@ -154,9 +155,9 @@ public class PlayScreen implements Screen, Handler {
         case KeyEvent.VK_N: moveBy( 1, 1); break;
         case KeyEvent.VK_COMMA:
         case KeyEvent.VK_G:
-        	Weapon w = world.item(player.position.x, player.position.y);
-        	if (w != null){
-        		player.equip(world, w);
+        	Item item = world.item(player.position.x, player.position.y);
+        	if (item != null && Weapon.class.isInstance(item)){
+        		player.equip(world, (Weapon)item);
         	}
         	break;
 		case KeyEvent.VK_M: return new WorldMapScreen(this, world.map(), player.position);

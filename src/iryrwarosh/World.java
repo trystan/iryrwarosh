@@ -7,7 +7,7 @@ public class World {
 	private WorldMap map;
 	private Tile[][] tiles;
 	private List<Creature> creatures;
-	private Weapon[][] items;
+	private Item[][] items;
 	
 	public List<Creature> creatures() { return creatures; }
 	
@@ -19,7 +19,7 @@ public class World {
 		this.tiles = tiles;
 		this.map = map;
 		this.creatures = new ArrayList<Creature>();
-		this.items = new Weapon[tiles.length][tiles[0].length];
+		this.items = new Item[tiles.length][tiles[0].length];
 	}
 	
 	public WorldMap map(){
@@ -33,7 +33,7 @@ public class World {
 			return tiles[x][y];
  	}
 	
-	public Weapon item(int x, int y){
+	public Item item(int x, int y){
 		return items[x][y];
  	}
 	
@@ -96,7 +96,7 @@ public class World {
 		creatures.add(creature);
 	}
 	
-	public void add(Weapon weapon, int x, int y){
+	public void add(Item item, int x, int y){
 	    ArrayList<Point> candidates = new ArrayList<Point>();
         candidates.add(new Point(x,y));
 
@@ -105,7 +105,7 @@ public class World {
             Point dest = candidates.remove(0);
 
             if (item(dest.x, dest.y) == null && tile(dest.x, dest.y).isGround()){
-                items[dest.x][dest.y] = weapon;
+                items[dest.x][dest.y] = item;
                 return;
             } else {
                 candidates.addAll(dest.neighbors());
@@ -113,7 +113,7 @@ public class World {
         }
     }
 
-	public void add(Weapon weapon) {
+	public void add(Item item) {
 		int x = (int)(Math.random() * tiles.length);
 		int y = (int)(Math.random() * tiles[0].length);
 		
@@ -121,7 +121,7 @@ public class World {
 			x = (int)(Math.random() * tiles.length);
 			y = (int)(Math.random() * tiles[0].length);
 		}
-		items[x][y] = weapon;
+		items[x][y] = item;
 	}
 
 	public void removeItem(int x, int y) {

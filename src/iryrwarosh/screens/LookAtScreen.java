@@ -1,8 +1,8 @@
 package iryrwarosh.screens;
 
 import iryrwarosh.Creature;
+import iryrwarosh.Item;
 import iryrwarosh.Tile;
-import iryrwarosh.Weapon;
 import iryrwarosh.World;
 
 import java.awt.event.KeyEvent;
@@ -31,15 +31,15 @@ public class LookAtScreen implements Screen {
 		terminal.write('X', lookX, lookY+1, AsciiPanel.magenta, world.tile(startX + lookX, startY + lookY).background());
 		
 		Creature creature = world.creature(startX + lookX, startY + lookY);
-		Weapon weapon = world.item(startX + lookX, startY + lookY);
+		Item item = world.item(startX + lookX, startY + lookY);
 		Tile tile = world.tile(startX + lookX, startY + lookY);
 		
 		String text = null;
 		
 		if (creature != null)
 			text = creature.describe();
-		else if (weapon != null)
-			text = weapon.name();
+		else if (item != null)
+			text = item.name();
 		else
 			text = tile.name();
 

@@ -236,4 +236,8 @@ public class Creature {
 		other.hp = -1;
 		MessageBus.publish(new Killed(world, this, other));
 	}
+
+	public void heal(int i) {
+		hp = Math.min(hp + i, maxHp);
+	}
 }
