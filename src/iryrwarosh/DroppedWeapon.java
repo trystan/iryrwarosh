@@ -5,7 +5,7 @@ public class DroppedWeapon extends Message {
 	public Weapon weapon;
 	
 	public DroppedWeapon(World world, Creature creature, Weapon weapon){
-		super(world, creature.glyph() + " dropped " + weapon.name());
+		super(world, "The " + creature.name() + " dropped " + weapon.name());
 		this.creature = creature;
 		this.weapon = weapon;
 	}

@@ -2,6 +2,8 @@ package iryrwarosh;
 
 import java.awt.Color;
 
+import asciiPanel.AsciiPanel;
+
 public enum Tile {
 	GREEN_DIRT  (250, hsv(110, 50, 33), hsv(110, 50,  5)),
 	BROWN_DIRT  (250, hsv( 45, 50, 33), hsv( 45, 50,  5)),
@@ -9,9 +11,9 @@ public enum Tile {
 	GREEN_TREE1 (  6, hsv(100, 40, 55), hsv(110, 50,  5)),
 	GREEN_TREE2 (  6, hsv(115, 40, 50), hsv(110, 50,  5)),
 	GREEN_TREE3 (  6, hsv(130, 40, 45), hsv(110, 50,  5)),
-	GREEN_TREE4 ( 30, hsv(100, 55, 40), hsv(110, 50,  5)),
-	GREEN_TREE5 ( 30, hsv(110, 50, 35), hsv(110, 50,  5)),
-	GREEN_TREE6 ( 30, hsv(120, 45, 30), hsv(110, 50,  5)),
+	PINE_TREE1  ( 30, hsv(100, 55, 40), hsv(110, 50,  5)),
+	PINE_TREE2  ( 30, hsv(110, 50, 35), hsv(110, 50,  5)),
+	PINE_TREE3  ( 30, hsv(120, 45, 30), hsv(110, 50,  5)),
 	BROWN_TREE1 (  6, hsv( 15, 55, 50), hsv( 30, 50,  5)),
 	BROWN_TREE2 (  6, hsv( 20, 55, 50), hsv( 30, 50,  5)),
 	BROWN_TREE3 (  6, hsv( 25, 55, 50), hsv( 30, 50,  5)),
@@ -31,7 +33,8 @@ public enum Tile {
 	WATER2      (247, hsv(210, 66, 75), hsv(210, 80, 20)),
 	WATER3      (247, hsv(210, 69, 70), hsv(210, 80, 19)),
     BRIDGE      (240, hsv( 30, 66, 66), hsv( 30, 90, 20)),
-    STATUE      ('&', hsv( 20, 33, 90), hsv(  0,  0,  5)),;
+    STATUE      ('&', hsv( 20, 33, 90), hsv(  0,  0,  5)),
+    OUT_OF_BOUNDS ('x', AsciiPanel.brightBlack, AsciiPanel.black),;
 
 	public static Color hsv(int h, int s, int v){
 		return Color.getHSBColor(h / 360f, s / 100f, v / 100f);
@@ -46,10 +49,10 @@ public enum Tile {
 		case GREEN_TREE3:
 			varieties = new Tile[]{ GREEN_TREE1, GREEN_TREE2, GREEN_TREE3 };
 			break;
-		case GREEN_TREE4:
-		case GREEN_TREE5:
-		case GREEN_TREE6:
-			varieties = new Tile[]{ GREEN_TREE4, GREEN_TREE5, GREEN_TREE6 };
+		case PINE_TREE1:
+		case PINE_TREE2:
+		case PINE_TREE3:
+			varieties = new Tile[]{ PINE_TREE1, PINE_TREE2, PINE_TREE3 };
 			break;
 		case BROWN_TREE1:
 		case BROWN_TREE2:
@@ -107,5 +110,13 @@ public enum Tile {
 		return this == GREEN_DIRT || this == BROWN_DIRT || this == WHITE_DIRT 
 		  || this == DESERT_SAND1 || this == DESERT_SAND2 || this == DESERT_SAND3
 		  || this == BRIDGE;
+	}
+
+	public boolean isSwimmable() {
+		return isWater() || this == BRIDGE;
+	}
+	
+	public boolean isFlyable(){
+		return this != OUT_OF_BOUNDS;
 	}
 }

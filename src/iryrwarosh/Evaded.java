@@ -5,7 +5,7 @@ public class Evaded extends Message {
 	public Creature evader;
 	
 	public Evaded(World world, Creature attacker, Creature evader){
-		super(world, evader.glyph() + " evaded " + attacker.glyph());
+		super(world, "The " + evader.name() + " evaded the " + attacker.name());
 		this.attacker = attacker;
 		this.evader = evader;
 	}

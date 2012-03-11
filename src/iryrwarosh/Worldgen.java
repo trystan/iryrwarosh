@@ -153,9 +153,9 @@ public class Worldgen {
 		Tile[][] themes = new Tile[cells.length][cells[0].length];
 		for (Tile theme : new Tile[]{ 
 				Tile.BROWN_ROCK, Tile.BROWN_TREE1, Tile.BROWN_TREE4, 
-				Tile.GREEN_ROCK, Tile.GREEN_TREE1, Tile.GREEN_TREE4,
+				Tile.GREEN_ROCK, Tile.GREEN_TREE1, Tile.PINE_TREE1,
 				Tile.BROWN_ROCK, Tile.BROWN_TREE1, Tile.BROWN_TREE4, 
-				Tile.GREEN_ROCK, Tile.GREEN_TREE1, Tile.GREEN_TREE4, 
+				Tile.GREEN_ROCK, Tile.GREEN_TREE1, Tile.PINE_TREE1, 
 				Tile.WHITE_ROCK, Tile.WHITE_TREE1 }){
 		
 			while (true){
@@ -248,7 +248,7 @@ public class Worldgen {
 				break;
 			case GREEN_ROCK:
 			case GREEN_TREE1:
-			case GREEN_TREE4:
+			case PINE_TREE1:
 				cells[x][y].defaultGround = Tile.GREEN_DIRT;
 				break;
 			case WHITE_ROCK:
@@ -1134,7 +1134,7 @@ public class Worldgen {
 		Tile[] tiles = { Tile.BROWN_ROCK, Tile.BROWN_TREE1, 
 						 Tile.BROWN_ROCK, Tile.BROWN_TREE4, 
 						 Tile.GREEN_ROCK, Tile.GREEN_TREE1, 
-						 Tile.GREEN_ROCK, Tile.GREEN_TREE4, 
+						 Tile.GREEN_ROCK, Tile.PINE_TREE1, 
 						 Tile.WHITE_ROCK, Tile.WHITE_TREE1 };
 		
 		return tiles[(int)(Math.random() * tiles.length)];

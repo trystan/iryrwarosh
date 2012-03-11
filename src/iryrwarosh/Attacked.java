@@ -5,7 +5,7 @@ public class Attacked extends Message {
 	public Creature attacked;
 	
 	public Attacked(World world, Creature attacker, Creature attacked){
-		super(world, attacker.glyph() + " attacked " + attacked.glyph());
+		super(world, "The " + attacker.name() + " attacked the " + attacked.name());
 		this.attacker = attacker;
 		this.attacked = attacked;
 	}

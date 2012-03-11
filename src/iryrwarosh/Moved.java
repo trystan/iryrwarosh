@@ -4,7 +4,7 @@ public class Moved extends Message {
 	public Creature creature;
 	
 	public Moved(World world, Creature creature){
-		super(world, creature.glyph() + " moved");
+		super(world, "The " + creature.name() + " moved");
 		this.creature = creature;
 	}
 	

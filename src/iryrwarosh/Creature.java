@@ -8,6 +8,9 @@ import java.util.List;
 public class Creature {
 	public Point position;
 
+	private String name;
+	public String name() { return name; }
+	
 	private char glyph;
 	public char glyph() { return glyph; }
 	
@@ -38,6 +41,10 @@ public class Creature {
 	public int distantAttackPercent() { return distantAttackPercent + (weapon == null ? 0 : weapon.distantAttackPercent); }
 	public int counterAttackPercent() { return counterAttackPercent + (weapon == null ? 0 : weapon.counterAttackPercent); }
 	
+	public boolean canWalk = true;
+	public boolean canSwim = false;
+	public boolean canFly = false;
+	
 	private Weapon weapon;
 	public Weapon weapon() { return weapon; }
 	
@@ -51,6 +58,9 @@ public class Creature {
 	}
 
 	private void dropWeapon(World world) {
+		if (weapon == null)
+			return;
+		
 		MessageBus.publish(new DroppedWeapon(world, this, weapon));
 		world.add(weapon, position.x, position.y);
 	}
@@ -75,15 +85,29 @@ public class Creature {
 		return Math.random() * 100 < evadePercent(world);
 	}
 	
-	public Creature(char glyph, Color color, int maxHp){
+	public Creature(String name, char glyph, Color color, int maxHp){
+		this.name = name;
 		this.glyph = glyph;
 		this.color = color;
 		this.maxHp = maxHp;
 		this.hp = maxHp;
 	}
+	
+	public boolean canEnter(Tile tile){
+		if (canWalk && tile.isGround())
+			return true;
+		
+		if (canSwim && tile.isSwimmable())
+			return true;
+		
+		if (canFly && tile.isFlyable())
+			return true;
+		
+		return false;
+	}
 
 	public void moveBy(World world, int x, int y) {
-		if (x==0 && y==0 || !world.tile(position.x+x, position.y+y).isGround())
+		if (x==0 && y==0 || !canEnter(world.tile(position.x+x, position.y+y)))
 			return;
 		
 		Creature other = world.creature(position.x+x, position.y+y);

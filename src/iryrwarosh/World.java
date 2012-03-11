@@ -27,7 +27,10 @@ public class World {
 	}
 	
 	public Tile tile(int x, int y){
-		return tiles[x][y];
+		if (x < 0 || x >= tiles.length || y < 0 || y >= tiles[0].length)
+			return Tile.OUT_OF_BOUNDS;
+		else
+			return tiles[x][y];
  	}
 	
 	public Weapon item(int x, int y){
@@ -76,7 +79,18 @@ public class World {
 			int x = (int)(Math.random() * tiles.length);
 			int y = (int)(Math.random() * tiles[0].length);
 			
-			if (tile(x,y).isGround())
+			if (creature.canEnter(tile(x,y)))
+				creature.position = new Point(x, y);
+		}
+		creatures.add(creature);
+	}
+
+	public void addToScreen(Creature creature, int sx, int sy) {
+		while (creature.position == null){
+			int x = sx * 19 + (int)(Math.random() * 19);
+			int y = sy *  9 + (int)(Math.random() * 9);
+			
+			if (creature.canEnter(tile(x,y)))
 				creature.position = new Point(x, y);
 		}
 		creatures.add(creature);
@@ -112,5 +126,9 @@ public class World {
 
 	public void removeItem(int x, int y) {
 		items[x][y] = null;
+	}
+	
+	public List<Point> screensOfType(Tile biome){
+		return map.scrensOfType(biome);
 	}
 }

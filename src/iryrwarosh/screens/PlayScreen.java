@@ -32,27 +32,28 @@ public class PlayScreen implements Screen, Handler {
 		Factory factory = new Factory();
 		
 		this.world = world;
-		this.player = new Creature('@', AsciiPanel.brightWhite, 10);
+		this.player = new Creature("player", '@', AsciiPanel.brightWhite, 10);
 		
 		world.add(player);
 		
 		addGoblins(factory);
 		addWeapons(factory);
+		addMonsters(factory);
 
 		this.player.equip(world, factory.weapon());
 	}
 	
-	private void addGoblins(Factory factory){
-		for (int i = 0; i < 100; i++){
-			int hue = 30 + (int)(Math.random() * 90);
-			Creature goblin = new Creature('g', Tile.hsv(hue, 50, 50), 2){
-				public void update(){
-					moveBy(world, (int)(Math.random() * 3) - 1, (int)(Math.random() * 3) - 1);
-				}
-			};
-			world.add(goblin);
-			goblin.equip(world, factory.weapon());
+	private void addMonsters(Factory factory) {
+		for (Tile biome : new Tile[]{ Tile.GREEN_TREE1, Tile.PINE_TREE1, Tile.BROWN_TREE1, Tile.BROWN_TREE4, Tile.WHITE_TREE1, 
+				Tile.GREEN_ROCK, Tile.BROWN_ROCK, Tile.WHITE_ROCK, Tile.DESERT_SAND1, Tile.WATER1 }){
+			for (int i = 0; i < 20; i++)
+				factory.monster(world, biome);
 		}
+	}
+
+	private void addGoblins(Factory factory){
+		for (int i = 0; i < 100; i++)
+			factory.goblin(world);
 	}
 	
 	private void addWeapons(Factory factory){
@@ -121,7 +122,7 @@ public class PlayScreen implements Screen, Handler {
 	private void displayMessages(AsciiPanel terminal) {
 		int i = terminal.getHeightInCharacters() - messages.size();
 		for (Message m : messages)
-			terminal.writeCenter(m.text(), i++);
+			terminal.writeCenter(m.text().replace("The player", "You").replace("the player", "you"), i++);
 		messages.clear();
 	}
 	
