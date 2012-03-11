@@ -99,6 +99,7 @@ public class Factory {
 		return goblin;
 	}
 	
+	private int monstersCreated = 0;
 	public Creature monster(final World world, Tile biome){
 		Color color = null;
 		List<Point> candidates = null;
@@ -166,7 +167,9 @@ public class Factory {
 			break;
 		}
 		
-		Creature monster = new Creature(name, 'm', color, 3){
+		boolean isBigMonster = Math.random() * 1000 < monstersCreated;
+		
+		Creature monster = new Creature(name, isBigMonster ? 'M' : 'm', color, 3){
 			public void update(){
 				super.update();
 				wander(world);
@@ -182,10 +185,21 @@ public class Factory {
 		for (CreatureTrait trait : monsterTraits.get(biome))
 			monster.addTrait(trait);
 		
+		if (isBigMonster){
+			monster.addTrait(CreatureTrait.EXTRA_HP);
+			
+			CreatureTrait trait = CreatureTrait.getRandom();
+			while (monster.hasTrait(trait))
+				trait = CreatureTrait.getRandom();
+			monster.addTrait(trait);
+		}
+		
 		if (candidate == null)
 			world.add(monster);
 		else
 			world.addToScreen(monster, candidate.x, candidate.y);
+		
+		monstersCreated++;
 		
 		return monster;
 	}
