@@ -1,22 +1,31 @@
 package iryrwarosh.screens;
 
 import iryrwarosh.Creature;
+import iryrwarosh.Handler;
+import iryrwarosh.Message;
+import iryrwarosh.MessageBus;
 import iryrwarosh.Tile;
 import iryrwarosh.World;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import asciiPanel.AsciiPanel;
 
-public class PlayScreen implements Screen {
+public class PlayScreen implements Screen, Handler {
 	private World world;
 	private Creature player;
 	
 	private int screenWidth = 80;
 	private int screenHeight = 23;
 	
+	private List<Message> messages = new ArrayList<Message>();
+	
 	public PlayScreen(World world){
+		MessageBus.subscribe(this);
+		
 		this.world = world;
 		this.player = new Creature('@', AsciiPanel.brightWhite, 10);
 		world.add(player);
@@ -38,8 +47,12 @@ public class PlayScreen implements Screen {
 	
 	@Override
 	public void displayOutput(AsciiPanel terminal) {
+		displayHud(terminal);
 		displayTiles(terminal);
-		
+		displayMessages(terminal);
+	}
+
+	private void displayHud(AsciiPanel terminal) {
 		Color bg = Tile.hsv(30, 30, 15);
 		terminal.clear(' ', 0, 0, 80, 1, Tile.hsv(0, 0, 15), bg);
 		terminal.write("evade: " + player.evadePercent(world) + "%", 50, 0, AsciiPanel.yellow, bg);
@@ -71,6 +84,13 @@ public class PlayScreen implements Screen {
 					c.color(), 
 					world.tile(c.position.x, c.position.y).background());
 		}
+	}
+
+	private void displayMessages(AsciiPanel terminal) {
+		int i = terminal.getHeightInCharacters() - messages.size();
+		for (Message m : messages)
+			terminal.writeCenter(m.text(), i++);
+		messages.clear();
 	}
 	
 	public int getScrollX() {
@@ -105,9 +125,16 @@ public class PlayScreen implements Screen {
 		
 		world.update();
 		
-		if (player.hp() < 1)
+		if (player.hp() < 1) {
+			MessageBus.unsubscribe(this);
 			return new DeadScreen();
+		}
 		
 		return this;
+	}
+
+	@Override
+	public void handle(Message message) {
+		messages.add(message);
 	}
 }

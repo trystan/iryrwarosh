@@ -15,4 +15,8 @@ public class MessageBus {
 	public static void subscribe(Handler handler){
 		handlers.add(handler);
 	}
+	
+	public static void unsubscribe(Handler handler){
+		handlers.remove(handler);
+	}
 }
