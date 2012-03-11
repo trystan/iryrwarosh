@@ -1,6 +1,7 @@
 package iryrwarosh.screens;
 
 import iryrwarosh.Creature;
+import iryrwarosh.CreatureTrait;
 import iryrwarosh.Item;
 import iryrwarosh.Tile;
 import iryrwarosh.World;
@@ -12,14 +13,16 @@ import asciiPanel.AsciiPanel;
 public class LookAtScreen implements Screen {
 	private Screen previous;
 	private World world;
+	private Creature player;
 	private int lookX = 40;
 	private int lookY = 11;
 	private int startX;
 	private int startY;
 	
-	public LookAtScreen(Screen previous, World world, int startX, int startY){
+	public LookAtScreen(Screen previous, World world, Creature player, int startX, int startY){
 		this.previous = previous;
 		this.world = world;
+		this.player = player;
 		this.startX = startX;
 		this.startY = startY;
 	}
@@ -36,7 +39,8 @@ public class LookAtScreen implements Screen {
 		
 		String text = null;
 		
-		if (creature != null)
+		if (creature != null 
+				&& !(creature.hasTrait(CreatureTrait.CAMOUFLAGED) && creature.position.distanceTo(player.position) > 5))
 			text = creature.describe();
 		else if (item != null)
 			text = item.name();

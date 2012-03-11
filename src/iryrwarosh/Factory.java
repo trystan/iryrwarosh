@@ -22,6 +22,9 @@ public class Factory {
 			
 			List<CreatureTrait> traits = new ArrayList<CreatureTrait>();
 			
+			if (Math.random() < 0.05)
+				traits.add(CreatureTrait.FLYER);
+			
 			while (traits.size() < 3){
 				CreatureTrait trait = CreatureTrait.getRandom();
 				if (!traits.contains(trait))
@@ -139,19 +142,19 @@ public class Factory {
 			break;
 		case GREEN_ROCK:
 			name = "hill monster";
-			color = biome.color().brighter();
+			color = biome.background().brighter();
 			candidates = world.screensOfType(biome);
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case BROWN_ROCK:
 			name = "mountan monster";
-			color = biome.color().brighter();
+			color = biome.background().brighter();
 			candidates = world.screensOfType(biome);
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case WHITE_ROCK:
 			name = "snow monster";
-			color = biome.color().brighter();
+			color = biome.background().brighter();
 			candidates = world.screensOfType(biome);
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
