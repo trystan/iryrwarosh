@@ -151,6 +151,8 @@ public class Creature {
 				position.x += x;
 				position.y += y;
 				MessageBus.publish(new Moved(world, this));
+			} else {
+				MessageBus.publish(new BumpedIntoObstical(world, this, position.x+x, position.y+y));
 			}
 		} else if (isFriend(other)) {
 			return;
@@ -158,7 +160,7 @@ public class Creature {
 				&& other.evadeCheck(world)){
 			other.evade(world, this);
 		} else if (hasDoubleAttackedThisTurn == false){
-			attack(world, other);
+			attack(world, other, null);
 			
 			if (other.hp < 1)
 				other.dropWeapon(world);
@@ -170,13 +172,15 @@ public class Creature {
 	}
 	
 	private boolean hasDoubleAttackedThisTurn = false;
-	public void attack(World world, Creature other){
+	public void attack(World world, Creature other, String specialType){
 		if (other.hp < 1)
 			return;
 		
+		Boolean isSpecial = specialType != null;
+		
 		other.hp -= Math.max(1, attack - other.defense);
 		
-		if (other.hasTrait(CreatureTrait.SPIKED)){
+		if (!isSpecial && other.hasTrait(CreatureTrait.SPIKED)){
 			this.hp--;
 			MessageBus.publish(new HitSpikes(world, this, other));
 		}
@@ -184,18 +188,18 @@ public class Creature {
 		if (other.hp < 1)
 			MessageBus.publish(new Killed(world, this, other));
 		else
-			MessageBus.publish(new Attacked(world, this, other));
+			MessageBus.publish(new Attacked(world, this, other, specialType));
 
-		if (hasTrait(CreatureTrait.POISONOUS) && other.hp > 0) {
+		if (!isSpecial && hasTrait(CreatureTrait.POISONOUS) && other.hp > 0) {
 			other.poisonCounter += 10;
 			MessageBus.publish(new Poisoned(world, this, other));
 		}
 		
-		if (hasTrait(CreatureTrait.DOUBLE_ATTACK)
+		if (!isSpecial && hasTrait(CreatureTrait.DOUBLE_ATTACK)
 				&& !hasDoubleAttackedThisTurn
 				&& other.hp > 0) {
 			hasDoubleAttackedThisTurn = true;
-			attack(world, other);
+			attack(world, other, null);
 		}
 	}
 
@@ -232,6 +236,13 @@ public class Creature {
 		}
 	}
 
+	public void wander(World world){
+		moveBy(world, (int)(Math.random() * 3) - 1, (int)(Math.random() * 3) - 1);
+		
+		if (hasTrait(CreatureTrait.DOUBLE_MOVE))
+			moveBy(world, (int)(Math.random() * 3) - 1, (int)(Math.random() * 3) - 1);
+	}
+	
 	public void finishingKill(World world, Creature other) {
 		if (other.hp < 1)
 			return;

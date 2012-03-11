@@ -1,5 +1,6 @@
 package iryrwarosh.screens;
 
+import iryrwarosh.ArmosSaga;
 import iryrwarosh.Handler;
 import iryrwarosh.HelpSaga;
 import iryrwarosh.LootSaga;
@@ -28,6 +29,7 @@ public class StartScreen implements Screen {
 		MessageBus.subscribe(new HelpSaga());
 		MessageBus.subscribe(new SpecialAttackSaga());
 		MessageBus.subscribe(new LootSaga());
+		MessageBus.subscribe(new ArmosSaga());
 	}
 	
 	@Override

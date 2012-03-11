@@ -23,7 +23,7 @@ public class SpecialAttackSaga implements Handler {
 			if (other != null 
 					&& !m.creature.isFriend(other) 
 					&& other.distantAttackPercent() > Math.random() * 100)
-				other.attack(m.world, m.creature);
+				other.attack(m.world, m.creature, "reach");
 		}
 	}
 
@@ -33,10 +33,13 @@ public class SpecialAttackSaga implements Handler {
 
 	private void checkEvadeAttack(Evaded m) {
 		if (m.evader.evadeAttackPercent() > Math.random() * 100)
-			m.evader.attack(m.world, m.attacker);
+			m.evader.attack(m.world, m.attacker, "quicked");
 	}
 
 	private void onAttacked(Attacked m) {
+		if (m.isSpecial)
+			return;
+		
 		checkComboAttack(m);
 		checkCircleAttack(m);
 		checkFinishingAttack(m);
@@ -45,7 +48,7 @@ public class SpecialAttackSaga implements Handler {
 
 	private void checkCounterAttack(Attacked m) {
 		if (m.attacked.counterAttackPercent() > Math.random() * 100)
-			m.attacked.attack(m.world, m.attacker);
+			m.attacked.attack(m.world, m.attacker, "counter");
 	}
 
 	private void checkFinishingAttack(Attacked m) {
@@ -64,13 +67,13 @@ public class SpecialAttackSaga implements Handler {
 				if (other == null || other == m.attacked)
 					continue;
 				
-				m.attacker.attack(m.world, other);
+				m.attacker.attack(m.world, other, "circle");
 			}
 		}
 	}
 
 	private void checkComboAttack(Attacked m) {
 		if (m.attacker.comboAttackPercent() > Math.random() * 100 && m.attacked.hp() > 0)
-			m.attacker.attack(m.world, m.attacked);
+			m.attacker.attack(m.world, m.attacked, "combo");
 	}
 }

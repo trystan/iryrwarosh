@@ -48,7 +48,9 @@ public class World {
     public void update(){
     	updateWater();
     	
-    	for (Creature c : creatures)
+    	List<Creature> toUpdate = new ArrayList<Creature>();
+    	toUpdate.addAll(creatures);
+    	for (Creature c : toUpdate)
     		if (c.hp() > 0)
     			c.update();
     	
@@ -130,5 +132,9 @@ public class World {
 	
 	public List<Point> screensOfType(Tile biome){
 		return map.scrensOfType(biome);
+	}
+
+	public void setTile(Tile tile, int x, int y) {
+		tiles[x][y] = tile;
 	}
 }

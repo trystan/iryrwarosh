@@ -87,7 +87,7 @@ public class Factory {
 		Creature goblin = new Creature("goblin", 'g', Tile.hsv(hue, 50, 50), 2){
 			public void update(){
 				super.update();
-				moveBy(world, (int)(Math.random() * 3) - 1, (int)(Math.random() * 3) - 1);
+				wander(world);
 			}
 		};
 		goblin.addTrait(CreatureTrait.WALKER);
@@ -167,10 +167,7 @@ public class Factory {
 		Creature monster = new Creature(name, 'm', color, 3){
 			public void update(){
 				super.update();
-				moveBy(world, (int)(Math.random() * 3) - 1, (int)(Math.random() * 3) - 1);
-				
-				if (hasTrait(CreatureTrait.DOUBLE_MOVE))
-					moveBy(world, (int)(Math.random() * 3) - 1, (int)(Math.random() * 3) - 1);
+				wander(world);
 			}
 		};
 		
