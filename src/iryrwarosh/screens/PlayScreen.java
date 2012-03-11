@@ -1,6 +1,7 @@
 package iryrwarosh.screens;
 
 import iryrwarosh.Creature;
+import iryrwarosh.Factory;
 import iryrwarosh.Handler;
 import iryrwarosh.Message;
 import iryrwarosh.MessageBus;
@@ -27,20 +28,20 @@ public class PlayScreen implements Screen, Handler {
 	public PlayScreen(World world){
 		MessageBus.subscribe(this);
 		
+		Factory factory = new Factory();
+		
 		this.world = world;
 		this.player = new Creature('@', AsciiPanel.brightWhite, 10);
 		
 		world.add(player);
 		
-		addGoblins();
-		addWeapons();
+		addGoblins(factory);
+		addWeapons(factory);
 
-		Weapon sword = new Weapon("Sword", ')', AsciiPanel.white);
-		sword.finishingAttackPercent = 80;
-		this.player.equip(world, sword);
+		this.player.equip(world, factory.weapon());
 	}
 	
-	private void addGoblins(){
+	private void addGoblins(Factory factory){
 		for (int i = 0; i < 100; i++){
 			int hue = 30 + (int)(Math.random() * 90);
 			Creature goblin = new Creature('g', Tile.hsv(hue, 50, 50), 1){
@@ -49,14 +50,13 @@ public class PlayScreen implements Screen, Handler {
 				}
 			};
 			world.add(goblin);
+			goblin.equip(world, factory.weapon());
 		}
 	}
 	
-	private void addWeapons(){
-		for (int i = 0; i < 100; i++){
-			Weapon weapon = new Weapon("Sword", ')', AsciiPanel.white);
-			world.add(weapon);
-		}
+	private void addWeapons(Factory factory){
+		for (int i = 0; i < 20; i++)
+			world.add(factory.weapon());
 	}
 	
 	@Override
@@ -169,6 +169,7 @@ public class PlayScreen implements Screen, Handler {
 
 	@Override
 	public void handle(Message message) {
-		messages.add(message);
+		if (message.involves(player))
+			messages.add(message);
 	}
 }

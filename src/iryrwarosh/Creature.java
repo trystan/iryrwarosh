@@ -31,18 +31,28 @@ public class Creature {
 	public int distantAttackPercent   = 0;
 	public int counterAttackPercent   = 0;
 
+	public int comboAttackPercent() { return comboAttackPercent + (weapon == null ? 0 : weapon.comboAttackPercent); }
+	public int evadeAttackPercent() { return evadeAttackPercent + (weapon == null ? 0 : weapon.evadeAttackPercent); }
+	public int circleAttackPercent() { return circleAttackPercent + (weapon == null ? 0 : weapon.circleAttackPercent); }
+	public int finishingAttackPercent() { return finishingAttackPercent + (weapon == null ? 0 : weapon.finishingAttackPercent); }
+	public int distantAttackPercent() { return distantAttackPercent + (weapon == null ? 0 : weapon.distantAttackPercent); }
+	public int counterAttackPercent() { return counterAttackPercent + (weapon == null ? 0 : weapon.counterAttackPercent); }
+	
 	private Weapon weapon;
 	public Weapon weapon() { return weapon; }
 	
 	public void equip(World world, Weapon newWeapon) {
-		if (weapon != null) {
-			MessageBus.publish(new DroppedWeapon(this, weapon));
-			world.add(weapon, position.x, position.y);
-		}
+		if (weapon != null)
+			dropWeapon(world);
 		
 		world.removeItem(position.x, position.y);
 		weapon = newWeapon;
-		MessageBus.publish(new EquipedWeapon(this, weapon));
+		MessageBus.publish(new EquipedWeapon(world, this, weapon));
+	}
+
+	private void dropWeapon(World world) {
+		MessageBus.publish(new DroppedWeapon(world, this, weapon));
+		world.add(weapon, position.x, position.y);
 	}
 	
 	public int evadePercent(World world){
@@ -81,14 +91,16 @@ public class Creature {
 		if (other == null) {
 			position.x += x;
 			position.y += y;
+			MessageBus.publish(new Moved(world, this));
 		} else if (isFriend(other)) {
 			return;
 		} else if (other.evadeCheck(world)){
-			MessageBus.publish(new Evaded(other, this));
-			other.evade(world);
+			other.evade(world, this);
 		} else {
-			MessageBus.publish(new Attacked(this, other));
-			attack(other);
+			attack(world, other);
+			
+			if (other.hp < 1)
+				other.dropWeapon(world);
 		}
 	}
 	
@@ -96,13 +108,18 @@ public class Creature {
 		return other.glyph == this.glyph;
 	}
 	
-	public void attack(Creature other){
-		other.hp--;
+	public void attack(World world, Creature other){
 		if (other.hp < 1)
-			MessageBus.publish(new Killed(this, other));
+			return;
+		
+		other.hp--;
+		MessageBus.publish(new Attacked(world, this, other));
+		
+		if (other.hp < 1)
+			MessageBus.publish(new Killed(world, this, other));
 	}
 
-	public void evade(World world){
+	public void evade(World world, Creature other){
 		List<Point> evadeTo = new ArrayList<Point>();
 		
 		for (int ox = -1; ox < 2; ox++)
@@ -117,6 +134,7 @@ public class Creature {
 		
 		Collections.shuffle(evadeTo);
 		position = evadeTo.get(0);
+		MessageBus.publish(new Evaded(world, this, other));
 	}
 	
 	public void update(){

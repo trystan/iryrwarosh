@@ -3,6 +3,7 @@ package iryrwarosh.screens;
 import iryrwarosh.Handler;
 import iryrwarosh.Message;
 import iryrwarosh.MessageBus;
+import iryrwarosh.SpecialAttackSaga;
 import iryrwarosh.World;
 import iryrwarosh.Worldgen;
 
@@ -12,6 +13,19 @@ import asciiPanel.AsciiPanel;
 
 public class StartScreen implements Screen {
 
+	public StartScreen(){
+		MessageBus.subscribe(new Handler(){
+
+			@Override
+			public void handle(Message message) {
+				System.out.println(message.text());
+			}
+			
+		});
+		
+		MessageBus.subscribe(new SpecialAttackSaga());
+	}
+	
 	@Override
 	public void displayOutput(AsciiPanel terminal) {
 		terminal.writeCenter("I rule, you rule, we all rule old-school Hyrule", 1, AsciiPanel.brightWhite);
@@ -25,15 +39,6 @@ public class StartScreen implements Screen {
 	}
 	
 	private PlayScreen newGame(){
-		MessageBus.subscribe(new Handler(){
-
-			@Override
-			public void handle(Message message) {
-				System.out.println(message.text());
-			}
-			
-		});
-		
 		World world = new Worldgen(48 / 3, 24 / 3).build();
 		return new PlayScreen(world);
 	}

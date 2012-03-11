@@ -46,7 +46,8 @@ public class World {
     	updateWater();
     	
     	for (Creature c : creatures)
-    		c.update();
+    		if (c.hp() > 0)
+    			c.update();
     	
     	List<Creature> stillAlive = new ArrayList<Creature>();
     	
