@@ -45,7 +45,7 @@ public class Projectile {
 		if (c == null || origin.isFriend(c))
 			return;
 		
-		c.hurt(world, origin, damage);
+		c.hurt(world, origin, damage, null);
 		isDone = true;
 	}
 }

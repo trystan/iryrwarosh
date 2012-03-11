@@ -126,9 +126,6 @@ public class World {
 
             if (item(dest.x, dest.y) == null && tile(dest.x, dest.y).isGround()){
                 items[dest.x][dest.y] = item;
-                Creature here = creature(dest.x, dest.y);
-                if (here != null)
-                	item.onCollide(this, here);
                 return;
             } else {
                 candidates.addAll(dest.neighbors());

@@ -21,7 +21,7 @@ public class StartScreen implements Screen {
 
 			@Override
 			public void handle(Message message) {
-				System.out.println(message.text());
+				//System.out.println(message.text());
 			}
 			
 		});
