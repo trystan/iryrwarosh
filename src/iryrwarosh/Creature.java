@@ -269,7 +269,7 @@ public class Creature {
 			lastWanderY = (int)(Math.random() * 3) - 1;
 		}
 		
-		projectileCooldown += 15;
+		projectileCooldown += 10 + (int)(Math.random() * 10);
 		world.add(new Projectile(this,   7, AsciiPanel.brightYellow, 1, position.plus(lastWanderX, lastWanderY), new Point(lastWanderX, lastWanderY)));
 		world.add(new Projectile(this, 250, AsciiPanel.brightYellow, 0, position.copy(), new Point(lastWanderX, lastWanderY)));
 	}
@@ -362,5 +362,12 @@ public class Creature {
 		
 		if (hp < 1)
 			MessageBus.publish(new Killed(world, attacker, this));
+		else if (hasTrait(CreatureTrait.SOCIAL))
+			MessageBus.publish(new CallForHelp(world, this, attacker));
+	}
+
+	public void hunt(Creature prey) {
+		lastWanderX = Math.max(-1, Math.min(prey.position.x - position.x,1));
+		lastWanderY = Math.max(-1, Math.min(prey.position.y - position.y,1));
 	}
 }

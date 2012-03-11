@@ -116,7 +116,7 @@ public class Factory {
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case PINE_TREE1:
-			name = "pine monster";
+			name = "alpine monster";
 			color = biome.color().darker();
 			candidates = world.screensOfType(biome);
 			if (candidates.size() == 0)
@@ -124,7 +124,7 @@ public class Factory {
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case BROWN_TREE1:
-			name = "broadleaf monster";
+			name = "boreal monster";
 			color = biome.color().darker();
 			candidates = world.screensOfType(biome);
 			if (candidates.size() == 0)
@@ -185,7 +185,7 @@ public class Factory {
 			break;
 		}
 		
-		boolean isBigMonster = Math.random() * 1000 < monstersCreated;
+		boolean isBigMonster = Math.random() * 1000 < (monstersCreated - 200);
 		
 		Creature monster = new Creature(name, isBigMonster ? 'M' : 'm', color, 3){
 			public void update(World world){

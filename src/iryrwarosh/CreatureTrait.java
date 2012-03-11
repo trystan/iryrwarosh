@@ -5,7 +5,8 @@ public enum CreatureTrait {
 	EXTRA_HP("hp+"), EXTRA_ATTACK("attack+"), EXTRA_EVADE("evasion+"),
 	DOUBLE_ATTACK("double attack"), DOUBLE_MOVE("double move"),
 	SPIKED("spiked"), REGENERATES("regenerates"), POISONOUS("poisonous"), CAMOUFLAGED("camouflaged"), 
-	AGGRESSIVE("aggresive"), HIDER("hider"), TERRITORIAL("territorial"), ROCK_SPITTER("rock spitter");
+	AGGRESSIVE("aggresive"), HIDER("hider"), TERRITORIAL("territorial"), ROCK_SPITTER("rock spitter"),
+	SOCIAL("social");
 
 	private String description;
 	public String description() { return description; }
