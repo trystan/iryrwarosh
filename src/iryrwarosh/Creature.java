@@ -310,6 +310,9 @@ public class Creature {
 		if (hasTrait(CreatureTrait.AGGRESSIVE))
 			fightNearby(world);
 		
+		if (hasTrait(CreatureTrait.FEARFUL))
+			fleeFromNearby(world);
+		
 		wanderForReal(world);
 	}
 
@@ -343,6 +346,23 @@ public class Creature {
 			wanderForReal(world);
 		else
 			attack(world, candidates.get((int)(Math.random() * candidates.size())), null);
+	}
+	
+	public void fleeFromNearby(World world){
+		List<Point> candidates = new ArrayList<Point>();
+		
+		for (Point p : position.neighbors()){
+			Creature other = world.creature(p.x, p.y);
+			if (other == null)
+				candidates.add(new Point(p.x-position.x, p.y-position.y));
+		}
+		
+		if (candidates.size() == 0)
+			wanderForReal(world);
+		else {
+			Point target = candidates.get((int)(Math.random() * candidates.size()));
+			moveBy(world, target.x, target.y);
+		}
 	}
 	
 	public void finishingKill(World world, Creature other) {

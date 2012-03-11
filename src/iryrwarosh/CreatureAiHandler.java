@@ -13,7 +13,7 @@ public class CreatureAiHandler implements Handler {
 			if (!message.attacked.isFriend(c) || c == message.attacked)
 				continue;
 			
-			if (c.position.distanceTo(message.attacked.position) > 8)
+			if (c.position.distanceTo(message.attacked.position) > 12)
 				continue;
 			
 			c.hunt(message.attacker);
