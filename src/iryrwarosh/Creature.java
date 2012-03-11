@@ -23,6 +23,23 @@ public class Creature {
 	private int maxHp;
 	public int maxHp() { return maxHp; }
 
+	private List<CreatureTrait> traits = new ArrayList<CreatureTrait>();
+
+	public void addTrait(CreatureTrait trait) {
+		traits.add(trait);
+		
+		switch (trait){
+		case EXTRA_HP: maxHp += 3; hp += 3; break;
+		case EXTRA_ATTACK: attack += 2; break;
+		case EXTRA_DEFENSE: defense += 1; break;
+		case EXTRA_EVADE: evade += 2; break;
+		}
+	}
+
+	public boolean hasTrait(CreatureTrait trait) {
+		return traits.contains(trait);
+	}
+	
 	public int attack  = 2;
 	public int defense = 1;
 	public int evade   = 5;
@@ -40,10 +57,6 @@ public class Creature {
 	public int finishingAttackPercent() { return finishingAttackPercent + (weapon == null ? 0 : weapon.finishingAttackPercent); }
 	public int distantAttackPercent() { return distantAttackPercent + (weapon == null ? 0 : weapon.distantAttackPercent); }
 	public int counterAttackPercent() { return counterAttackPercent + (weapon == null ? 0 : weapon.counterAttackPercent); }
-	
-	public boolean canWalk = true;
-	public boolean canSwim = false;
-	public boolean canFly = false;
 	
 	private Weapon weapon;
 	public Weapon weapon() { return weapon; }
@@ -94,13 +107,13 @@ public class Creature {
 	}
 	
 	public boolean canEnter(Tile tile){
-		if (canWalk && tile.isGround())
+		if (hasTrait(CreatureTrait.WALKER) && tile.isGround())
 			return true;
 		
-		if (canSwim && tile.isSwimmable())
+		if (hasTrait(CreatureTrait.SWIMMER) && tile.isSwimmable())
 			return true;
 		
-		if (canFly && tile.isFlyable())
+		if (hasTrait(CreatureTrait.FLYER) && tile.isFlyable())
 			return true;
 		
 		return false;
@@ -132,6 +145,7 @@ public class Creature {
 		return other.glyph == this.glyph;
 	}
 	
+	private boolean hasDoubleAttackedThisTurn = false;
 	public void attack(World world, Creature other){
 		if (other.hp < 1)
 			return;
@@ -141,6 +155,13 @@ public class Creature {
 		
 		if (other.hp < 1)
 			MessageBus.publish(new Killed(world, this, other));
+		
+		if (hasTrait(CreatureTrait.DOUBLE_ATTACK)
+				&& !hasDoubleAttackedThisTurn
+				&& other.hp > 0) {
+			hasDoubleAttackedThisTurn = true;
+			attack(world, other);
+		}
 	}
 
 	public void evade(World world, Creature other){
@@ -162,6 +183,6 @@ public class Creature {
 	}
 	
 	public void update(){
-		
+		hasDoubleAttackedThisTurn = false;
 	}
 }

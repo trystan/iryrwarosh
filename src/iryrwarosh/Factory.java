@@ -1,12 +1,37 @@
 package iryrwarosh;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import asciiPanel.AsciiPanel;
 
 public class Factory {
-
+	private HashMap<Tile,List<CreatureTrait>> monsterTraits;
+	
+	public Factory(){
+		setMonsterTraits();
+	}
+	
+	private void setMonsterTraits(){
+		monsterTraits = new HashMap<Tile,List<CreatureTrait>>();
+		
+		for (Tile biome : new Tile[]{ Tile.GREEN_TREE1, Tile.PINE_TREE1, Tile.BROWN_TREE1, Tile.BROWN_TREE4, Tile.WHITE_TREE1, 
+				Tile.GREEN_ROCK, Tile.BROWN_ROCK, Tile.WHITE_ROCK, Tile.DESERT_SAND1, Tile.WATER1 }){
+			
+			List<CreatureTrait> traits = new ArrayList<CreatureTrait>();
+			
+			for (int i = 0; i < 3; i++)
+				traits.add(CreatureTrait.getRandom());
+			
+			monsterTraits.put(biome, traits);
+			
+			for (CreatureTrait trait : traits)
+				System.out.println(biome.name() + " monster has " + trait.name());
+		}
+	}
+	
 	public Weapon knuckes(){
 		Weapon w = new Weapon("Knuckes", ')', AsciiPanel.white);
 		w.comboAttackPercent = 33;
@@ -61,6 +86,8 @@ public class Factory {
 				moveBy(world, (int)(Math.random() * 3) - 1, (int)(Math.random() * 3) - 1);
 			}
 		};
+		goblin.addTrait(CreatureTrait.WALKER);
+		
 		world.add(goblin);
 		goblin.equip(world, weapon());
 		return goblin;
@@ -136,13 +163,20 @@ public class Factory {
 		Creature monster = new Creature(name, 'm', color, 3){
 			public void update(){
 				moveBy(world, (int)(Math.random() * 3) - 1, (int)(Math.random() * 3) - 1);
+				
+				if (hasTrait(CreatureTrait.DOUBLE_MOVE))
+					moveBy(world, (int)(Math.random() * 3) - 1, (int)(Math.random() * 3) - 1);
 			}
 		};
 		
 		if (biome == Tile.WATER1){
-			monster.canSwim = true;
-			monster.canWalk = false;
+			monster.addTrait(CreatureTrait.SWIMMER);
+		} else {
+			monster.addTrait(CreatureTrait.WALKER);
 		}
+		
+		for (CreatureTrait trait : monsterTraits.get(biome))
+			monster.addTrait(trait);
 		
 		if (candidate == null)
 			world.add(monster);
@@ -150,5 +184,12 @@ public class Factory {
 			world.addToScreen(monster, candidate.x, candidate.y);
 		
 		return monster;
+	}
+
+	public Creature player(World world) {
+		Creature player = new Creature("player", '@', AsciiPanel.brightWhite, 10);
+		player.addTrait(CreatureTrait.WALKER);
+		world.add(player);
+		return player;
 	}
 }

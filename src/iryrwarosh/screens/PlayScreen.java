@@ -32,9 +32,7 @@ public class PlayScreen implements Screen, Handler {
 		Factory factory = new Factory();
 		
 		this.world = world;
-		this.player = new Creature("player", '@', AsciiPanel.brightWhite, 10);
-		
-		world.add(player);
+		this.player = factory.player(world); 
 		
 		addGoblins(factory);
 		addWeapons(factory);
