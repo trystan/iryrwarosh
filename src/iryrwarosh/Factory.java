@@ -19,7 +19,7 @@ public class Factory {
 	private void setMonsterTraits(){
 		monsterTraits = new HashMap<Tile,List<Trait>>();
 		
-		for (Tile biome : new Tile[]{ Tile.GREEN_TREE1, Tile.PINE_TREE1, Tile.BROWN_TREE1, Tile.BROWN_TREE4, Tile.WHITE_TREE1, 
+		for (Tile biome : new Tile[]{ Tile.GREEN_TREE1, Tile.BROWN_TREE1, Tile.WHITE_TREE1, 
 				Tile.GREEN_ROCK, Tile.BROWN_ROCK, Tile.WHITE_ROCK, Tile.DESERT_SAND1, Tile.WATER1 }){
 			
 			List<Trait> traits = new ArrayList<Trait>();
@@ -41,25 +41,25 @@ public class Factory {
 	}
 	
 	public Item knuckles(){
-		Item w = new Item("Knuckes", ')', Tile.WHITE_ROCK.background());
+		Item w = new Item("Knuckes", ')', Tile.WHITE_ROCK.background(), "Allows you to do combo attacks.");
 		w.addTrait(Trait.COMBO_ATTACK);
 		return w;
 	}
 	
 	public Item knife(){
-		Item w = new Item("Knife", ')', Tile.WHITE_ROCK.background());
+		Item w = new Item("Knife", ')', Tile.WHITE_ROCK.background(), "A free attack when you evade.");
 		w.addTrait(Trait.EVADE_ATTACK);
 		return w;
 	}
 	
 	public Item club(){
-		Item w = new Item("Club", ')', Tile.BROWN_ROCK.background());
+		Item w = new Item("Club", ')', Tile.BROWN_ROCK.background(), "Does a circular attack.");
 		w.addTrait(Trait.CIRCLE_ATTACK);
 		return w;
 	}
 	
 	public Item sword(){
-		Item w = new Item("Sword", ')', AsciiPanel.white){
+		Item w = new Item("Sword", ')', AsciiPanel.white, "Can shoot if you are at full health. Doesn't even cost rupees."){
 			private Projectile last;
 			
 			public void use(Screen screen, World world, Creature owner){
@@ -81,13 +81,13 @@ public class Factory {
 	}
 	
 	public Item spear(){
-		Item w = new Item("Spear", ')', Tile.BROWN_ROCK.background());
+		Item w = new Item("Spear", ')', Tile.BROWN_ROCK.background(), "Automatically hits anything moving within reach.");
 		w.addTrait(Trait.REACH_ATTACK);
 		return w;
 	}
 	
 	public Item staff(){
-		Item w = new Item("Staff", ')', Tile.BROWN_ROCK.background());
+		Item w = new Item("Staff", ')', Tile.BROWN_ROCK.background(), "Automatically counter attacks.");
 		w.addTrait(Trait.COUNTER_ATTACK);
 		return w;
 	}
@@ -121,71 +121,57 @@ public class Factory {
 	private int monstersCreated = 0;
 	public Creature monster(final World world, Tile biome){
 		Color color = null;
-		List<Point> candidates = null;
+		List<Point> candidates = new ArrayList<Point>();
 		Point candidate = null;
 		String name = null;
 		
 		switch (biome) {
 		case GREEN_TREE1:
-			name = "evergreen monster";
-			color = biome.color();
-			candidates = world.screensOfType(biome);
-			if (candidates.size() == 0)
-				return null;
-			candidate = candidates.get((int)(Math.random() * candidates.size()));
-			break;
-		case PINE_TREE1:
-			name = "alpine monster";
-			color = biome.color().darker();
-			candidates = world.screensOfType(biome);
+			name = "evergren monster";
+			color = biome.color().brighter();
+			candidates.addAll(world.screensOfType(Tile.GREEN_TREE1));
+			candidates.addAll(world.screensOfType(Tile.PINE_TREE1));
 			if (candidates.size() == 0)
 				return null;
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case BROWN_TREE1:
-			name = "boreal monster";
-			color = biome.color().darker();
-			candidates = world.screensOfType(biome);
-			if (candidates.size() == 0)
-				return null;
-			candidate = candidates.get((int)(Math.random() * candidates.size()));
-			break;
-		case BROWN_TREE4:
 			name = "forest monster";
-			color = biome.color();
-			candidates = world.screensOfType(biome);
+			color = biome.color().brighter();
+			candidates.addAll(world.screensOfType(Tile.BROWN_TREE1));
+			candidates.addAll(world.screensOfType(Tile.BROWN_TREE4));
 			if (candidates.size() == 0)
 				return null;
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case WHITE_TREE1:
-			name = "pale monster";
+			name = "boreal monster";
 			color = biome.color().brighter();
-			candidates = world.screensOfType(biome);
+			candidates.addAll(world.screensOfType(Tile.WHITE_TREE1));
 			if (candidates.size() == 0)
 				return null;
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case GREEN_ROCK:
 			name = "hill monster";
-			color = biome.background().brighter();
-			candidates = world.screensOfType(biome);
+			color = biome.background().darker();
+			candidates.addAll(world.screensOfType(Tile.GREEN_ROCK));
 			if (candidates.size() == 0)
 				return null;
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case BROWN_ROCK:
 			name = "mountan monster";
-			color = biome.background().brighter();
-			candidates = world.screensOfType(biome);
+			color = biome.background().darker();
+			candidates.addAll(world.screensOfType(Tile.BROWN_ROCK));
 			if (candidates.size() == 0)
 				return null;
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case WHITE_ROCK:
-			name = "snow monster";
-			color = biome.background().brighter();
-			candidates = world.screensOfType(biome);
+			name = "glacer monster";
+			color = biome.background().darker();
+			candidates.addAll(world.screensOfType(Tile.WHITE_ROCK));
 			if (candidates.size() == 0)
 				return null;
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
@@ -193,14 +179,14 @@ public class Factory {
 		case DESERT_SAND1:
 			name = "desert monster";
 			color = biome.color();
-			candidates = world.screensOfType(biome);
+			candidates.addAll(world.screensOfType(Tile.DESERT_SAND1));
 			if (candidates.size() == 0)
 				return null;
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case WATER1:
 			name = "water monster";
-			color = biome.color().brighter();
+			color = biome.color();
 			break;
 		}
 		
@@ -251,37 +237,59 @@ public class Factory {
 	}
 
 	public Item heavyArmor() {
-		Item item = new Item("heavy armor", '[', AsciiPanel.white);
+		Item item = new Item("heavy armor", '[', AsciiPanel.white, "Reduces damage done from heavy hitters.");
 		item.addTrait(Trait.EXTRA_DEFENSE);
 		return item;
 	}
 
-	public Item greenTunic() {
-		Item item = new Item("green tunic", '[', Tile.GREEN_ROCK.background());
-		return item;
-	}
-
-	public Item wizardRobe() {
-		Item item = new Item("wizard robes", '[', AsciiPanel.white);
-		item.addTrait(Trait.DETECT_CAMOUFLAGED);
-		return item;
-	}
-
-	public Item cloak() {
-		Item item = new Item("dark cloak", '[', AsciiPanel.brightBlack);
+	public Item shield() {
+		Item item = new Item("shield", '[', AsciiPanel.yellow, "Deflects projectiles half of the time.");
 		item.addTrait(Trait.DEFLECT_RANGED);
 		return item;
 	}
 
-	public Item gillsuit() {
-		Item item = new Item("gillsuit", '[', Tile.WATER1.color());
+	public Item crystalBall() {
+		Item item = new Item("crystal ball", '+', AsciiPanel.white, "Allows you too see anything camouflaged.");
+		item.addTrait(Trait.DETECT_CAMOUFLAGED);
+		return item;
+	}
+
+	public Item bow() {
+		Item item = new Item("bow", ')', AsciiPanel.brightBlack, "Shoots arrows. Cost 1 rupee per shot."){
+			public void use(Screen screen, World world, Creature owner){
+				world.add(new Projectile(owner, 9, AsciiPanel.brightWhite, 1, owner.position.copy(), owner.lastMovedDirection()));
+				owner.pay(world, 1);
+			}
+		};
+		return item;
+	}
+
+	public Item snorkel() {
+		Item item = new Item("snorkel", '/', Tile.WATER1.color(), "Allows you to swim in the water.");
 		item.addTrait(Trait.SWIMMER);
 		return item;
 	}
 
-	public Item vestments() {
-		Item item = new Item("holy vestments", '[', AsciiPanel.white);
+	public Item firstAidKit() {
+		Item item = new Item("first aid kit", '+', AsciiPanel.white, "A kit for curing poison and recovering health."){
+			public void use(Screen screen, World world, Creature owner){
+				if (owner.isPoisoned()){
+					owner.curePoison();
+					owner.pay(world, 5);
+				} else {
+					int diff = Math.min(5, owner.maxHp() - owner.hp());
+					owner.heal(diff);
+					owner.pay(world, diff * 5);
+				}
+			}
+		};
 		item.addTrait(Trait.REGENERATES);
+		return item;
+	}
+
+	public Item spellBook() {
+		Item item = new Item("spellbook", '+', AsciiPanel.white, "A book of wizard's spells.");
+		item.addTrait(Trait.SPELL_CASTER);
 		return item;
 	}
 }

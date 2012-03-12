@@ -183,7 +183,11 @@ public class Creature {
 		lastPoisonedBy = attacker;
 		MessageBus.publish(new Poisoned(world, attacker, this));
 	}
-
+	
+	public void curePoison() {
+		poisonCounter = 0;
+	}
+	
 	public void evade(World world, Creature other){
 		List<Point> evadeTo = new ArrayList<Point>();
 		

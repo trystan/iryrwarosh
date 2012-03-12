@@ -15,7 +15,9 @@ public class Item {
 	
 	private Color color;
 	public Color color(){ return color; }
-	
+
+	private String description;
+	public String description() { return description; }
 
 	private List<Trait> traits;
 	public void addTrait(Trait trait) { traits.add(trait); }
@@ -24,11 +26,12 @@ public class Item {
 		return traits.contains(trait);
 	}
 	
-	Item(String name, int glyph, Color color){
+	Item(String name, int glyph, Color color, String description){
 		this.name = name;
 		this.glyph = (char)glyph;
 		this.color = color;
 		this.traits = new ArrayList<Trait>();
+		this.description = description;
 	}
 	
 	public void onCollide(World world, Creature colider){
