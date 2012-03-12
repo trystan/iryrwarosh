@@ -29,25 +29,19 @@ public class Creature {
 	public int hp() { return hp; }
 
 	private int maxHp;
-	public int maxHp() { return maxHp; }
+	public int maxHp() { return maxHp + (hasTrait(CreatureTrait.EXTRA_HP) ? 3 : 0); }
 
 	private int money;
 	public int money() { return money; }
 	
 	private List<CreatureTrait> traits = new ArrayList<CreatureTrait>();
 
-	public void addTrait(CreatureTrait trait) {
-		traits.add(trait);
-		
-		switch (trait){
-		case EXTRA_HP: maxHp += 3; hp += 3; break;
-		case EXTRA_ATTACK: attack += 1; break;
-		case EXTRA_EVADE: evade += 2; break;
-		}
-	}
+	public void addTrait(CreatureTrait trait) { traits.add(trait); }
 
 	public boolean hasTrait(CreatureTrait trait) {
-		return traits.contains(trait);
+		return traits.contains(trait)
+				|| weapon != null && weapon.hasTrait(trait)
+				|| armor != null && armor.hasTrait(trait);
 	}
 	
 	public String describe(){
@@ -63,23 +57,6 @@ public class Creature {
 		
 		return text;
 	}
-	
-	public int attack  = 1;
-	public int evade   = 5;
-	
-	public int comboAttackPercent     = 0;
-	public int evadeAttackPercent     = 0;
-	public int circleAttackPercent    = 0;
-	public int finishingAttackPercent = 0;
-	public int distantAttackPercent   = 0;
-	public int counterAttackPercent   = 0;
-
-	public int comboAttackPercent() { return comboAttackPercent + (weapon == null ? 0 : weapon.comboAttackPercent); }
-	public int evadeAttackPercent() { return evadeAttackPercent + (weapon == null ? 0 : weapon.evadeAttackPercent); }
-	public int circleAttackPercent() { return circleAttackPercent + (weapon == null ? 0 : weapon.circleAttackPercent); }
-	public int finishingAttackPercent() { return finishingAttackPercent + (weapon == null ? 0 : weapon.finishingAttackPercent); }
-	public int distantAttackPercent() { return distantAttackPercent + (weapon == null ? 0 : weapon.distantAttackPercent); }
-	public int counterAttackPercent() { return counterAttackPercent + (weapon == null ? 0 : weapon.counterAttackPercent); }
 	
 	private Weapon weapon;
 	public Weapon weapon() { return weapon; }
@@ -125,7 +102,7 @@ public class Creature {
 				moveable++;
 		}
 		
-		return moveable * evade;
+		return moveable * (hasTrait(CreatureTrait.EXTRA_EVADE) ? 8 : 5);
 	}
 	
 	public boolean evadeCheck(World world){
@@ -148,9 +125,6 @@ public class Creature {
 			return true;
 		
 		if (hasTrait(CreatureTrait.FLYER) && tile.isFlyable())
-			return true;
-		
-		if (armor != null && armor.swimInWater && tile.isSwimmable())
 			return true;
 		
 		return false;
@@ -197,7 +171,7 @@ public class Creature {
 		
 		Boolean isSpecial = specialType != null;
 
-		other.hurt(world, this, attack, specialType);
+		other.hurt(world, this, hasTrait(CreatureTrait.EXTRA_ATTACK) ? 2 : 1, specialType);
 
 		if (!isSpecial && other.hasTrait(CreatureTrait.SPIKED)){
 			if (weapon == null || !weapon.isImuneToSpikes){
@@ -269,11 +243,6 @@ public class Creature {
 				hide(world);
 			else
 				unhide(world);
-		}
-		
-		if (armor != null && armor.regenerateHp && hp < maxHp && money > 5 && Math.random() < 0.1){
-			heal(1);
-			pay(world, 5);
 		}
 		
 		if (hasTrait(CreatureTrait.ROCK_SPITTER) 
@@ -396,10 +365,9 @@ public class Creature {
 	}
 
 	public void hurt(World world, Creature attacker, int i, String specialType) {
-		if (i > 1 && armor != null && armor.defenseBoost && money > 5){
+		if (i > 1 && hasTrait(CreatureTrait.EXTRA_DEFENSE)){
 			i--;
 			MessageBus.publish(new BlockSomeDamage(world, this, armor));
-			pay(world, 5);
 		}
 		
 		hp -= i;

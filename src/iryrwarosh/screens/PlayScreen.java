@@ -105,15 +105,15 @@ public class PlayScreen implements Screen, Handler {
 				case 3:
 					break;
 				case 4:
-					if (!player.armor().detectCreatures)
+					if (!player.hasTrait(CreatureTrait.DETECT_CAMOUFLAGED))
 						color = color.darker();
 					break;
 				case 5:
-					if (!player.armor().detectCreatures)
-					color = color.darker().darker();
+					if (!player.hasTrait(CreatureTrait.DETECT_CAMOUFLAGED))
+						color = color.darker().darker();
 					break;
 				default:
-					if (!player.armor().detectCreatures)
+					if (!player.hasTrait(CreatureTrait.DETECT_CAMOUFLAGED))
 						color = null;
 					else
 						color = color.darker();
@@ -184,6 +184,8 @@ public class PlayScreen implements Screen, Handler {
         	break;
 		case KeyEvent.VK_M: return new WorldMapScreen(this, world.map(), player.position);
 		case KeyEvent.VK_X: return new LookAtScreen(this, world, player, getScrollX(), getScrollY());
+		default:
+			return this;
 		}
 		
 		world.update();

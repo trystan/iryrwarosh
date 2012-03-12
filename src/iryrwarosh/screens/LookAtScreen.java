@@ -42,7 +42,7 @@ public class LookAtScreen implements Screen {
 		if (creature != null 
 				&& !(creature.hasTrait(CreatureTrait.CAMOUFLAGED) 
 						&& creature.position.distanceTo(player.position) > 5
-						&& !player.armor().detectCreatures))
+						&& !player.hasTrait(CreatureTrait.DETECT_CAMOUFLAGED)))
 			text = creature.describe();
 		else if (item != null)
 			text = item.name();

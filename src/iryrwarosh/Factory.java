@@ -22,9 +22,6 @@ public class Factory {
 			
 			List<CreatureTrait> traits = new ArrayList<CreatureTrait>();
 			
-			if (Math.random() < 0.05)
-				traits.add(CreatureTrait.FLYER);
-			
 			while (traits.size() < 3){
 				CreatureTrait trait = CreatureTrait.getRandom();
 				if (!traits.contains(trait))
@@ -37,38 +34,37 @@ public class Factory {
 	
 	public Weapon knuckles(){
 		Weapon w = new Weapon("Knuckes", ')', Tile.WHITE_ROCK.background());
-		w.comboAttackPercent = 33;
+		w.addTrait(CreatureTrait.COMBO_ATTACK);
 		return w;
 	}
 	
 	public Weapon knife(){
 		Weapon w = new Weapon("Knife", ')', Tile.WHITE_ROCK.background());
-		w.evadeAttackPercent = 75;
+		w.addTrait(CreatureTrait.EVADE_ATTACK);
 		return w;
 	}
 	
 	public Weapon club(){
 		Weapon w = new Weapon("Club", ')', Tile.BROWN_ROCK.background());
-		w.circleAttackPercent = 75;
+		w.addTrait(CreatureTrait.CIRCLE_ATTACK);
 		return w;
 	}
 	
 	public Weapon sword(){
 		Weapon w = new Weapon("Sword", ')', AsciiPanel.white);
-		w.finishingAttackPercent = 75;
 		return w;
 	}
 	
 	public Weapon spear(){
 		Weapon w = new Weapon("Spear", ')', Tile.BROWN_ROCK.background());
-		w.distantAttackPercent = 25;
+		w.addTrait(CreatureTrait.REACH_ATTACK);
 		w.isImuneToSpikes = true;
 		return w;
 	}
 	
 	public Weapon staff(){
 		Weapon w = new Weapon("Staff", ')', Tile.BROWN_ROCK.background());
-		w.counterAttackPercent = 25;
+		w.addTrait(CreatureTrait.COUNTER_ATTACK);
 		w.isImuneToSpikes = true;
 		return w;
 	}
@@ -241,37 +237,36 @@ public class Factory {
 
 	public Armor heavyArmor() {
 		Armor heavy = new Armor("heavy armor", '[', AsciiPanel.white);
-		heavy.defenseBoost = true;
+		heavy.addTrait(CreatureTrait.EXTRA_DEFENSE);
 		return heavy;
 	}
 
 	public Armor greenTunic() {
 		Armor tunic = new Armor("green tunic", '[', Tile.GREEN_ROCK.background());
-		tunic.ignoreWebbing = true;
 		return tunic;
 	}
 
 	public Armor wizardRobe() {
 		Armor robes = new Armor("wizard robes", '[', AsciiPanel.white);
-		robes.detectCreatures = true;
+		robes.addTrait(CreatureTrait.DETECT_CAMOUFLAGED);
 		return robes;
 	}
 
 	public Armor cloak() {
 		Armor cloak = new Armor("dark cloak", '[', AsciiPanel.brightBlack);
-		cloak.deflectRanged = true;
+		cloak.addTrait(CreatureTrait.DEFLECT_RANGED);
 		return cloak;
 	}
 
 	public Armor gillsuit() {
 		Armor gillsuit = new Armor("gillsuit", '[', Tile.WATER1.color());
-		gillsuit.swimInWater = true;
+		gillsuit.addTrait(CreatureTrait.SWIMMER);
 		return gillsuit;
 	}
 
 	public Armor vestments() {
 		Armor vestments = new Armor("holy vestments", '[', AsciiPanel.white);
-		vestments.regenerateHp = true;
+		vestments.addTrait(CreatureTrait.REGENERATES);
 		return vestments;
 	}
 }

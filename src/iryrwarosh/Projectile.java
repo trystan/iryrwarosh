@@ -45,8 +45,7 @@ public class Projectile {
 		if (c == null || origin.isFriend(c))
 			return;
 		
-		if (c.armor() != null && c.armor().deflectRanged && Math.random() < 0.5){
-			c.pay(world, 2);
+		if (c.armor() != null && c.hasTrait(CreatureTrait.DEFLECT_RANGED) && Math.random() < 0.5){
 			MessageBus.publish(new DeflectRanged(world, c, this));
 		} else {
 			c.hurt(world, origin, damage, "from a distance");

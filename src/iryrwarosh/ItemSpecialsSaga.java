@@ -15,15 +15,6 @@ public class ItemSpecialsSaga implements Handler {
 
 	private void onMoved(Moved m) {
 		checkDistantAttacks(m);
-		checkSwiming(m);
-	}
-
-	private void checkSwiming(Moved m) {
-		if (m.creature.armor() != null 
-				&& m.creature.armor().swimInWater
-				&& m.world.tile(m.creature.position.x, m.creature.position.y).isWater()){
-			m.creature.pay(m.world, 1);
-		}
 	}
 
 	private void checkDistantAttacks(Moved m) {
@@ -31,7 +22,7 @@ public class ItemSpecialsSaga implements Handler {
 			Creature other = m.world.creature(p.x, p.y);
 			if (other != null 
 					&& !m.creature.isFriend(other) 
-					&& other.distantAttackPercent() > Math.random() * 100){
+					&& other.hasTrait(CreatureTrait.REACH_ATTACK) && Math.random() < 0.5){
 				other.attack(m.world, m.creature, "with a long reach");
 			}
 		}
@@ -42,7 +33,7 @@ public class ItemSpecialsSaga implements Handler {
 	}
 
 	private void checkEvadeAttack(Evaded m) {
-		if (m.evader.evadeAttackPercent() > Math.random() * 100){
+		if (m.evader.hasTrait(CreatureTrait.EVADE_ATTACK) && Math.random() < 0.5){
 			m.evader.attack(m.world, m.attacker, "wile evading");
 		}
 	}
@@ -53,26 +44,17 @@ public class ItemSpecialsSaga implements Handler {
 		
 		checkComboAttack(m);
 		checkCircleAttack(m);
-		checkFinishingAttack(m);
 		checkCounterAttack(m);
 	}
 
 	private void checkCounterAttack(Attacked m) {
-		if (m.attacked.counterAttackPercent() > Math.random() * 100) {
+		if (m.attacked.hasTrait(CreatureTrait.COUNTER_ATTACK) && Math.random() < 0.5) {
 			m.attacked.attack(m.world, m.attacker, "with a counter attack");
 		}
 	}
 
-	private void checkFinishingAttack(Attacked m) {
-		if (m.attacker.finishingAttackPercent() > Math.random() * 100 && m.attacked.hp() > 0){
-			if (m.attacker.attack * 2 >= m.attacked.hp()){
-				m.attacker.finishingKill(m.world, m.attacked);
-			}
-		}
-	}
-
 	private void checkCircleAttack(Attacked m) {
-		if (m.attacker.circleAttackPercent() > Math.random() * 100){
+		if (m.attacker.hasTrait(CreatureTrait.CIRCLE_ATTACK) && Math.random() < 0.5){
 			for (Point p : m.attacker.position.neighbors()){
 				Creature other = m.world.creature(p.x, p.y);
 				
@@ -85,7 +67,7 @@ public class ItemSpecialsSaga implements Handler {
 	}
 
 	private void checkComboAttack(Attacked m) {
-		if (m.attacker.comboAttackPercent() > Math.random() * 100 && m.attacked.hp() > 0) {
+		if (m.attacker.hasTrait(CreatureTrait.COMBO_ATTACK) && Math.random() < 0.5 && m.attacked.hp() > 0) {
 			m.attacker.attack(m.world, m.attacked, "with a combo attack");
 		}
 	}
