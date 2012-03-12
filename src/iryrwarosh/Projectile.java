@@ -45,7 +45,12 @@ public class Projectile {
 		if (c == null || origin.isFriend(c))
 			return;
 		
-		c.hurt(world, origin, damage, "from a distance");
+		if (c.armor() != null && c.armor().deflectRanged && Math.random() < 0.5){
+			c.pay(world, 2);
+			MessageBus.publish(new DeflectRanged(world, c, this));
+		} else {
+			c.hurt(world, origin, damage, "from a distance");
+		}
 		isDone = true;
 	}
 }

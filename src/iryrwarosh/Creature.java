@@ -150,6 +150,9 @@ public class Creature {
 		if (hasTrait(CreatureTrait.FLYER) && tile.isFlyable())
 			return true;
 		
+		if (armor != null && armor.swimInWater && tile.isSwimmable())
+			return true;
+		
 		return false;
 	}
 
@@ -266,6 +269,11 @@ public class Creature {
 				hide(world);
 			else
 				unhide(world);
+		}
+		
+		if (armor != null && armor.regenerateHp && hp < maxHp && money > 5 && Math.random() < 0.1){
+			heal(1);
+			pay(world, 5);
 		}
 		
 		if (hasTrait(CreatureTrait.ROCK_SPITTER) 
@@ -388,6 +396,12 @@ public class Creature {
 	}
 
 	public void hurt(World world, Creature attacker, int i, String specialType) {
+		if (i > 1 && armor != null && armor.defenseBoost && money > 5){
+			i--;
+			MessageBus.publish(new BlockSomeDamage(world, this, armor));
+			pay(world, 5);
+		}
+		
 		hp -= i;
 
 		if (specialType != null)
@@ -402,5 +416,14 @@ public class Creature {
 	public void hunt(Creature prey) {
 		lastWanderX = Math.max(-1, Math.min(prey.position.x - position.x,1));
 		lastWanderY = Math.max(-1, Math.min(prey.position.y - position.y,1));
+	}
+
+	public void pay(World world, int i) {
+		money -= i;
+		
+		if (money < 0) {
+			hurt(world, this, 0 - money, null);
+			money = 0;
+		}
 	}
 }

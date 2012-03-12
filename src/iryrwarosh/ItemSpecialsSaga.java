@@ -1,6 +1,6 @@
 package iryrwarosh;
 
-public class SpecialAttackSaga implements Handler {
+public class ItemSpecialsSaga implements Handler {
 	@Override
 	public void handle(Message message) {
 		if (Attacked.class.isAssignableFrom(message.getClass()))
@@ -15,6 +15,15 @@ public class SpecialAttackSaga implements Handler {
 
 	private void onMoved(Moved m) {
 		checkDistantAttacks(m);
+		checkSwiming(m);
+	}
+
+	private void checkSwiming(Moved m) {
+		if (m.creature.armor() != null 
+				&& m.creature.armor().swimInWater
+				&& m.world.tile(m.creature.position.x, m.creature.position.y).isWater()){
+			m.creature.pay(m.world, 1);
+		}
 	}
 
 	private void checkDistantAttacks(Moved m) {

@@ -105,13 +105,18 @@ public class PlayScreen implements Screen, Handler {
 				case 3:
 					break;
 				case 4:
-					color = color.darker();
+					if (!player.armor().detectCreatures)
+						color = color.darker();
 					break;
 				case 5:
+					if (!player.armor().detectCreatures)
 					color = color.darker().darker();
 					break;
 				default:
-					color = null;
+					if (!player.armor().detectCreatures)
+						color = null;
+					else
+						color = color.darker();
 				}
 			}
 			

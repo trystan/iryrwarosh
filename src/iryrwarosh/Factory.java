@@ -241,31 +241,37 @@ public class Factory {
 
 	public Armor heavyArmor() {
 		Armor heavy = new Armor("heavy armor", '[', AsciiPanel.white);
+		heavy.defenseBoost = true;
 		return heavy;
 	}
 
 	public Armor greenTunic() {
 		Armor tunic = new Armor("green tunic", '[', Tile.GREEN_ROCK.background());
+		tunic.ignoreWebbing = true;
 		return tunic;
 	}
 
 	public Armor wizardRobe() {
 		Armor robes = new Armor("wizard robes", '[', AsciiPanel.white);
+		robes.detectCreatures = true;
 		return robes;
 	}
 
 	public Armor cloak() {
 		Armor cloak = new Armor("dark cloak", '[', AsciiPanel.brightBlack);
+		cloak.deflectRanged = true;
 		return cloak;
 	}
 
 	public Armor gillsuit() {
 		Armor gillsuit = new Armor("gillsuit", '[', Tile.WATER1.color());
+		gillsuit.swimInWater = true;
 		return gillsuit;
 	}
 
 	public Armor vestments() {
 		Armor vestments = new Armor("holy vestments", '[', AsciiPanel.white);
+		vestments.regenerateHp = true;
 		return vestments;
 	}
 }
