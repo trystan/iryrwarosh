@@ -31,44 +31,11 @@ public class PlayScreen implements Screen, Handler {
 	
 	private List<Message> messages = new ArrayList<Message>();
 	
-	public PlayScreen(World world){
+	public PlayScreen(World world, Factory factory, Creature player){
 		MessageBus.subscribe(this);
-		
-		factory = new Factory();
-		
 		this.world = world;
-		this.player = factory.player(world); 
-		
-		addZoras(20);
-		addGoblins(100);
-		addWeapons();
-		addMonsters(20);
-
-		this.player.equip(world, factory.weapon());
-		world.update();
-	}
-	
-	private void addZoras(int total){
-		for (int i = 0; i < total; i++)
-			factory.zora(world);
-	}
-	
-	private void addMonsters(int perBiome) {
-		for (Tile biome : new Tile[]{ Tile.GREEN_TREE1, Tile.PINE_TREE1, Tile.BROWN_TREE1, Tile.BROWN_TREE4, Tile.WHITE_TREE1, 
-				Tile.GREEN_ROCK, Tile.BROWN_ROCK, Tile.WHITE_ROCK, Tile.DESERT_SAND1, Tile.WATER1 }){
-			for (int i = 0; i < perBiome; i++)
-				factory.monster(world, biome);
-		}
-	}
-
-	private void addGoblins(int total){
-		for (int i = 0; i < total; i++)
-			factory.goblin(world);
-	}
-	
-	private void addWeapons(){
-		for (int i = 0; i < 20; i++)
-			world.add(factory.weapon());
+		this.factory = factory;
+		this.player = player;
 	}
 	
 	@Override

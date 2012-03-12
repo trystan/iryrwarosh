@@ -3,6 +3,7 @@ package iryrwarosh;
 import java.applet.Applet;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+
 import asciiPanel.AsciiPanel;
 
 public class AppletMain extends Applet implements KeyListener {

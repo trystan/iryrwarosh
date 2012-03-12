@@ -2,10 +2,12 @@ package iryrwarosh;
 
 import iryrwarosh.screens.StartScreen;
 
-import javax.swing.JFrame;
-import asciiPanel.AsciiPanel;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+
+import javax.swing.JFrame;
+
+import asciiPanel.AsciiPanel;
 
 public class ApplicationMain extends JFrame implements KeyListener {
 	private static final long serialVersionUID = 1L;

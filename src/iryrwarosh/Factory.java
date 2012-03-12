@@ -35,7 +35,7 @@ public class Factory {
 		}
 	}
 	
-	public Weapon knuckes(){
+	public Weapon knuckles(){
 		Weapon w = new Weapon("Knuckes", ')', AsciiPanel.white);
 		w.comboAttackPercent = 33;
 		return w;
@@ -75,7 +75,7 @@ public class Factory {
 
 	public Weapon weapon() {
 		switch ((int)(Math.random() * 6)){
-		case 0: return knuckes();
+		case 0: return knuckles();
 		case 1: return knife();
 		case 2: return club();
 		case 3: return sword();
