@@ -8,22 +8,22 @@ import java.util.List;
 import asciiPanel.AsciiPanel;
 
 public class Factory {
-	private HashMap<Tile,List<CreatureTrait>> monsterTraits;
+	private HashMap<Tile,List<Trait>> monsterTraits;
 	
 	public Factory(){
 		setMonsterTraits();
 	}
 	
 	private void setMonsterTraits(){
-		monsterTraits = new HashMap<Tile,List<CreatureTrait>>();
+		monsterTraits = new HashMap<Tile,List<Trait>>();
 		
 		for (Tile biome : new Tile[]{ Tile.GREEN_TREE1, Tile.PINE_TREE1, Tile.BROWN_TREE1, Tile.BROWN_TREE4, Tile.WHITE_TREE1, 
 				Tile.GREEN_ROCK, Tile.BROWN_ROCK, Tile.WHITE_ROCK, Tile.DESERT_SAND1, Tile.WATER1 }){
 			
-			List<CreatureTrait> traits = new ArrayList<CreatureTrait>();
+			List<Trait> traits = new ArrayList<Trait>();
 			
 			while (traits.size() < 3){
-				CreatureTrait trait = CreatureTrait.getRandom();
+				Trait trait = Trait.getRandom();
 				if (!traits.contains(trait))
 					traits.add(trait);
 			}
@@ -34,19 +34,19 @@ public class Factory {
 	
 	public Weapon knuckles(){
 		Weapon w = new Weapon("Knuckes", ')', Tile.WHITE_ROCK.background());
-		w.addTrait(CreatureTrait.COMBO_ATTACK);
+		w.addTrait(Trait.COMBO_ATTACK);
 		return w;
 	}
 	
 	public Weapon knife(){
 		Weapon w = new Weapon("Knife", ')', Tile.WHITE_ROCK.background());
-		w.addTrait(CreatureTrait.EVADE_ATTACK);
+		w.addTrait(Trait.EVADE_ATTACK);
 		return w;
 	}
 	
 	public Weapon club(){
 		Weapon w = new Weapon("Club", ')', Tile.BROWN_ROCK.background());
-		w.addTrait(CreatureTrait.CIRCLE_ATTACK);
+		w.addTrait(Trait.CIRCLE_ATTACK);
 		return w;
 	}
 	
@@ -57,14 +57,14 @@ public class Factory {
 	
 	public Weapon spear(){
 		Weapon w = new Weapon("Spear", ')', Tile.BROWN_ROCK.background());
-		w.addTrait(CreatureTrait.REACH_ATTACK);
+		w.addTrait(Trait.REACH_ATTACK);
 		w.isImuneToSpikes = true;
 		return w;
 	}
 	
 	public Weapon staff(){
 		Weapon w = new Weapon("Staff", ')', Tile.BROWN_ROCK.background());
-		w.addTrait(CreatureTrait.COUNTER_ATTACK);
+		w.addTrait(Trait.COUNTER_ATTACK);
 		w.isImuneToSpikes = true;
 		return w;
 	}
@@ -88,7 +88,7 @@ public class Factory {
 				wander(world);
 			}
 		};
-		goblin.addTrait(CreatureTrait.WALKER);
+		goblin.addTrait(Trait.WALKER);
 		
 		world.add(goblin);
 		goblin.equip(world, weapon());
@@ -191,20 +191,20 @@ public class Factory {
 		};
 		
 		if (biome == Tile.WATER1){
-			monster.addTrait(CreatureTrait.SWIMMER);
+			monster.addTrait(Trait.SWIMMER);
 		} else {
-			monster.addTrait(CreatureTrait.WALKER);
+			monster.addTrait(Trait.WALKER);
 		}
 		
-		for (CreatureTrait trait : monsterTraits.get(biome))
+		for (Trait trait : monsterTraits.get(biome))
 			monster.addTrait(trait);
 		
 		if (isBigMonster){
-			monster.addTrait(CreatureTrait.EXTRA_HP);
+			monster.addTrait(Trait.EXTRA_HP);
 			
-			CreatureTrait trait = CreatureTrait.getRandom();
+			Trait trait = Trait.getRandom();
 			while (monster.hasTrait(trait))
-				trait = CreatureTrait.getRandom();
+				trait = Trait.getRandom();
 			monster.addTrait(trait);
 		}
 		
@@ -220,24 +220,24 @@ public class Factory {
 
 	public Creature player(World world) {
 		Creature player = new Creature("player", '@', AsciiPanel.brightWhite, 10);
-		player.addTrait(CreatureTrait.WALKER);
+		player.addTrait(Trait.WALKER);
 		world.add(player);
 		return player;
 	}
 	
 	public Creature zora(World world){
 		Creature zora = new Creature("zora", 'z', Tile.WATER1.color(), 1);
-		zora.addTrait(CreatureTrait.SWIMMER);
-		zora.addTrait(CreatureTrait.HIDER);
-		zora.addTrait(CreatureTrait.TERRITORIAL);
-		zora.addTrait(CreatureTrait.ROCK_SPITTER);
+		zora.addTrait(Trait.SWIMMER);
+		zora.addTrait(Trait.HIDER);
+		zora.addTrait(Trait.TERRITORIAL);
+		zora.addTrait(Trait.ROCK_SPITTER);
 		world.add(zora);
 		return zora;
 	}
 
 	public Armor heavyArmor() {
 		Armor heavy = new Armor("heavy armor", '[', AsciiPanel.white);
-		heavy.addTrait(CreatureTrait.EXTRA_DEFENSE);
+		heavy.addTrait(Trait.EXTRA_DEFENSE);
 		return heavy;
 	}
 
@@ -248,25 +248,25 @@ public class Factory {
 
 	public Armor wizardRobe() {
 		Armor robes = new Armor("wizard robes", '[', AsciiPanel.white);
-		robes.addTrait(CreatureTrait.DETECT_CAMOUFLAGED);
+		robes.addTrait(Trait.DETECT_CAMOUFLAGED);
 		return robes;
 	}
 
 	public Armor cloak() {
 		Armor cloak = new Armor("dark cloak", '[', AsciiPanel.brightBlack);
-		cloak.addTrait(CreatureTrait.DEFLECT_RANGED);
+		cloak.addTrait(Trait.DEFLECT_RANGED);
 		return cloak;
 	}
 
 	public Armor gillsuit() {
 		Armor gillsuit = new Armor("gillsuit", '[', Tile.WATER1.color());
-		gillsuit.addTrait(CreatureTrait.SWIMMER);
+		gillsuit.addTrait(Trait.SWIMMER);
 		return gillsuit;
 	}
 
 	public Armor vestments() {
 		Armor vestments = new Armor("holy vestments", '[', AsciiPanel.white);
-		vestments.addTrait(CreatureTrait.REGENERATES);
+		vestments.addTrait(Trait.REGENERATES);
 		return vestments;
 	}
 }

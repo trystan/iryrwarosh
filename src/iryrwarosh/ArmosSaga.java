@@ -25,8 +25,8 @@ public class ArmosSaga implements Handler {
 		};
 		
 		armos.position = new Point(x, y);
-		armos.addTrait(CreatureTrait.WALKER);
-		armos.addTrait(CreatureTrait.DOUBLE_MOVE);
+		armos.addTrait(Trait.WALKER);
+		armos.addTrait(Trait.DOUBLE_MOVE);
 		world.add(armos);
 	}
 }

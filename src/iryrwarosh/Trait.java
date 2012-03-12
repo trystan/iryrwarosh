@@ -1,6 +1,6 @@
 package iryrwarosh;
 
-public enum CreatureTrait {
+public enum Trait {
 	WALKER("walker"), SWIMMER("swimmer"), FLYER("flyer"),
 	EXTRA_HP("hp+"), EXTRA_ATTACK("attack+"), EXTRA_EVADE("evasion+"),EXTRA_DEFENSE("defense+"),
 	DOUBLE_ATTACK("double attack"), DOUBLE_MOVE("double move"),
@@ -14,11 +14,11 @@ public enum CreatureTrait {
 	private String description;
 	public String description() { return description; }
 	
-	CreatureTrait(String description){
+	Trait(String description){
 		this.description = description;
 	}
 	
-	public static CreatureTrait getRandom() {
-		return CreatureTrait.values()[(int)(Math.random() * CreatureTrait.values().length)];
+	public static Trait getRandom() {
+		return Trait.values()[(int)(Math.random() * Trait.values().length)];
 	}
 }

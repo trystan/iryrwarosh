@@ -20,7 +20,7 @@ public class LootSaga implements Handler {
 	}
 	
 	public void handle(Killed message){
-		if (message.attacked.hasTrait(CreatureTrait.LOOTLESS))
+		if (message.attacked.hasTrait(Trait.LOOTLESS))
 			return;
 		
 		switch ((int)(Math.random() * 2)){

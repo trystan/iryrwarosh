@@ -1,7 +1,7 @@
 package iryrwarosh.screens;
 
 import iryrwarosh.Creature;
-import iryrwarosh.CreatureTrait;
+import iryrwarosh.Trait;
 import iryrwarosh.Factory;
 import iryrwarosh.Handler;
 import iryrwarosh.Item;
@@ -97,7 +97,7 @@ public class PlayScreen implements Screen, Handler {
 				continue;
 			
 			Color color = c.color();
-			if (c.hasTrait(CreatureTrait.CAMOUFLAGED)){
+			if (c.hasTrait(Trait.CAMOUFLAGED)){
 				switch (player.position.distanceTo(c.position)){
 				case 0:
 				case 1:
@@ -105,15 +105,15 @@ public class PlayScreen implements Screen, Handler {
 				case 3:
 					break;
 				case 4:
-					if (!player.hasTrait(CreatureTrait.DETECT_CAMOUFLAGED))
+					if (!player.hasTrait(Trait.DETECT_CAMOUFLAGED))
 						color = color.darker();
 					break;
 				case 5:
-					if (!player.hasTrait(CreatureTrait.DETECT_CAMOUFLAGED))
+					if (!player.hasTrait(Trait.DETECT_CAMOUFLAGED))
 						color = color.darker().darker();
 					break;
 				default:
-					if (!player.hasTrait(CreatureTrait.DETECT_CAMOUFLAGED))
+					if (!player.hasTrait(Trait.DETECT_CAMOUFLAGED))
 						color = null;
 					else
 						color = color.darker();

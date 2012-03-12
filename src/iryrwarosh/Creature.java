@@ -29,16 +29,16 @@ public class Creature {
 	public int hp() { return hp; }
 
 	private int maxHp;
-	public int maxHp() { return maxHp + (hasTrait(CreatureTrait.EXTRA_HP) ? 3 : 0); }
+	public int maxHp() { return maxHp + (hasTrait(Trait.EXTRA_HP) ? 3 : 0); }
 
 	private int money;
 	public int money() { return money; }
 	
-	private List<CreatureTrait> traits = new ArrayList<CreatureTrait>();
+	private List<Trait> traits = new ArrayList<Trait>();
 
-	public void addTrait(CreatureTrait trait) { traits.add(trait); }
+	public void addTrait(Trait trait) { traits.add(trait); }
 
-	public boolean hasTrait(CreatureTrait trait) {
+	public boolean hasTrait(Trait trait) {
 		return traits.contains(trait)
 				|| weapon != null && weapon.hasTrait(trait)
 				|| armor != null && armor.hasTrait(trait);
@@ -47,7 +47,7 @@ public class Creature {
 	public String describe(){
 		String text = "";
 		
-		for (CreatureTrait trait : traits)
+		for (Trait trait : traits)
 			text += ", " + trait.description();
 		
 		text = name + " (" + text.substring(2) + ")";
@@ -102,7 +102,7 @@ public class Creature {
 				moveable++;
 		}
 		
-		return moveable * (hasTrait(CreatureTrait.EXTRA_EVADE) ? 8 : 5);
+		return moveable * (hasTrait(Trait.EXTRA_EVADE) ? 8 : 5);
 	}
 	
 	public boolean evadeCheck(World world){
@@ -118,13 +118,13 @@ public class Creature {
 	}
 	
 	public boolean canEnter(Tile tile){
-		if (hasTrait(CreatureTrait.WALKER) && tile.isGround())
+		if (hasTrait(Trait.WALKER) && tile.isGround())
 			return true;
 		
-		if (hasTrait(CreatureTrait.SWIMMER) && tile.isSwimmable())
+		if (hasTrait(Trait.SWIMMER) && tile.isSwimmable())
 			return true;
 		
-		if (hasTrait(CreatureTrait.FLYER) && tile.isFlyable())
+		if (hasTrait(Trait.FLYER) && tile.isFlyable())
 			return true;
 		
 		return false;
@@ -134,7 +134,7 @@ public class Creature {
 		if (x==0 && y==0)
 			return;
 		
-		if (hasTrait(CreatureTrait.TERRITORIAL)
+		if (hasTrait(Trait.TERRITORIAL)
 				&& ((position.x+x) / 19 != homeScreenPosition.x || (position.y+y) / 9 != homeScreenPosition.y))
 			return;
 		
@@ -171,19 +171,19 @@ public class Creature {
 		
 		Boolean isSpecial = specialType != null;
 
-		other.hurt(world, this, hasTrait(CreatureTrait.EXTRA_ATTACK) ? 2 : 1, specialType);
+		other.hurt(world, this, hasTrait(Trait.EXTRA_ATTACK) ? 2 : 1, specialType);
 
-		if (!isSpecial && other.hasTrait(CreatureTrait.SPIKED)){
+		if (!isSpecial && other.hasTrait(Trait.SPIKED)){
 			if (weapon == null || !weapon.isImuneToSpikes){
 				MessageBus.publish(new HitSpikes(world, this, other));
 				hurt(world, other, 1, null);
 			}
 		}
 
-		if (!isSpecial && hasTrait(CreatureTrait.POISONOUS) && other.hp > 0)
+		if (!isSpecial && hasTrait(Trait.POISONOUS) && other.hp > 0)
 			other.poisonedBy(world, this);
 		
-		if (!isSpecial && hasTrait(CreatureTrait.DOUBLE_ATTACK)
+		if (!isSpecial && hasTrait(Trait.DOUBLE_ATTACK)
 				&& !hasDoubleAttackedThisTurn
 				&& other.hp > 0) {
 			hasDoubleAttackedThisTurn = true;
@@ -231,13 +231,13 @@ public class Creature {
 				hurt(world, lastPoisonedBy, 1, null);
 		}
 		
-		if (hasTrait(CreatureTrait.REGENERATES) && --regenerateCounter < 0){
+		if (hasTrait(Trait.REGENERATES) && --regenerateCounter < 0){
 			regenerateCounter = 10;
 			if (hp < maxHp)
 				heal(1);
 		}
 		
-		if (hasTrait(CreatureTrait.HIDER) && hiddenCounter-- < 1){
+		if (hasTrait(Trait.HIDER) && hiddenCounter-- < 1){
 			hiddenCounter = 5 + (int)(Math.random() * 5);
 			if (hiddenPoint == null)
 				hide(world);
@@ -245,7 +245,7 @@ public class Creature {
 				unhide(world);
 		}
 		
-		if (hasTrait(CreatureTrait.ROCK_SPITTER) 
+		if (hasTrait(Trait.ROCK_SPITTER) 
 				&& projectileCooldown-- < 1 
 				&& Math.random() < 0.1)
 			spitRock(world);
@@ -266,7 +266,7 @@ public class Creature {
 		int x = 0;
 		int y = 0;
 		while (hiddenPoint != null){
-			if (hasTrait(CreatureTrait.TERRITORIAL)){
+			if (hasTrait(Trait.TERRITORIAL)){
 				x = homeScreenPosition.x * 19 + (int)(Math.random() * 19);
 				y = homeScreenPosition.y *  9 + (int)(Math.random() * 9);	
 			} else {
@@ -283,7 +283,7 @@ public class Creature {
 		}
 		
 		MessageBus.publish(new Unhid(world, this));
-		if (hasTrait(CreatureTrait.ROCK_SPITTER))
+		if (hasTrait(Trait.ROCK_SPITTER))
 			spitRock(world);
 	}
 
@@ -295,10 +295,10 @@ public class Creature {
 	}
 
 	public void wander(World world){
-		if (hasTrait(CreatureTrait.AGGRESSIVE))
+		if (hasTrait(Trait.AGGRESSIVE))
 			fightNearby(world);
 		
-		if (hasTrait(CreatureTrait.FEARFUL))
+		if (hasTrait(Trait.FEARFUL))
 			fleeFromNearby(world);
 		
 		wanderForReal(world);
@@ -315,7 +315,7 @@ public class Creature {
 		
 		moveBy(world, lastWanderX, lastWanderY);
 		
-		if (hasTrait(CreatureTrait.DOUBLE_MOVE) && !hasDoubleMovedThisTurn){
+		if (hasTrait(Trait.DOUBLE_MOVE) && !hasDoubleMovedThisTurn){
 			hasDoubleMovedThisTurn = true;
 			wanderForReal(world);
 		}
@@ -365,7 +365,7 @@ public class Creature {
 	}
 
 	public void hurt(World world, Creature attacker, int i, String specialType) {
-		if (i > 1 && hasTrait(CreatureTrait.EXTRA_DEFENSE)){
+		if (i > 1 && hasTrait(Trait.EXTRA_DEFENSE)){
 			i--;
 			MessageBus.publish(new BlockSomeDamage(world, this, armor));
 		}
@@ -377,7 +377,7 @@ public class Creature {
 		
 		if (hp < 1)
 			MessageBus.publish(new Killed(world, attacker, this));
-		else if (hasTrait(CreatureTrait.SOCIAL))
+		else if (hasTrait(Trait.SOCIAL))
 			MessageBus.publish(new CallForHelp(world, this, attacker));
 	}
 

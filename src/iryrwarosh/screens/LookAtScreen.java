@@ -1,7 +1,7 @@
 package iryrwarosh.screens;
 
 import iryrwarosh.Creature;
-import iryrwarosh.CreatureTrait;
+import iryrwarosh.Trait;
 import iryrwarosh.Item;
 import iryrwarosh.Tile;
 import iryrwarosh.World;
@@ -40,9 +40,9 @@ public class LookAtScreen implements Screen {
 		String text = null;
 		
 		if (creature != null 
-				&& !(creature.hasTrait(CreatureTrait.CAMOUFLAGED) 
+				&& !(creature.hasTrait(Trait.CAMOUFLAGED) 
 						&& creature.position.distanceTo(player.position) > 5
-						&& !player.hasTrait(CreatureTrait.DETECT_CAMOUFLAGED)))
+						&& !player.hasTrait(Trait.DETECT_CAMOUFLAGED)))
 			text = creature.describe();
 		else if (item != null)
 			text = item.name();

@@ -15,10 +15,10 @@ public class Item {
 	public Color color(){ return color; }
 	
 
-	private List<CreatureTrait> traits;
-	public void addTrait(CreatureTrait trait) { traits.add(trait); }
+	private List<Trait> traits;
+	public void addTrait(Trait trait) { traits.add(trait); }
 
-	public boolean hasTrait(CreatureTrait trait) {
+	public boolean hasTrait(Trait trait) {
 		return traits.contains(trait);
 	}
 	
@@ -26,7 +26,7 @@ public class Item {
 		this.name = name;
 		this.glyph = (char)glyph;
 		this.color = color;
-		this.traits = new ArrayList<CreatureTrait>();
+		this.traits = new ArrayList<Trait>();
 	}
 	
 	public void onCollide(World world, Creature colider){
