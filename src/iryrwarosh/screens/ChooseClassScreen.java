@@ -23,8 +23,8 @@ public class ChooseClassScreen implements Screen {
 		terminal.write("    reduce damage or even avoid it all.", 1, y++);
 
 		y++;
-		terminal.write("[2] An adventurer with a sword to dispatch your weaker enemies and a tunic", 1, y++);
-		terminal.write("    that leaves you unencumbered and able to jump.", 1, y++);
+		terminal.write("[2] An adventurer with a sword that shoots when you're at full health and", 1, y++);
+		terminal.write("    a tunic that leaves you unencumbered and able to jump.", 1, y++);
 		
 		y++;
 		terminal.write("[3] A monk with knuckles for combos and a special suit that allows you to", 1, y++);

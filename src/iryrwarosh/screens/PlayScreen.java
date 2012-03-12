@@ -48,10 +48,10 @@ public class PlayScreen implements Screen, Handler {
 		Color bg = Tile.hsv(30, 30, 15);
 		terminal.clear(' ', 0, 0, 80, 1, Tile.hsv(0, 0, 15), bg);
 		
-		terminal.write("Using ", 1, 0, AsciiPanel.white, bg);
+		terminal.write("[z] ", 1, 0, AsciiPanel.white, bg);
 		terminal.write(player.leftHand().name(), player.leftHand().color(), bg);
 		
-		terminal.write(" and ", AsciiPanel.white, bg);
+		terminal.write("[x] ", 20, 0, AsciiPanel.white, bg);
 		terminal.write(player.rightHand().name(), player.rightHand().color(), bg);
 		
 		terminal.write("evade: " + player.evadePercent(world) + "%", 45, 0, AsciiPanel.yellow, bg);
@@ -174,8 +174,10 @@ public class PlayScreen implements Screen, Handler {
         case KeyEvent.VK_U: moveBy( 1,-1); break;
         case KeyEvent.VK_B: moveBy(-1, 1); break;
         case KeyEvent.VK_N: moveBy( 1, 1); break;
+        case KeyEvent.VK_Z: player.leftHand().use(this, world, player); break;
+        case KeyEvent.VK_X: player.leftHand().use(this, world, player); break;
 		case KeyEvent.VK_M: return new WorldMapScreen(this, world.map(), player.position);
-		case KeyEvent.VK_X: return new LookAtScreen(this, world, player, getScrollX(), getScrollY());
+		case KeyEvent.VK_SPACE: return new LookAtScreen(this, world, player, getScrollX(), getScrollY());
 		default:
 			return this;
 		}

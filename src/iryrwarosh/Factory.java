@@ -1,5 +1,7 @@
 package iryrwarosh;
 
+import iryrwarosh.screens.Screen;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,8 +23,14 @@ public class Factory {
 				Tile.GREEN_ROCK, Tile.BROWN_ROCK, Tile.WHITE_ROCK, Tile.DESERT_SAND1, Tile.WATER1 }){
 			
 			List<Trait> traits = new ArrayList<Trait>();
+
+			if (biome == Tile.WATER1){
+				traits.add(Trait.SWIMMER);
+			} else {
+				traits.add(Trait.WALKER);
+			}
 			
-			while (traits.size() < 3){
+			while (traits.size() < 4){
 				Trait trait = Trait.getRandom();
 				if (!traits.contains(trait))
 					traits.add(trait);
@@ -51,7 +59,24 @@ public class Factory {
 	}
 	
 	public Item sword(){
-		Item w = new Item("Sword", ')', AsciiPanel.white);
+		Item w = new Item("Sword", ')', AsciiPanel.white){
+			private Projectile last;
+			
+			public void use(Screen screen, World world, Creature owner){
+				if (owner.hp() != owner.maxHp())
+					return;
+				
+				if (last != null && !last.isDone())
+					return;
+				
+				last = new Projectile(owner, 9, AsciiPanel.brightWhite, 1, owner.position.copy(), owner.lastMovedDirection()){
+					public boolean canEnter(Tile tile){
+						return tile.isGround() || tile.isWater();
+					}
+				};
+				world.add(last);
+			}
+		};
 		return w;
 	}
 	
@@ -181,25 +206,17 @@ public class Factory {
 		
 		boolean isBigMonster = Math.random() * 1000 < (monstersCreated - 200);
 		
-		Creature monster = new Creature(name, isBigMonster ? 'M' : 'm', color, 3){
+		Creature monster = new Creature(name, isBigMonster ? 'M' : 'm', color, isBigMonster ? 5 : 2){
 			public void update(World world){
 				super.update(world);
 				wander(world);
 			}
 		};
 		
-		if (biome == Tile.WATER1){
-			monster.addTrait(Trait.SWIMMER);
-		} else {
-			monster.addTrait(Trait.WALKER);
-		}
-		
 		for (Trait trait : monsterTraits.get(biome))
 			monster.addTrait(trait);
 		
 		if (isBigMonster){
-			monster.addTrait(Trait.EXTRA_HP);
-			
 			Trait trait = Trait.getRandom();
 			while (monster.hasTrait(trait))
 				trait = Trait.getRandom();

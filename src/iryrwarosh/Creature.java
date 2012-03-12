@@ -11,6 +11,9 @@ public class Creature {
 	public Point position;
 	public Point homeScreenPosition;
 	
+	public Point lastMovedDirection = new Point(0,0);
+	public Point lastMovedDirection() { return lastMovedDirection.copy(); }
+	
 	private int regenerateCounter;
 	private int poisonCounter;
 	private Creature lastPoisonedBy;
@@ -128,6 +131,8 @@ public class Creature {
 			if (canEnter(world.tile(position.x+x, position.y+y))){
 				position.x += x;
 				position.y += y;
+				lastMovedDirection.x = x;
+				lastMovedDirection.y = y;
 				MessageBus.publish(new Moved(world, this));
 			} else {
 				lastWanderX = (int)(Math.random() * 3) - 1;

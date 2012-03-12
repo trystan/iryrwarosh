@@ -32,10 +32,10 @@ public class Projectile {
 		position.x += velocity.x;
 		position.y += velocity.y;
 		
-		if (airTime++ > 20)
+		if (airTime++ > 10)
 			isDone = true;
 		
-		if (!world.tile(position.x, position.y).isFlyable()) {
+		if (!canEnter(world.tile(position.x, position.y))) {
 			isDone = true;
 			return;
 		}
@@ -51,5 +51,9 @@ public class Projectile {
 			c.hurt(world, origin, damage, "from a distance");
 		}
 		isDone = true;
+	}
+	
+	public boolean canEnter(Tile tile){
+		return tile.isFlyable();
 	}
 }

@@ -1,5 +1,7 @@
 package iryrwarosh;
 
+import iryrwarosh.screens.Screen;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,10 @@ public class Item {
 	}
 	
 	public void onCollide(World world, Creature colider){
+		
+	}
+
+	public void use(Screen screen, World world, Creature player) {
 		
 	}
 }
