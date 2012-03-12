@@ -83,17 +83,28 @@ public class Creature {
 	
 	private Weapon weapon;
 	public Weapon weapon() { return weapon; }
+
+	private Armor armor;
+	public Armor armor() { return armor; }
 	
 	public void equip(World world, Weapon newWeapon) {
 		if (weapon != null)
-			dropWeapon(world);
+			drop(world);
 		
 		world.removeItem(position.x, position.y);
 		weapon = newWeapon;
-		MessageBus.publish(new EquipedWeapon(world, this, weapon));
+		MessageBus.publish(new EquipedItem(world, this, weapon));
 	}
 
-	private void dropWeapon(World world) {
+	public void equip(World world, Armor newArmor) {
+		if (armor != null)
+			drop(world);
+		
+		world.removeItem(position.x, position.y);
+		armor = newArmor;
+		MessageBus.publish(new EquipedItem(world, this, weapon));
+	}
+	private void drop(World world) {
 		if (weapon == null)
 			return;
 		

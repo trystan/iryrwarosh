@@ -36,19 +36,19 @@ public class Factory {
 	}
 	
 	public Weapon knuckles(){
-		Weapon w = new Weapon("Knuckes", ')', AsciiPanel.white);
+		Weapon w = new Weapon("Knuckes", ')', Tile.WHITE_ROCK.background());
 		w.comboAttackPercent = 33;
 		return w;
 	}
 	
 	public Weapon knife(){
-		Weapon w = new Weapon("Knife", ')', AsciiPanel.white);
+		Weapon w = new Weapon("Knife", ')', Tile.WHITE_ROCK.background());
 		w.evadeAttackPercent = 75;
 		return w;
 	}
 	
 	public Weapon club(){
-		Weapon w = new Weapon("Club", ')', AsciiPanel.white);
+		Weapon w = new Weapon("Club", ')', Tile.BROWN_ROCK.background());
 		w.circleAttackPercent = 75;
 		return w;
 	}
@@ -60,14 +60,14 @@ public class Factory {
 	}
 	
 	public Weapon spear(){
-		Weapon w = new Weapon("Spear", ')', AsciiPanel.white);
+		Weapon w = new Weapon("Spear", ')', Tile.BROWN_ROCK.background());
 		w.distantAttackPercent = 25;
 		w.isImuneToSpikes = true;
 		return w;
 	}
 	
 	public Weapon staff(){
-		Weapon w = new Weapon("Staff", ')', AsciiPanel.white);
+		Weapon w = new Weapon("Staff", ')', Tile.BROWN_ROCK.background());
 		w.counterAttackPercent = 25;
 		w.isImuneToSpikes = true;
 		return w;
@@ -237,5 +237,35 @@ public class Factory {
 		zora.addTrait(CreatureTrait.ROCK_SPITTER);
 		world.add(zora);
 		return zora;
+	}
+
+	public Armor heavyArmor() {
+		Armor heavy = new Armor("heavy armor", '[', AsciiPanel.white);
+		return heavy;
+	}
+
+	public Armor greenTunic() {
+		Armor tunic = new Armor("green tunic", '[', Tile.GREEN_ROCK.background());
+		return tunic;
+	}
+
+	public Armor wizardRobe() {
+		Armor robes = new Armor("wizard robes", '[', AsciiPanel.white);
+		return robes;
+	}
+
+	public Armor cloak() {
+		Armor cloak = new Armor("dark cloak", '[', AsciiPanel.brightBlack);
+		return cloak;
+	}
+
+	public Armor gillsuit() {
+		Armor gillsuit = new Armor("gillsuit", '[', Tile.WATER1.color());
+		return gillsuit;
+	}
+
+	public Armor vestments() {
+		Armor vestments = new Armor("holy vestments", '[', AsciiPanel.white);
+		return vestments;
 	}
 }

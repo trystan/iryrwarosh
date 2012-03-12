@@ -4,33 +4,37 @@ public class HelpSaga implements Handler {
 
 	@Override
 	public void handle(Message message) {
-		if (EquipedWeapon.class.isAssignableFrom(message.getClass()))
-			onEquiped((EquipedWeapon)message);
+		if (EquipedItem.class.isAssignableFrom(message.getClass()))
+			onEquiped((EquipedItem)message);
 	}
 
-	private void onEquiped(EquipedWeapon message) {
-		String help = message.weapon.name();
+	private void onEquiped(EquipedItem message) {
+		String help = message.item.name();
 		
-		if (message.weapon.comboAttackPercent > 0)
-			help += " " + message.weapon.comboAttackPercent + "% chace of combo attack.";
-
-		if (message.weapon.evadeAttackPercent > 0)
-			help += " " + message.weapon.evadeAttackPercent + "% chance of attacking when evading.";
-
-		if (message.weapon.circleAttackPercent > 0)
-			help += " " + message.weapon.circleAttackPercent + "% chance of attacking in a circle.";
-
-		if (message.weapon.finishingAttackPercent > 0)
-			help += " " + message.weapon.finishingAttackPercent + "% chance of a coup de grace.";
-
-		if (message.weapon.distantAttackPercent > 0)
-			help += " " + message.weapon.distantAttackPercent + "% chance of attacking a moving neighbor.";
-
-		if (message.weapon.counterAttackPercent > 0)
-			help += " " + message.weapon.counterAttackPercent + "% chance of counter attacking.";
+		if (Weapon.class.isAssignableFrom(message.item.getClass())){
+			Weapon weapon = (Weapon)message.item;
+			
+			if (weapon.comboAttackPercent > 0)
+				help += " " + weapon.comboAttackPercent + "% chace of combo attack.";
 		
-		if (message.weapon.isImuneToSpikes)
-			help += " Spiked monsters can't counter.";
+			if (weapon.evadeAttackPercent > 0)
+				help += " " + weapon.evadeAttackPercent + "% chance of attacking when evading.";
+		
+			if (weapon.circleAttackPercent > 0)
+				help += " " + weapon.circleAttackPercent + "% chance of attacking in a circle.";
+		
+			if (weapon.finishingAttackPercent > 0)
+				help += " " + weapon.finishingAttackPercent + "% chance of a coup de grace.";
+		
+			if (weapon.distantAttackPercent > 0)
+				help += " " + weapon.distantAttackPercent + "% chance of attacking a moving neighbor.";
+		
+			if (weapon.counterAttackPercent > 0)
+				help += " " + weapon.counterAttackPercent + "% chance of counter attacking.";
+			
+			if (weapon.isImuneToSpikes)
+				help += " Spiked monsters can't counter.";
+		}
 		
 		MessageBus.publish(new Note(message.world, message.creature, help));
 	}

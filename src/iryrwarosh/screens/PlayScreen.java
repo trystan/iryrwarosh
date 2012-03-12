@@ -49,7 +49,11 @@ public class PlayScreen implements Screen, Handler {
 		Color bg = Tile.hsv(30, 30, 15);
 		terminal.clear(' ', 0, 0, 80, 1, Tile.hsv(0, 0, 15), bg);
 		
-		terminal.write("Holding a " + player.weapon().name(), 1, 0, player.weapon().color(), bg);
+		terminal.write("Weilding ", 1, 0, AsciiPanel.white, bg);
+		terminal.write(player.weapon().name(), player.weapon().color(), bg);
+		
+		terminal.write(" and wearing ", AsciiPanel.white, bg);
+		terminal.write(player.armor().name(), player.armor().color(), bg);
 		
 		terminal.write("evade: " + player.evadePercent(world) + "%", 45, 0, AsciiPanel.yellow, bg);
 
