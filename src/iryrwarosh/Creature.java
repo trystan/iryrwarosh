@@ -40,8 +40,8 @@ public class Creature {
 
 	public boolean hasTrait(Trait trait) {
 		return traits.contains(trait)
-				|| weapon != null && weapon.hasTrait(trait)
-				|| armor != null && armor.hasTrait(trait);
+				|| leftHand != null && leftHand.hasTrait(trait)
+				|| rightHand != null && rightHand.hasTrait(trait);
 	}
 	
 	public String describe(){
@@ -52,41 +52,25 @@ public class Creature {
 		
 		text = name + " (" + text.substring(2) + ")";
 
-		if (weapon != null)
-			text += " weilding a " + weapon.name();
+		if (leftHand != null)
+			text += " weilding a " + leftHand.name();
 		
 		return text;
 	}
 	
-	private Weapon weapon;
-	public Weapon weapon() { return weapon; }
+	private Item leftHand;
+	public Item leftHand() { return leftHand; }
 
-	private Armor armor;
-	public Armor armor() { return armor; }
+	private Item rightHand;
+	public Item rightHand() { return rightHand; }
 	
-	public void equip(World world, Weapon newWeapon) {
-		if (weapon != null)
-			drop(world);
+	public void equip(World world, Item item) {
+		if (leftHand == null)
+			leftHand = item;
+		else
+			rightHand = item;
 		
-		world.removeItem(position.x, position.y);
-		weapon = newWeapon;
-		MessageBus.publish(new EquipedItem(world, this, weapon));
-	}
-
-	public void equip(World world, Armor newArmor) {
-		if (armor != null)
-			drop(world);
-		
-		world.removeItem(position.x, position.y);
-		armor = newArmor;
-		MessageBus.publish(new EquipedItem(world, this, weapon));
-	}
-	private void drop(World world) {
-		if (weapon == null)
-			return;
-		
-		MessageBus.publish(new DroppedWeapon(world, this, weapon));
-		world.add(weapon, position.x, position.y);
+		MessageBus.publish(new EquipedItem(world, this, item));
 	}
 	
 	public int evadePercent(World world){
@@ -174,10 +158,8 @@ public class Creature {
 		other.hurt(world, this, hasTrait(Trait.EXTRA_ATTACK) ? 2 : 1, specialType);
 
 		if (!isSpecial && other.hasTrait(Trait.SPIKED)){
-			if (weapon == null || !weapon.isImuneToSpikes){
-				MessageBus.publish(new HitSpikes(world, this, other));
-				hurt(world, other, 1, null);
-			}
+			MessageBus.publish(new HitSpikes(world, this, other));
+			hurt(world, other, 1, null);
 		}
 
 		if (!isSpecial && hasTrait(Trait.POISONOUS) && other.hp > 0)
@@ -367,7 +349,7 @@ public class Creature {
 	public void hurt(World world, Creature attacker, int i, String specialType) {
 		if (i > 1 && hasTrait(Trait.EXTRA_DEFENSE)){
 			i--;
-			MessageBus.publish(new BlockSomeDamage(world, this, armor));
+			MessageBus.publish(new BlockSomeDamage(world, this, rightHand));
 		}
 		
 		hp -= i;

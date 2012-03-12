@@ -32,44 +32,42 @@ public class Factory {
 		}
 	}
 	
-	public Weapon knuckles(){
-		Weapon w = new Weapon("Knuckes", ')', Tile.WHITE_ROCK.background());
+	public Item knuckles(){
+		Item w = new Item("Knuckes", ')', Tile.WHITE_ROCK.background());
 		w.addTrait(Trait.COMBO_ATTACK);
 		return w;
 	}
 	
-	public Weapon knife(){
-		Weapon w = new Weapon("Knife", ')', Tile.WHITE_ROCK.background());
+	public Item knife(){
+		Item w = new Item("Knife", ')', Tile.WHITE_ROCK.background());
 		w.addTrait(Trait.EVADE_ATTACK);
 		return w;
 	}
 	
-	public Weapon club(){
-		Weapon w = new Weapon("Club", ')', Tile.BROWN_ROCK.background());
+	public Item club(){
+		Item w = new Item("Club", ')', Tile.BROWN_ROCK.background());
 		w.addTrait(Trait.CIRCLE_ATTACK);
 		return w;
 	}
 	
-	public Weapon sword(){
-		Weapon w = new Weapon("Sword", ')', AsciiPanel.white);
+	public Item sword(){
+		Item w = new Item("Sword", ')', AsciiPanel.white);
 		return w;
 	}
 	
-	public Weapon spear(){
-		Weapon w = new Weapon("Spear", ')', Tile.BROWN_ROCK.background());
+	public Item spear(){
+		Item w = new Item("Spear", ')', Tile.BROWN_ROCK.background());
 		w.addTrait(Trait.REACH_ATTACK);
-		w.isImuneToSpikes = true;
 		return w;
 	}
 	
-	public Weapon staff(){
-		Weapon w = new Weapon("Staff", ')', Tile.BROWN_ROCK.background());
+	public Item staff(){
+		Item w = new Item("Staff", ')', Tile.BROWN_ROCK.background());
 		w.addTrait(Trait.COUNTER_ATTACK);
-		w.isImuneToSpikes = true;
 		return w;
 	}
 
-	public Weapon weapon() {
+	public Item weapon() {
 		switch ((int)(Math.random() * 6)){
 		case 0: return knuckles();
 		case 1: return knife();
@@ -235,38 +233,38 @@ public class Factory {
 		return zora;
 	}
 
-	public Armor heavyArmor() {
-		Armor heavy = new Armor("heavy armor", '[', AsciiPanel.white);
-		heavy.addTrait(Trait.EXTRA_DEFENSE);
-		return heavy;
+	public Item heavyArmor() {
+		Item item = new Item("heavy armor", '[', AsciiPanel.white);
+		item.addTrait(Trait.EXTRA_DEFENSE);
+		return item;
 	}
 
-	public Armor greenTunic() {
-		Armor tunic = new Armor("green tunic", '[', Tile.GREEN_ROCK.background());
-		return tunic;
+	public Item greenTunic() {
+		Item item = new Item("green tunic", '[', Tile.GREEN_ROCK.background());
+		return item;
 	}
 
-	public Armor wizardRobe() {
-		Armor robes = new Armor("wizard robes", '[', AsciiPanel.white);
-		robes.addTrait(Trait.DETECT_CAMOUFLAGED);
-		return robes;
+	public Item wizardRobe() {
+		Item item = new Item("wizard robes", '[', AsciiPanel.white);
+		item.addTrait(Trait.DETECT_CAMOUFLAGED);
+		return item;
 	}
 
-	public Armor cloak() {
-		Armor cloak = new Armor("dark cloak", '[', AsciiPanel.brightBlack);
-		cloak.addTrait(Trait.DEFLECT_RANGED);
-		return cloak;
+	public Item cloak() {
+		Item item = new Item("dark cloak", '[', AsciiPanel.brightBlack);
+		item.addTrait(Trait.DEFLECT_RANGED);
+		return item;
 	}
 
-	public Armor gillsuit() {
-		Armor gillsuit = new Armor("gillsuit", '[', Tile.WATER1.color());
-		gillsuit.addTrait(Trait.SWIMMER);
-		return gillsuit;
+	public Item gillsuit() {
+		Item item = new Item("gillsuit", '[', Tile.WATER1.color());
+		item.addTrait(Trait.SWIMMER);
+		return item;
 	}
 
-	public Armor vestments() {
-		Armor vestments = new Armor("holy vestments", '[', AsciiPanel.white);
-		vestments.addTrait(Trait.REGENERATES);
-		return vestments;
+	public Item vestments() {
+		Item item = new Item("holy vestments", '[', AsciiPanel.white);
+		item.addTrait(Trait.REGENERATES);
+		return item;
 	}
 }

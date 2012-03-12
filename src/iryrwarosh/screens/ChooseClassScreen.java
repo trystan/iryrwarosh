@@ -1,10 +1,9 @@
 package iryrwarosh.screens;
 
-import iryrwarosh.Armor;
 import iryrwarosh.Creature;
 import iryrwarosh.Factory;
+import iryrwarosh.Item;
 import iryrwarosh.Tile;
-import iryrwarosh.Weapon;
 import iryrwarosh.World;
 import iryrwarosh.Worldgen;
 
@@ -60,7 +59,7 @@ public class ChooseClassScreen implements Screen {
 		return this;
 	}
 	
-	private Screen newGame(Factory factory, Weapon weapon, Armor armor){
+	private Screen newGame(Factory factory, Item weapon, Item armor){
 		World world = new Worldgen(48 / 3, 24 / 3).build();
 		
 		Creature player = factory.player(world);
