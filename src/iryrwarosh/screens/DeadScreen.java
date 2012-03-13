@@ -14,6 +14,6 @@ public class DeadScreen implements Screen {
 
 	@Override
 	public Screen respondToUserInput(KeyEvent key) {
-		return key.getKeyCode() == KeyEvent.VK_ENTER ? new ChooseClassScreen() : this;
+		return key.getKeyCode() == KeyEvent.VK_ENTER ? new ChooseStartingItemssScreen() : this;
 	}
 }
