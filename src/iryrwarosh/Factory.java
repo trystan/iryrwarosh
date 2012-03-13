@@ -69,8 +69,10 @@ public class Factory {
 	public Item club(){
 		Item item = new Item("club", ')', Tile.BROWN_ROCK.background(), "Mele weapon with knowckback. Can do a circle attack."){
 			public Screen use(Screen screen, World world, Creature owner){
-				if (owner.money() < 3)
+				if (owner.money() + owner.hearts() <= 3) {
+					MessageBus.publish(new Note(world, owner, "You need more than 3 rupees or hearts to shoot arrows."));
 					return screen;
+				}
 				
 				for (Point p : owner.position.neighbors()){
 					Creature other = world.creature(p.x, p.y);
@@ -92,8 +94,10 @@ public class Factory {
 			private Projectile last;
 			
 			public Screen use(Screen screen, World world, Creature owner){
-				if (owner.hearts() != owner.maxHearts())
+				if (owner.hearts() != owner.maxHearts()){
+					MessageBus.publish(new Note(world, owner, "Your sword can only shoot when all your hearts are full."));
 					return screen;
+				}
 				
 				if (last != null && !last.isDone())
 					return screen;
@@ -125,9 +129,10 @@ public class Factory {
 	public Item spear(){
 		Item item = new Item("spear", ')', Tile.BROWN_ROCK.background(), "Melee weapon auto-attacks near you. Can be thrown in one of 4 directions."){
 			public Screen use(Screen screen, World world, Creature owner){
-				if (owner.money() < 2)
+				if (owner.money() + owner.hearts() <= 2) {
+					MessageBus.publish(new Note(world, owner, "You need more than 2 rupees or hearts to throw a spear."));
 					return screen;
-				else
+				} else
 					return new ThrowItemScreen(screen, world, owner, this);
 			}
 		};
@@ -366,7 +371,11 @@ public class Factory {
 	public Item bow() {
 		Item item = new Item("bow", ')', AsciiPanel.brightBlack, "Shoots arrows."){
 			public Screen use(Screen screen, World world, Creature owner){
-
+				if (owner.money() + owner.hearts() <= 1){
+					MessageBus.publish(new Note(world, owner, "You more than 1 rupee or heart to shoot arrows."));
+					return screen;
+				}
+				
 				Point dir = owner.lastMovedDirection();
 				char glyph = 9;
 				if (dir.x == -1 && dir.y == -1 || dir.x == 1 && dir.y == 1)
@@ -436,7 +445,7 @@ public class Factory {
 	}
 
 	public Item advancedSpellBook() {
-		Item item = new Item("anvanced spellbook", '+', AsciiPanel.white, "Use to cast one of 3 advanced spells."){
+		Item item = new Item("advanced spellbook", '+', AsciiPanel.white, "Use to cast one of 3 advanced spells."){
 			public Screen use(Screen screen, World world, Creature owner){
 				return new CastAdvancedSpellScreen(screen, world, owner);
 			}

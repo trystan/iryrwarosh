@@ -169,19 +169,17 @@ public class Creature {
 			return;
 		}
 		
-		Boolean isSpecial = false; // specialType != null && !specialType.equals("normal");
-
 		other.hurt(world, this, hasTrait(Trait.STRONG_ATTACK) ? 2 : 1, specialType);
 
-		if (!isSpecial && other.hasTrait(Trait.SPIKED)){
+		if (other.hasTrait(Trait.SPIKED)){
 			MessageBus.publish(new HitSpikes(world, this, other));
 			hurt(world, other, 1, null);
 		}
 
-		if (!isSpecial && hasTrait(Trait.POISONOUS) && other.hearts > 0)
+		if (hasTrait(Trait.POISONOUS) && other.hearts > 0)
 			other.poisonedBy(world, this);
 		
-		if (!isSpecial && hasTrait(Trait.DOUBLE_ATTACK)
+		if (hasTrait(Trait.DOUBLE_ATTACK)
 				&& !hasDoubleAttackedThisTurn
 				&& other.hearts > 0) {
 			hasDoubleAttackedThisTurn = true;
@@ -340,7 +338,6 @@ public class Creature {
 				wanderForReal(world);
 		}
 	}
-
 	
 	private void wanderForReal(World world) {
 		if (Math.random() < 0.33)
