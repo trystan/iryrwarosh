@@ -23,9 +23,10 @@ public class LootSaga implements Handler {
 		if (message.attacked.hasTrait(Trait.LOOTLESS))
 			return;
 		
-		switch ((int)(Math.random() * 2)){
+		switch ((int)(Math.random() * 5)){
 		case 0: message.world.add(heart(), message.attacked.position.x, message.attacked.position.y); break;
-		case 1: message.world.add(rupees(), message.attacked.position.x, message.attacked.position.y); break;
+		case 1: message.world.add(rupees_1(), message.attacked.position.x, message.attacked.position.y); break;
+		case 2: message.world.add(rupees_5(), message.attacked.position.x, message.attacked.position.y); break;
 		}
 	}
 	
@@ -38,11 +39,20 @@ public class LootSaga implements Handler {
 		};
 	}
 	
-	public Item rupees(){
-		return new Item("rupees", 4, AsciiPanel.red, "Rupees used for special actions."){
+	public Item rupees_1(){
+		return new Item("rupees", 4, Tile.hsv(60, 25, 75), "Rupees used for special actions."){
 			public void onCollide(World world, Creature collider){
 				world.removeItem(collider.position.x, collider.position.y);
 				collider.gainMoney(1);
+			}
+		};
+	}
+	
+	public Item rupees_5(){
+		return new Item("rupees", 4, Tile.hsv(240, 25, 75), "Rupees used for special actions."){
+			public void onCollide(World world, Creature collider){
+				world.removeItem(collider.position.x, collider.position.y);
+				collider.gainMoney(5);
 			}
 		};
 	}

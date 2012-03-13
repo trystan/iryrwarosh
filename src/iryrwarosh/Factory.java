@@ -41,25 +41,25 @@ public class Factory {
 	}
 	
 	public Item knuckles(){
-		Item w = new Item("Knuckes", ')', Tile.WHITE_ROCK.background(), "Allows you to do combo attacks.");
+		Item w = new Item("knuckes", ')', Tile.WHITE_ROCK.background(), "Allows you to do combo attacks.");
 		w.addTrait(Trait.COMBO_ATTACK);
 		return w;
 	}
 	
 	public Item knife(){
-		Item w = new Item("Knife", ')', Tile.WHITE_ROCK.background(), "A free attack when you evade.");
+		Item w = new Item("knife", ')', Tile.WHITE_ROCK.background(), "Allows you to attack when you evade.");
 		w.addTrait(Trait.EVADE_ATTACK);
 		return w;
 	}
 	
 	public Item club(){
-		Item w = new Item("Club", ')', Tile.BROWN_ROCK.background(), "Does a circular attack.");
+		Item w = new Item("club", ')', Tile.BROWN_ROCK.background(), "Allows you to do a circular attack.");
 		w.addTrait(Trait.CIRCLE_ATTACK);
 		return w;
 	}
 	
 	public Item sword(){
-		Item w = new Item("Sword", ')', AsciiPanel.white, "Can shoot if you are at full health. Doesn't even cost rupees."){
+		Item w = new Item("sword", ')', AsciiPanel.white, "Use to shoot if you are at full health."){
 			private Projectile last;
 			
 			public void use(Screen screen, World world, Creature owner){
@@ -81,13 +81,13 @@ public class Factory {
 	}
 	
 	public Item spear(){
-		Item w = new Item("Spear", ')', Tile.BROWN_ROCK.background(), "Automatically hits anything moving within reach.");
+		Item w = new Item("spear", ')', Tile.BROWN_ROCK.background(), "Allows you to attack anything moving within reach.");
 		w.addTrait(Trait.REACH_ATTACK);
 		return w;
 	}
 	
 	public Item staff(){
-		Item w = new Item("Staff", ')', Tile.BROWN_ROCK.background(), "Automatically counter attacks.");
+		Item w = new Item("staff", ')', Tile.BROWN_ROCK.background(), "Allows you to counter attack.");
 		w.addTrait(Trait.COUNTER_ATTACK);
 		return w;
 	}
@@ -255,7 +255,7 @@ public class Factory {
 	}
 
 	public Item bow() {
-		Item item = new Item("bow", ')', AsciiPanel.brightBlack, "Shoots arrows. Cost 1 rupee per shot."){
+		Item item = new Item("bow", ')', AsciiPanel.brightBlack, "Use to shoot arrows. Cost 1 rupee per shot."){
 			public void use(Screen screen, World world, Creature owner){
 				world.add(new Projectile(owner, 9, AsciiPanel.brightWhite, 1, owner.position.copy(), owner.lastMovedDirection()));
 				owner.pay(world, 1);
@@ -271,7 +271,7 @@ public class Factory {
 	}
 
 	public Item firstAidKit() {
-		Item item = new Item("first aid kit", '+', AsciiPanel.white, "A kit for curing poison and recovering health."){
+		Item item = new Item("first aid kit", '+', AsciiPanel.white, "Use to cure poison and recover health (5 rupees)."){
 			public void use(Screen screen, World world, Creature owner){
 				if (owner.isPoisoned()){
 					owner.curePoison();
@@ -288,7 +288,7 @@ public class Factory {
 	}
 
 	public Item spellBook() {
-		Item item = new Item("spellbook", '+', AsciiPanel.white, "A book of wizard's spells.");
+		Item item = new Item("spellbook", '+', AsciiPanel.white, "Use to cast one of 3 spells.");
 		item.addTrait(Trait.SPELL_CASTER);
 		return item;
 	}
