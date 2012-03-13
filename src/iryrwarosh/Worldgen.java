@@ -611,7 +611,7 @@ public class Worldgen {
 				  + "####...#####...####"
 				  + "##...&...&...&...##"
 				  + "#.................#"
-				  + "#.&...xxxxxxx...&.#"
+				  + "#.&...xx...xx...&.#"
 				  + "#.................#"
 				  + "##...&...&...&...##"
 				  + "####...#####...####"
@@ -690,7 +690,7 @@ public class Worldgen {
 				  + "                   "
 				  + "                   "
 				  + "   .............   "
-				  + "   .xxxxxxxxxxx.   "
+				  + "   .xxxx...xxxx.   "
 				  + "   .............   "
 				  + "                   "
 				  + "                   "
@@ -720,6 +720,7 @@ public class Worldgen {
 				  + "                   "
 				  + "                   "
 				  + "                   ");
+			cells[sx][sy].canAddQuarterWall = false;
 			break;
 		case 7:
 			addMap(sx, sy, 
@@ -1308,36 +1309,36 @@ public class Worldgen {
 		if (cells[x][y].nEdge == WorldScreen.CENTER)
 			clear(x * screenWidth + screenWidth/2, y * screenHeight, 1, 2, cells[x][y].defaultGround);
 		else if (cells[x][y].nEdge == WorldScreen.TOP_LEFT)
-			clear(x * screenWidth + screenWidth/3-1, y * screenHeight, 1, 2, cells[x][y].defaultGround);
+			clear(x * screenWidth + screenWidth/3, y * screenHeight, 1, 2, cells[x][y].defaultGround);
 		else if (cells[x][y].nEdge == WorldScreen.BOTTOM_RIGHT)
-			clear(x * screenWidth + screenWidth/3*2, y * screenHeight, 1, 2, cells[x][y].defaultGround);
+			clear(x * screenWidth + screenWidth/3*2-1, y * screenHeight, 1, 2, cells[x][y].defaultGround);
 		else if (cells[x][y].nEdge == WorldScreen.WIDE)
 				clear(x * screenWidth + 1, y * screenHeight, screenWidth - 2, 2, cells[x][y].defaultGround);
 		
 		if (cells[x][y].sEdge == WorldScreen.CENTER)
 			clear(x * screenWidth + screenWidth/2, (y+1) * screenHeight - 2, 1, 2, cells[x][y].defaultGround);
 		else if (cells[x][y].sEdge == WorldScreen.TOP_LEFT)
-			clear(x * screenWidth + screenWidth/3-1, (y+1) * screenHeight - 2, 1, 2, cells[x][y].defaultGround);
+			clear(x * screenWidth + screenWidth/3, (y+1) * screenHeight - 2, 1, 2, cells[x][y].defaultGround);
 		else if (cells[x][y].sEdge == WorldScreen.BOTTOM_RIGHT)
-			clear(x * screenWidth + screenWidth/3*2, (y+1) * screenHeight - 2, 1, 2, cells[x][y].defaultGround);
+			clear(x * screenWidth + screenWidth/3*2-1, (y+1) * screenHeight - 2, 1, 2, cells[x][y].defaultGround);
 		else if (cells[x][y].sEdge == WorldScreen.WIDE)
 			clear(x * screenWidth + 1, (y+1) * screenHeight - 2, screenWidth - 2, 2, cells[x][y].defaultGround);
 		
 		if (cells[x][y].wEdge == WorldScreen.CENTER) 
 			clear(x * screenWidth, y * screenHeight + screenHeight/2, 2, 1, cells[x][y].defaultGround);
 		else if (cells[x][y].wEdge == WorldScreen.TOP_LEFT) 
-			clear(x * screenWidth, y * screenHeight + screenHeight/3-1, 2, 1, cells[x][y].defaultGround);
+			clear(x * screenWidth, y * screenHeight + screenHeight/3, 2, 1, cells[x][y].defaultGround);
 		else if (cells[x][y].wEdge == WorldScreen.BOTTOM_RIGHT) 
-			clear(x * screenWidth, y * screenHeight + screenHeight/3*2, 2, 1, cells[x][y].defaultGround);
+			clear(x * screenWidth, y * screenHeight + screenHeight/3*2-1, 2, 1, cells[x][y].defaultGround);
 		else if (cells[x][y].wEdge == WorldScreen.WIDE) 
 			clear(x * screenWidth, y * screenHeight + 1, 2, screenHeight - 2, cells[x][y].defaultGround);
 		
 		if (cells[x][y].eEdge == WorldScreen.CENTER)
 			clear((x+1) * screenWidth - 2, y * screenHeight + screenHeight/2, 2, 1, cells[x][y].defaultGround);
 		else if (cells[x][y].eEdge == WorldScreen.TOP_LEFT) 
-			clear((x+1) * screenWidth - 2, y * screenHeight + screenHeight/3-1, 2, 1, cells[x][y].defaultGround);
+			clear((x+1) * screenWidth - 2, y * screenHeight + screenHeight/3, 2, 1, cells[x][y].defaultGround);
 		else if (cells[x][y].eEdge == WorldScreen.BOTTOM_RIGHT) 
-			clear((x+1) * screenWidth - 2, y * screenHeight + screenHeight/3*2, 2, 1, cells[x][y].defaultGround);
+			clear((x+1) * screenWidth - 2, y * screenHeight + screenHeight/3*2-1, 2, 1, cells[x][y].defaultGround);
 		else if (cells[x][y].eEdge == WorldScreen.WIDE)
 			clear((x+1) * screenWidth - 2, y * screenHeight + 1, 2, screenHeight - 2, cells[x][y].defaultGround);
 	}
@@ -1365,7 +1366,7 @@ public class Worldgen {
 		cells[x][y].nwWater = true;
 		cells[x-1][y].neWater = true;
 		
-		addRiver(x, y, 3, 3);
+		addRiver(x, y, 2, 2);
 	}
 
 	public void addShoreLine(){
