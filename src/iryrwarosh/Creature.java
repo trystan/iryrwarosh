@@ -55,8 +55,12 @@ public class Creature {
 	public String describe(){
 		String text = "";
 		
-		for (Trait trait : traits)
-			text += ", " + trait.description();
+		if (hasTrait(Trait.MYSTERIOUS))
+			text += ", ???";
+		else {
+			for (Trait trait : traits)
+				text += ", " + trait.description();
+		}
 		
 		text = name + " (" + text.substring(2) + ")";
 
@@ -78,15 +82,6 @@ public class Creature {
 	private Item loot;
 	public Item loot() { return loot; }
 	public void setLoot(Item loot) { this.loot = loot; }
-	
-	public void equip(World world, Item item) {
-		if (leftHand == null)
-			leftHand = item;
-		else
-			rightHand = item;
-		
-		MessageBus.publish(new EquipedItem(world, this, item));
-	}
 	
 	public int evadePercent(World world){
 		int moveable = 0;
@@ -169,7 +164,7 @@ public class Creature {
 		if (other.hp < 1)
 			return;
 		
-		Boolean isSpecial = specialType != null;
+		Boolean isSpecial = specialType != null && !specialType.equals("normal");
 
 		other.hurt(world, this, hasTrait(Trait.EXTRA_ATTACK) ? 2 : 1, specialType);
 
@@ -425,7 +420,8 @@ public class Creature {
 	public void swapLeftHand(World world, Item item) {
 		world.removeItem(position.x, position.y);
 		world.add(leftHand, position.x, position.y);
-		MessageBus.publish(new DroppedWeapon(world, this, leftHand));
+		if (leftHand != null)
+			MessageBus.publish(new DroppedWeapon(world, this, leftHand));
 		leftHand = item;
 		MessageBus.publish(new EquipedItem(world, this, item));
 	}
@@ -433,7 +429,8 @@ public class Creature {
 	public void swapRightHand(World world, Item item) {
 		world.removeItem(position.x, position.y);
 		world.add(rightHand, position.x, position.y);
-		MessageBus.publish(new DroppedWeapon(world, this, rightHand));
+		if (rightHand != null)
+			MessageBus.publish(new DroppedWeapon(world, this, rightHand));
 		rightHand = item;
 		MessageBus.publish(new EquipedItem(world, this, item));
 	}

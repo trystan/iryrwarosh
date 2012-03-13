@@ -128,29 +128,23 @@ public class Factory {
 		char glyph = glyphs[(int)(Math.random() * glyphs.length)];
 		
 		int hue = (int)(Math.random() * 360);
+		int hp = 3 + (int)(Math.random() * 4);
 		
-		Creature boss = new Creature("miniboss", glyph, Tile.hsv(hue, 33, 66), 5){
+		Creature boss = new Creature("miniboss", glyph, Tile.hsv(hue, 33, 66), hp){
 			public void update(World world){
 				super.update(world);
 				wander(world);
 			}
 		};
-		
-		boss.addTrait(Trait.WALKER);
-		boss.addTrait(Trait.TERRITORIAL);
-		boss.addTrait(Trait.HUNTER);
-		
-		switch ((int)(Math.random() * 6)){
-		case 0: boss.addTrait(Trait.DOUBLE_ATTACK); break;
-		case 1: boss.addTrait(Trait.EXTRA_ATTACK); break;
-		case 2: boss.addTrait(Trait.EXTRA_HP); break;
-		case 3: boss.addTrait(Trait.POISONOUS); break;
-		case 4: boss.addTrait(Trait.REACH_ATTACK); break;
-		case 5: boss.addTrait(Trait.COUNTER_ATTACK); break;
-		}
-		
+
 		List<Trait> traits = new ArrayList<Trait>();
-		while (traits.size() < 2){
+		traits.add(Trait.WALKER);
+		traits.add(Trait.TERRITORIAL);
+		traits.add(Trait.HUNTER);
+		traits.add(Trait.REGENERATES);
+		traits.add(Trait.MYSTERIOUS);
+		
+		while (traits.size() < 8){
 			Trait trait = Trait.getRandom();
 			if (!traits.contains(trait))
 				traits.add(trait);
@@ -162,9 +156,9 @@ public class Factory {
 		world.addToScreen(boss, sx, sy);
 		
 		if (Math.random() < 0.25)
-			boss.equip(world, weapon());
+			boss.swapLeftHand(world, weapon());
 		if (Math.random() < 0.25)
-			boss.equip(world, weapon());
+			boss.swapRightHand(world, weapon());
 		
 		if (minibossLoot.size() > 0)
 			boss.setLoot(minibossLoot.remove(0));
@@ -186,7 +180,7 @@ public class Factory {
 		goblin.addTrait(Trait.HUNTER);
 		
 		world.add(goblin);
-		goblin.equip(world, weapon());
+		goblin.swapLeftHand(world, weapon());
 		return goblin;
 	}
 	

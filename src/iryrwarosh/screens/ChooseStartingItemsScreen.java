@@ -90,8 +90,8 @@ public class ChooseStartingItemsScreen implements Screen {
 		World world = new Worldgen(48 / 3, 24 / 3).build();
 		
 		Creature player = factory.player(world);
-		player.equip(world, item1); 
-		player.equip(world, item2);
+		player.swapLeftHand(world, item1); 
+		player.swapRightHand(world, item2);
 		
 		for (int i = 0; i < 30; i++)
 			factory.zora(world);
