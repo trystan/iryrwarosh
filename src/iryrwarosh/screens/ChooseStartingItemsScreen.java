@@ -3,6 +3,7 @@ package iryrwarosh.screens;
 import iryrwarosh.Creature;
 import iryrwarosh.Factory;
 import iryrwarosh.Item;
+import iryrwarosh.Point;
 import iryrwarosh.Tile;
 import iryrwarosh.World;
 import iryrwarosh.Worldgen;
@@ -104,6 +105,9 @@ public class ChooseStartingItemsScreen implements Screen {
 				factory.monster(world, biome);
 		}
 
+		for (Point screen : world.map().getDeadEnds())
+			factory.miniboss(world, screen.x, screen.y);
+		
 		world.update();
 		
 		return new PlayScreen(world, factory, player);

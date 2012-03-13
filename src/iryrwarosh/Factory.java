@@ -103,6 +103,44 @@ public class Factory {
 		}
 	}
 	
+	public Creature miniboss(World world, int sx, int sy){
+		char[] glyphs = { 130, 131, 132, 133, 134, 136, 137, 138, 139, 140, 141, 
+				          147, 148, 149, 150, 151, 152, 160, 161, 162, 163 };
+		
+		char glyph = glyphs[(int)(Math.random() * glyphs.length)];
+		
+		int hue = (int)(Math.random() * 360);
+		
+		Creature boss = new Creature("miniboss", glyph, Tile.hsv(hue, 33, 66), 5){
+			public void update(World world){
+				super.update(world);
+				wander(world);
+			}
+		};
+		
+		boss.addTrait(Trait.WALKER);
+		boss.addTrait(Trait.TERRITORIAL);
+		
+		List<Trait> traits = new ArrayList<Trait>();
+		while (traits.size() < 2){
+			Trait trait = Trait.getRandom();
+			if (!traits.contains(trait))
+				traits.add(trait);
+		}
+		
+		for (Trait trait : traits)
+			boss.addTrait(trait);
+		
+		world.addToScreen(boss, sx, sy);
+		
+		if (Math.random() < 0.5)
+			boss.equip(world, weapon());
+		if (Math.random() < 0.5)
+			boss.equip(world, weapon());
+		
+		return boss;
+	}
+	
 	public Creature goblin(final World world){
 		int hue = 30 + (int)(Math.random() * 90);
 		Creature goblin = new Creature("goblin", 'g', Tile.hsv(hue, 50, 50), 3){

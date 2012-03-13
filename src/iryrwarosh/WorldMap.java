@@ -28,4 +28,23 @@ public class WorldMap {
     	
     	return candidates;
 	}
+
+	public List<Point> getDeadEnds() {
+		List<Point> candidates = new ArrayList<Point>();
+		
+    	for (int x = 0; x < screens.length; x++)
+        for (int y = 0; y < screens[0].length; y++){
+        	int connections = 0;
+        	
+        	if (screens[x][y].nEdge != WorldScreen.WALL) connections++;
+        	if (screens[x][y].eEdge != WorldScreen.WALL) connections++;
+        	if (screens[x][y].sEdge != WorldScreen.WALL) connections++;
+        	if (screens[x][y].wEdge != WorldScreen.WALL) connections++;
+        	
+        	if (connections == 1)
+        		candidates.add(new Point(x,y));
+        }
+    	
+    	return candidates;
+	}
 }

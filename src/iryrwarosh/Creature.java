@@ -61,7 +61,10 @@ public class Creature {
 		text = name + " (" + text.substring(2) + ")";
 
 		if (leftHand != null)
-			text += " wielding a " + leftHand.name();
+			text += " " + leftHand.name();
+		
+		if (rightHand != null)
+			text += " " + rightHand.name();
 		
 		return text;
 	}

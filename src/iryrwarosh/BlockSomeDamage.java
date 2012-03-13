@@ -5,7 +5,7 @@ public class BlockSomeDamage extends Message {
 	public Item armor;
 	
 	public BlockSomeDamage(World world, Creature creature, Item armor) {
-		super(world, "The " + armor.name() + " deflects some damage");
+		super(world, "The " + (armor != null ? armor.name() : creature.name()) + " deflects some damage");
 		this.creature = creature;
 		this.armor = armor;
 	}
