@@ -322,6 +322,11 @@ public class Creature {
 				moveBy(world, mx, my);
 			else
 				wanderForReal(world);
+			
+			if (hasTrait(Trait.DOUBLE_MOVE) && !hasDoubleMovedThisTurn){
+				hasDoubleMovedThisTurn = true;
+				moveTo(world, target);
+			}
 		}
 	}
 	
@@ -336,6 +341,11 @@ public class Creature {
 				moveBy(world, mx, my);
 			else
 				wanderForReal(world);
+			
+			if (hasTrait(Trait.DOUBLE_MOVE) && !hasDoubleMovedThisTurn){
+				hasDoubleMovedThisTurn = true;
+				moveTo(world, target);
+			}
 		}
 	}
 	
