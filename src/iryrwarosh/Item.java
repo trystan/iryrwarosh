@@ -38,7 +38,7 @@ public class Item {
 		
 	}
 
-	public void use(Screen screen, World world, Creature player) {
-		
+	public Screen use(Screen screen, World world, Creature player) {
+		return screen;
 	}
 }

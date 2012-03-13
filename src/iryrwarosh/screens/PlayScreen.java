@@ -177,8 +177,16 @@ public class PlayScreen implements Screen, Handler {
         case KeyEvent.VK_U: moveBy( 1,-1); break;
         case KeyEvent.VK_B: moveBy(-1, 1); break;
         case KeyEvent.VK_N: moveBy( 1, 1); break;
-        case KeyEvent.VK_Z: player.leftHand().use(this, world, player); break;
-        case KeyEvent.VK_X: player.rightHand().use(this, world, player); break;
+        case KeyEvent.VK_Z: 
+        	Screen lhs = player.leftHand().use(this, world, player);
+        	if (lhs != this) 
+        		return lhs;
+        	break;
+        case KeyEvent.VK_X: 
+        	Screen rhs = player.rightHand().use(this, world, player);
+        	if (rhs != this) 
+        		return rhs;
+        	break;
         case KeyEvent.VK_G:
         case KeyEvent.VK_COMMA:
         	return new PickupItemScreen(this, world, player);

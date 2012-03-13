@@ -1,5 +1,6 @@
 package iryrwarosh;
 
+import iryrwarosh.screens.CastSpellScreen;
 import iryrwarosh.screens.Screen;
 
 import java.awt.Color;
@@ -17,20 +18,7 @@ public class Factory {
 	public Factory(){
 		setMonsterTraits();
 		minibossLoot = new ArrayList<Item>();
-		minibossLoot.add(this.bow());
-		minibossLoot.add(this.club());
-		minibossLoot.add(this.crystalBall());
-		minibossLoot.add(this.firstAidKit());
-		minibossLoot.add(this.heavyArmor());
-		minibossLoot.add(this.knife());
-		minibossLoot.add(this.knuckles());
 		minibossLoot.add(this.ringOfRegeneration());
-		minibossLoot.add(this.shield());
-		minibossLoot.add(this.snorkel());
-		minibossLoot.add(this.spear());
-		minibossLoot.add(this.spellBook());
-		minibossLoot.add(this.staff());
-		minibossLoot.add(this.sword());
 		Collections.shuffle(minibossLoot);
 	}
 	
@@ -59,33 +47,36 @@ public class Factory {
 	}
 	
 	public Item knuckles(){
-		Item w = new Item("knuckles", ')', Tile.WHITE_ROCK.background(), "Allows you to do combo attacks.");
-		w.addTrait(Trait.COMBO_ATTACK);
-		return w;
+		Item item = new Item("knuckles", ')', Tile.WHITE_ROCK.background(), "Allows you to do combo attacks.");
+		item.addTrait(Trait.COMBO_ATTACK);
+		item.addTrait(Trait.EXTRA_ATTACK);
+		return item;
 	}
 	
 	public Item knife(){
-		Item w = new Item("knife", ')', Tile.WHITE_ROCK.background(), "Allows you to attack when you evade.");
-		w.addTrait(Trait.EVADE_ATTACK);
-		return w;
+		Item item = new Item("knife", ')', Tile.WHITE_ROCK.background(), "Allows you to attack when you evade.");
+		item.addTrait(Trait.EVADE_ATTACK);
+		item.addTrait(Trait.EXTRA_ATTACK);
+		return item;
 	}
 	
 	public Item club(){
-		Item w = new Item("club", ')', Tile.BROWN_ROCK.background(), "Allows you to do a circular attack.");
-		w.addTrait(Trait.CIRCLE_ATTACK);
-		return w;
+		Item item = new Item("club", ')', Tile.BROWN_ROCK.background(), "Allows you to do a circular attack.");
+		item.addTrait(Trait.CIRCLE_ATTACK);
+		item.addTrait(Trait.EXTRA_ATTACK);
+		return item;
 	}
 	
 	public Item sword(){
-		Item w = new Item("sword", ')', AsciiPanel.white, "Use to shoot if you are at full health."){
+		Item item = new Item("sword", ')', AsciiPanel.white, "Use to shoot if you are at full health."){
 			private Projectile last;
 			
-			public void use(Screen screen, World world, Creature owner){
+			public Screen use(Screen screen, World world, Creature owner){
 				if (owner.hp() != owner.maxHp())
-					return;
+					return screen;
 				
 				if (last != null && !last.isDone())
-					return;
+					return screen;
 				
 				last = new Projectile(owner, 9, AsciiPanel.brightWhite, 1, owner.position.copy(), owner.lastMovedDirection()){
 					public boolean canEnter(Tile tile){
@@ -93,21 +84,25 @@ public class Factory {
 					}
 				};
 				world.add(last);
+				return screen;
 			}
 		};
-		return w;
+		item.addTrait(Trait.EXTRA_ATTACK);
+		return item;
 	}
 	
 	public Item spear(){
-		Item w = new Item("spear", ')', Tile.BROWN_ROCK.background(), "Allows you to attack anything moving within reach.");
-		w.addTrait(Trait.REACH_ATTACK);
-		return w;
+		Item item = new Item("spear", ')', Tile.BROWN_ROCK.background(), "Allows you to attack anything moving within reach.");
+		item.addTrait(Trait.REACH_ATTACK);
+		item.addTrait(Trait.EXTRA_ATTACK);
+		return item;
 	}
 	
 	public Item staff(){
-		Item w = new Item("staff", ')', Tile.BROWN_ROCK.background(), "Allows you to counter attack.");
-		w.addTrait(Trait.COUNTER_ATTACK);
-		return w;
+		Item item = new Item("staff", ')', Tile.BROWN_ROCK.background(), "Allows you to counter attack.");
+		item.addTrait(Trait.COUNTER_ATTACK);
+		item.addTrait(Trait.EXTRA_ATTACK);
+		return item;
 	}
 
 	public Item weapon() {
@@ -316,16 +311,24 @@ public class Factory {
 	}
 
 	public Item crystalBall() {
-		Item item = new Item("crystal ball", '+', AsciiPanel.white, "Allows you too see anything camouflaged.");
+		Item item = new Item("crystal ball", '+', AsciiPanel.white, "Allows you too see anything camouflaged."){
+			public Screen use(Screen screen, World world, Creature player) {
+				String text = "You see nothing special";
+				
+				MessageBus.publish(new Note(world, player, "You look into the crystal ball: " + text));
+				return screen;
+			}
+		};
 		item.addTrait(Trait.DETECT_CAMOUFLAGED);
 		return item;
 	}
 
 	public Item bow() {
 		Item item = new Item("bow", ')', AsciiPanel.brightBlack, "Use to shoot arrows. Cost 1 rupee per shot."){
-			public void use(Screen screen, World world, Creature owner){
+			public Screen use(Screen screen, World world, Creature owner){
 				world.add(new Projectile(owner, 9, AsciiPanel.brightWhite, 1, owner.position.copy(), owner.lastMovedDirection()));
 				owner.pay(world, 1);
+				return screen;
 			}
 		};
 		return item;
@@ -339,7 +342,7 @@ public class Factory {
 
 	public Item firstAidKit() {
 		Item item = new Item("first aid kit", '+', AsciiPanel.white, "Use to cure poison and recover health (5 rupees)."){
-			public void use(Screen screen, World world, Creature owner){
+			public Screen use(Screen screen, World world, Creature owner){
 				if (owner.isPoisoned()){
 					owner.curePoison();
 					owner.pay(world, 5);
@@ -348,6 +351,7 @@ public class Factory {
 					owner.heal(diff);
 					owner.pay(world, diff * 5);
 				}
+				return screen;
 			}
 		};
 		return item;
@@ -360,8 +364,11 @@ public class Factory {
 	}
 
 	public Item spellBook() {
-		Item item = new Item("spellbook", '+', AsciiPanel.white, "Use to cast one of 3 spells.");
-		item.addTrait(Trait.SPELL_CASTER);
+		Item item = new Item("spellbook", '+', AsciiPanel.white, "Use to cast one of 3 spells."){
+			public Screen use(Screen screen, World world, Creature owner){
+				return new CastSpellScreen(screen, world, owner);
+			}
+		};
 		return item;
 	}
 }
