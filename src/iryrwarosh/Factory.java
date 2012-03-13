@@ -18,15 +18,11 @@ public class Factory {
 	
 	public Factory(){
 		setMonsterTraits();
+		
 		minibossLoot = new ArrayList<Item>();
 		minibossLoot.add(this.ringOfRegeneration());
 		minibossLoot.add(this.magicCape());
 		minibossLoot.add(this.advancedSpellBook());
-		minibossLoot.add(this.heartIncrease());
-		minibossLoot.add(this.heartIncrease());
-		minibossLoot.add(this.heartIncrease());
-		minibossLoot.add(this.heartIncrease());
-		minibossLoot.add(this.heartIncrease());
 		Collections.shuffle(minibossLoot);
 	}
 	
@@ -183,8 +179,10 @@ public class Factory {
 		
 		if (minibossLoot.size() > 0)
 			boss.setLoot(minibossLoot.remove(0));
+		else if (Math.random() < 0.5)
+			boss.setLoot(heartIncrease());
 		else
-			boss.setLoot(weapon());
+			boss.setLoot(bigMoney());
 		
 		return boss;
 	}
@@ -428,5 +426,14 @@ public class Factory {
 			}
 		};
 		return item;
+	}
+	
+	public Item bigMoney(){
+		return new Item("rupees", 4, Tile.hsv(210, 25, 90), "Rupees are used for special actions."){
+			public void onCollide(World world, Creature collider){
+				world.removeItem(collider.position.x, collider.position.y);
+				collider.gainMoney(50);
+			}
+		};
 	}
 }
