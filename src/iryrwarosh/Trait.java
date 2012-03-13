@@ -2,7 +2,7 @@ package iryrwarosh;
 
 public enum Trait {
 	WALKER("walker"), SWIMMER("swimmer"), FLYER("flier"),
-	EXTRA_HP("hp+"), EXTRA_ATTACK("attack+"), EXTRA_EVADE("evasion+"),EXTRA_DEFENSE("defense+"),
+	EXTRA_HP("healty"), EXTRA_ATTACK("strong"), EXTRA_EVADE("evasive"),EXTRA_DEFENSE("shelled"),
 	DOUBLE_ATTACK("double attack"), DOUBLE_MOVE("double move"),
 	SPIKED("spiked"), REGENERATES("regenerates"), POISONOUS("poisonous"), CAMOUFLAGED("camouflaged"), 
 	AGGRESSIVE("aggressive"), HIDER("hider"), TERRITORIAL("territorial"), ROCK_SPITTER("rock spitter"),

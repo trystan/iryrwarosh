@@ -1,11 +1,11 @@
 package iryrwarosh;
 
-public class BumpedIntoObstical extends Message {
+public class BumpedIntoObsticle extends Message {
 	public Creature creature;
 	public int x;
 	public int y;
 	
-	public BumpedIntoObstical(World world, Creature creature, int x, int y) {
+	public BumpedIntoObsticle(World world, Creature creature, int x, int y) {
 		super(world, creature.name() + " bumped into the " + world.tile(x, y).description());
 		this.creature = creature;
 		this.x = x;

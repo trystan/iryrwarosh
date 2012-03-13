@@ -186,7 +186,7 @@ public class PlayScreen implements Screen, Handler {
 		
 		if (player.hp() < 1) {
 			MessageBus.unsubscribe(this);
-			return new DeadScreen();
+			return new DeadScreen(this);
 		}
 		
 		return this;

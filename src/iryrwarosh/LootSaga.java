@@ -23,10 +23,11 @@ public class LootSaga implements Handler {
 		if (message.attacked.hasTrait(Trait.LOOTLESS))
 			return;
 		
-		switch ((int)(Math.random() * 5)){
+		switch ((int)(Math.random() * 4)){
 		case 0: message.world.add(heart(), message.attacked.position.x, message.attacked.position.y); break;
-		case 1: message.world.add(rupees_1(), message.attacked.position.x, message.attacked.position.y); break;
-		case 2: message.world.add(rupees_5(), message.attacked.position.x, message.attacked.position.y); break;
+		case 1: message.world.add(heart(), message.attacked.position.x, message.attacked.position.y); break;
+		case 2: message.world.add(rupees_1(), message.attacked.position.x, message.attacked.position.y); break;
+		case 3: message.world.add(rupees_5(), message.attacked.position.x, message.attacked.position.y); break;
 		}
 	}
 	

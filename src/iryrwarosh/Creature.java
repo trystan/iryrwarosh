@@ -142,7 +142,7 @@ public class Creature {
 			} else {
 				lastWanderX = (int)(Math.random() * 3) - 1;
 				lastWanderY = (int)(Math.random() * 3) - 1;
-				MessageBus.publish(new BumpedIntoObstical(world, this, position.x+x, position.y+y));
+				MessageBus.publish(new BumpedIntoObsticle(world, this, position.x+x, position.y+y));
 			}
 		} else if (isFriend(other)) {
 			return;

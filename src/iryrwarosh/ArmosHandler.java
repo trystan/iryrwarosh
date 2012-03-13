@@ -1,6 +1,6 @@
 package iryrwarosh;
 
-public class ArmosSaga implements Handler {
+public class ArmosHandler implements Handler {
 
 	@Override
 	public void handle(Message message) {

@@ -105,7 +105,7 @@ public class Factory {
 	
 	public Creature goblin(final World world){
 		int hue = 30 + (int)(Math.random() * 90);
-		Creature goblin = new Creature("goblin", 'g', Tile.hsv(hue, 50, 50), 4){
+		Creature goblin = new Creature("goblin", 'g', Tile.hsv(hue, 50, 50), 3){
 			public void update(World world){
 				super.update(world);
 				wander(world);
@@ -223,6 +223,7 @@ public class Factory {
 	public Creature player(World world) {
 		Creature player = new Creature("player", '@', AsciiPanel.brightWhite, 10);
 		player.addTrait(Trait.WALKER);
+		player.addTrait(Trait.LOOTLESS);
 		world.add(player);
 		return player;
 	}
