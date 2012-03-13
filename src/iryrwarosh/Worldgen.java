@@ -743,13 +743,13 @@ public class Worldgen {
 		case 1:
 			addMap(sx, sy, 
 					"##########         "
-			      + "####....##         "
-			      + "##.......#         "
+			      + "####...###         "
+			      + "##......#.         "
 			      + "#.........         "
 			      + "#.........         "
 			      + "#.........         "
-			      + "##.......#         "
-			      + "####....##         "
+			      + "##......#.         "
+			      + "####...###         "
 			      + "##########         ");
 			break;
 		case 2:
@@ -1386,13 +1386,13 @@ public class Worldgen {
 		if (Math.random() < 0.1 && cells[x][y].nEdge != WorldScreen.TOP_LEFT && cells[x][y].wEdge != WorldScreen.TOP_LEFT)
 			clear(x*screenWidth, y*screenHeight, hw, hh, cells[x][y].defaultWall);
 		
-		if (Math.random() < 0.1 && cells[x][y].sEdge != WorldScreen.BOTTOM_RIGHT && cells[x][y].wEdge != WorldScreen.TOP_LEFT)
+		if (Math.random() < 0.1 && cells[x][y].nEdge != WorldScreen.BOTTOM_RIGHT && cells[x][y].wEdge != WorldScreen.TOP_LEFT)
 			clear(x*screenWidth+hw+1, y*screenHeight, hw, hh, cells[x][y].defaultWall);
 		
 		if (Math.random() < 0.1 && cells[x][y].sEdge != WorldScreen.BOTTOM_RIGHT && cells[x][y].eEdge != WorldScreen.BOTTOM_RIGHT)
 			clear(x*screenWidth+hw+1, y*screenHeight+hh+1, hw, hh, cells[x][y].defaultWall);
 		
-		if (Math.random() < 0.1 && cells[x][y].nEdge != WorldScreen.TOP_LEFT && cells[x][y].eEdge != WorldScreen.BOTTOM_RIGHT)
+		if (Math.random() < 0.1 && cells[x][y].sEdge != WorldScreen.TOP_LEFT && cells[x][y].eEdge != WorldScreen.BOTTOM_RIGHT)
 			clear(x*screenWidth, y*screenHeight+hh+1, hw, hh, cells[x][y].defaultWall);
 	}
 }
