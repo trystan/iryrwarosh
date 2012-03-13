@@ -60,7 +60,7 @@ public class World {
     	List<Creature> toUpdate = new ArrayList<Creature>();
     	toUpdate.addAll(creatures);
     	for (Creature c : toUpdate)
-    		if (c.hp() > 0)
+    		if (c.hearts() > 0)
     			c.update(this);
     	
     	
@@ -76,7 +76,7 @@ public class World {
     	List<Creature> stillAlive = new ArrayList<Creature>();
     	
     	for (Creature c : creatures)
-    		if (c.hp() > 0)
+    		if (c.hearts() > 0)
     			stillAlive.add(c);
     	
     	creatures = stillAlive;
@@ -129,7 +129,20 @@ public class World {
 		}
 		creatures.add(creature);
 	}
-	
+
+	public void addToScreen(Item item, int sx, int sy) {
+		while (true){
+			int x = sx * 19 + (int)(Math.random() * 19);
+			int y = sy *  9 + (int)(Math.random() * 9);
+			
+			if (!tile(x,y).isGround())
+				continue;
+			
+			items[x][y] = item;
+			break;
+		}
+	}
+
 	public void add(Item item, int x, int y){
 	    ArrayList<Point> candidates = new ArrayList<Point>();
         candidates.add(new Point(x,y));

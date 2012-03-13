@@ -105,8 +105,12 @@ public class ChooseStartingItemsScreen implements Screen {
 				factory.monster(world, biome);
 		}
 
-		for (Point screen : world.map().getDeadEnds())
-			factory.miniboss(world, screen.x, screen.y);
+		for (Point screen : world.map().getDeadEnds()){
+			if (Math.random() < 0.5)
+				factory.miniboss(world, screen.x, screen.y);
+			else
+				world.addToScreen(factory.heartIncrease(), screen.x, screen.y);
+		}
 		
 		world.update();
 		

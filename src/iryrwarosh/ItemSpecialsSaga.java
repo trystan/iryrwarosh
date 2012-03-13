@@ -67,7 +67,7 @@ public class ItemSpecialsSaga implements Handler {
 	}
 
 	private void checkComboAttack(Attacked m) {
-		if (m.attacker.hasTrait(Trait.COMBO_ATTACK) && Math.random() < 0.5 && m.attacked.hp() > 0) {
+		if (m.attacker.hasTrait(Trait.COMBO_ATTACK) && Math.random() < 0.5 && m.attacked.hearts() > 0) {
 			m.attacker.attack(m.world, m.attacked, "with a combo attack");
 		}
 	}

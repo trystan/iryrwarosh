@@ -28,11 +28,11 @@ public class Creature {
 	private Color color;
 	public Color color(){ return color; }
 
-	private int hp;
-	public int hp() { return hp; }
+	private int hearts;
+	public int hearts() { return hearts; }
 
-	private int maxHp;
-	public int maxHp() { return maxHp + (hasTrait(Trait.EXTRA_HP) ? 3 : 0); }
+	private int maxHearts;
+	public int maxHearts() { return maxHearts + (hasTrait(Trait.EXTRA_HP) ? 3 : 0); }
 
 	private int money;
 	public int money() { return money; }
@@ -107,8 +107,8 @@ public class Creature {
 		this.name = name;
 		this.glyph = glyph;
 		this.color = color;
-		this.maxHp = maxHp;
-		this.hp = maxHp;
+		this.maxHearts = maxHp;
+		this.hearts = maxHp;
 	}
 	
 	public boolean canEnter(Tile tile){
@@ -118,7 +118,7 @@ public class Creature {
 		if (hasTrait(Trait.SWIMMER) && tile.isSwimmable())
 			return true;
 		
-		if (hasTrait(Trait.FLYER) && tile.isFlyable())
+		if (hasTrait(Trait.FLIER) && tile.isFlyable())
 			return true;
 		
 		return false;
@@ -161,7 +161,7 @@ public class Creature {
 	}
 	
 	public void attack(World world, Creature other, String specialType){
-		if (other.hp < 1)
+		if (other.hearts < 1)
 			return;
 		
 		Boolean isSpecial = false; // specialType != null && !specialType.equals("normal");
@@ -173,12 +173,12 @@ public class Creature {
 			hurt(world, other, 1, null);
 		}
 
-		if (!isSpecial && hasTrait(Trait.POISONOUS) && other.hp > 0)
+		if (!isSpecial && hasTrait(Trait.POISONOUS) && other.hearts > 0)
 			other.poisonedBy(world, this);
 		
 		if (!isSpecial && hasTrait(Trait.DOUBLE_ATTACK)
 				&& !hasDoubleAttackedThisTurn
-				&& other.hp > 0) {
+				&& other.hearts > 0) {
 			hasDoubleAttackedThisTurn = true;
 			attack(world, other, "again");
 		}
@@ -230,7 +230,7 @@ public class Creature {
 		
 		if (hasTrait(Trait.REGENERATES) && --regenerateCounter < 0){
 			regenerateCounter = 10;
-			if (hp < maxHp)
+			if (hearts < maxHearts)
 				heal(1);
 		}
 		
@@ -292,14 +292,14 @@ public class Creature {
 	}
 
 	public void wander(World world){
-		if (prey != null && prey.hp < 1)
+		if (prey != null && prey.hearts < 1)
 			prey = null;
-		else if (prey != null && prey.hp > 0)
+		else if (prey != null && prey.hearts > 0)
 			moveTo(world, prey.position);
 
-		if (preditor != null && preditor.hp < 1)
+		if (preditor != null && preditor.hearts < 1)
 			preditor = null;
-		else if (preditor != null && preditor.hp > 0)
+		else if (preditor != null && preditor.hearts > 0)
 			moveFrom(world, preditor.position);
 		
 		else if (hasTrait(Trait.AGGRESSIVE))
@@ -374,7 +374,7 @@ public class Creature {
 	}
 
 	public void heal(int i) {
-		hp = Math.min(hp + i, maxHp);
+		hearts = Math.min(hearts + i, maxHearts);
 	}
 
 	public void gainMoney(int i) {
@@ -387,12 +387,12 @@ public class Creature {
 			MessageBus.publish(new BlockSomeDamage(world, this, rightHand));
 		}
 		
-		hp -= i;
+		hearts -= i;
 
 		if (specialType != null)
 			MessageBus.publish(new Attacked(world, attacker, this, specialType));
 		
-		if (hp < 1)
+		if (hearts < 1)
 			MessageBus.publish(new Killed(world, attacker, this));
 		else if (hasTrait(Trait.SOCIAL))
 			MessageBus.publish(new CallForHelp(world, this, attacker));
@@ -433,5 +433,9 @@ public class Creature {
 			MessageBus.publish(new DroppedWeapon(world, this, rightHand));
 		rightHand = item;
 		MessageBus.publish(new EquipedItem(world, this, item));
+	}
+
+	public void increaseMaxHearts(int amount) {
+		maxHearts += amount;
 	}
 }

@@ -27,7 +27,7 @@ public class CastSpellScreen implements Screen {
 		
 		terminal.clear(' ', 1, 20, 31, 4);
 		terminal.write("What do you want to cast?", 1, 20);
-		terminal.write(" [1] Magic Missiles    cost 10", 1, 21)
+		terminal.write(" [1] Fireball          cost 10", 1, 21)
 				.write((char)4, Tile.hsv(60, 25, 75));
 		terminal.write(" [2] Blink             cost  5", 1, 22)
 				.write((char)4, Tile.hsv(60, 25, 75));
@@ -38,7 +38,7 @@ public class CastSpellScreen implements Screen {
 	@Override
 	public Screen respondToUserInput(KeyEvent key) {
 		switch (key.getKeyChar()){
-		case '1': magicMissiles(); break;
+		case '1': fireball(); break;
 		case '2': blink(); break;
 		case '3': heartsToRupees(); break;
 		}
@@ -46,15 +46,10 @@ public class CastSpellScreen implements Screen {
 		return previous;
 	}
 
-	private void magicMissiles() {
-		world.add(new Projectile(player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(1, 0), new Point( 1, 0)));
-		world.add(new Projectile(player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(-1, 0), new Point(-1, 0)));
-		world.add(new Projectile(player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(0, 1), new Point( 0, 1)));
-		world.add(new Projectile(player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(0,-1), new Point( 0,-1)));
-		world.add(new Projectile(player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(-1,-1), new Point(-1,-1)));
-		world.add(new Projectile(player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(-1, 1), new Point(-1, 1)));
-		world.add(new Projectile(player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(1,-1), new Point( 1,-1)));
-		world.add(new Projectile(player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(1, 1), new Point( 1, 1)));
+	private void fireball() {
+		Point dir = player.lastMovedDirection();
+		world.add(new Projectile(player, 7, Tile.LAVA1.color(), 5, player.position.plus(dir.x, dir.y), dir));
+		world.add(new Projectile(player, 250, Tile.LAVA2.color(), 2, player.position.copy(), dir));
 		player.pay(world, 10);
 	}
 	

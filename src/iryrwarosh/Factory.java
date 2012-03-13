@@ -1,5 +1,6 @@
 package iryrwarosh;
 
+import iryrwarosh.screens.CastAdvancedSpellScreen;
 import iryrwarosh.screens.CastSpellScreen;
 import iryrwarosh.screens.Screen;
 
@@ -19,6 +20,13 @@ public class Factory {
 		setMonsterTraits();
 		minibossLoot = new ArrayList<Item>();
 		minibossLoot.add(this.ringOfRegeneration());
+		minibossLoot.add(this.magicCape());
+		minibossLoot.add(this.advancedSpellBook());
+		minibossLoot.add(this.heartIncrease());
+		minibossLoot.add(this.heartIncrease());
+		minibossLoot.add(this.heartIncrease());
+		minibossLoot.add(this.heartIncrease());
+		minibossLoot.add(this.heartIncrease());
 		Collections.shuffle(minibossLoot);
 	}
 	
@@ -79,13 +87,24 @@ public class Factory {
 			private Projectile last;
 			
 			public Screen use(Screen screen, World world, Creature owner){
-				if (owner.hp() != owner.maxHp())
+				if (owner.hearts() != owner.maxHearts())
 					return screen;
 				
 				if (last != null && !last.isDone())
 					return screen;
 				
-				last = new Projectile(owner, 9, AsciiPanel.brightWhite, 1, owner.position.copy(), owner.lastMovedDirection()){
+				Point dir = owner.lastMovedDirection();
+				char glyph = 9;
+				if (dir.x == -1 && dir.y == -1 || dir.x == 1 && dir.y == 1)
+					glyph = '\\';
+				else if (dir.x == 1 && dir.y == -1 || dir.x == -1 && dir.y == 1)
+					glyph = '/';
+				else if (dir.x == 0 && (dir.y == -1 || dir.y == 1))
+					glyph = 179;
+				else if ((dir.x == -1 || dir.x == 1) && dir.y == 0)
+					glyph = 196;
+				
+				last = new Projectile(owner, glyph, AsciiPanel.brightWhite, 1, owner.position.copy(), dir){
 					public boolean canEnter(Tile tile){
 						return tile.isGround() || tile.isWater();
 					}
@@ -132,13 +151,6 @@ public class Factory {
 		int hue = (int)(Math.random() * 360);
 		int hp = 5 + (int)(Math.random() * 6);
 		
-		Creature boss = new Creature("miniboss", glyph, Tile.hsv(hue, 33, 66), hp){
-			public void update(World world){
-				super.update(world);
-				wander(world);
-			}
-		};
-
 		List<Trait> traits = new ArrayList<Trait>();
 		traits.add(Trait.WALKER);
 		traits.add(Trait.TERRITORIAL);
@@ -151,7 +163,14 @@ public class Factory {
 			if (!traits.contains(trait))
 				traits.add(trait);
 		}
-		
+
+		Creature boss = new Creature("miniboss", glyph, Tile.hsv(hue, 33, 66), hp){
+			public void update(World world){
+				super.update(world);
+				wander(world);
+			}
+		};
+
 		for (Trait trait : traits)
 			boss.addTrait(trait);
 		
@@ -350,11 +369,14 @@ public class Factory {
 	public Item firstAidKit() {
 		Item item = new Item("first aid kit", '+', AsciiPanel.white, "Use to cure poison and recover health (5 rupees)."){
 			public Screen use(Screen screen, World world, Creature owner){
+				if (owner.money() < 5)
+					return screen;
+				
 				if (owner.isPoisoned()){
 					owner.curePoison();
 					owner.pay(world, 5);
 				} else {
-					int diff = Math.min(5, owner.maxHp() - owner.hp());
+					int diff = Math.min(owner.money() / 5, owner.maxHearts() - owner.hearts());
 					owner.heal(diff);
 					owner.pay(world, diff * 5);
 				}
@@ -374,6 +396,35 @@ public class Factory {
 		Item item = new Item("spellbook", '+', AsciiPanel.white, "Use to cast one of 3 spells."){
 			public Screen use(Screen screen, World world, Creature owner){
 				return new CastSpellScreen(screen, world, owner);
+			}
+		};
+		return item;
+	}
+	
+	public Item magicCape() {
+		Item item = new Item("magic cape", '[', AsciiPanel.red, "You can fly with this.");
+		item.addTrait(Trait.FLIER);
+		return item;
+	}
+
+	public Item advancedSpellBook() {
+		Item item = new Item("anvanced spellbook", '+', AsciiPanel.white, "Use to cast one of 3 advanced spells."){
+			public Screen use(Screen screen, World world, Creature owner){
+				return new CastAdvancedSpellScreen(screen, world, owner);
+			}
+		};
+		return item;
+	}
+	
+	public Item heartIncrease(){
+		Item item = new Item("heart increase", 3, AsciiPanel.brightRed, "increases your max hearts."){
+			public void onCollide(World world, Creature collider){
+				if (collider.glyph() != '@')
+					return;
+				
+				collider.increaseMaxHearts(1);
+				collider.heal(100);
+				world.removeItem(collider.position.x, collider.position.y);
 			}
 		};
 		return item;

@@ -64,10 +64,14 @@ public class PlayScreen implements Screen, Handler {
 			terminal.write(item.name(), item.color(), bg);
 			terminal.write(" (at your feet)", AsciiPanel.white, bg);
 		}
-	
+
+		terminal.setCursorPosition(69, 0);
 		Color heartColor = player.isPoisoned() ? AsciiPanel.green : AsciiPanel.red;
-		for (int i = 0; i < player.maxHp(); i++)
-			terminal.write((char)3, 69+i, 0, i < player.hp() ? heartColor : AsciiPanel.brightBlack, bg);
+		for (int i = 0; i < player.maxHearts(); i++){
+			terminal.write((char)3, i < player.hearts() ? heartColor : AsciiPanel.brightBlack, bg);
+			if (((i+1) % 10) == 0)
+				terminal.setCursorPosition(69, terminal.getCursorY() + 1);
+		}
 	}
 	
 	private void displayTiles(AsciiPanel terminal){
@@ -198,7 +202,7 @@ public class PlayScreen implements Screen, Handler {
 		
 		world.update();
 		
-		if (player.hp() < 1) {
+		if (player.hearts() < 1) {
 			MessageBus.unsubscribe(this);
 			return new DeadScreen(this);
 		}
