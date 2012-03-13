@@ -31,7 +31,7 @@ public class LootSaga implements Handler {
 	}
 	
 	public Item heart(){
-		return new Item("health", 3, AsciiPanel.red, "A heart that refils health."){
+		return new Item("health", 3, AsciiPanel.red, "A heart that refills health."){
 			public void onCollide(World world, Creature collider){
 				world.removeItem(collider.position.x, collider.position.y);
 				collider.heal(1);
