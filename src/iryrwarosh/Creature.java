@@ -164,6 +164,11 @@ public class Creature {
 		if (other.hearts < 1)
 			return;
 		
+		if (hasTrait(Trait.DEFLECT_MELEE) && Math.random() < 0.33){
+			MessageBus.publish(new DeflectedMelee(world, other, this));
+			return;
+		}
+		
 		Boolean isSpecial = false; // specialType != null && !specialType.equals("normal");
 
 		other.hurt(world, this, hasTrait(Trait.STRONG_ATTACK) ? 2 : 1, specialType);

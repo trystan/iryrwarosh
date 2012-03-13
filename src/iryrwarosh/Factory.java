@@ -137,9 +137,10 @@ public class Factory {
 	}
 	
 	public Item staff(){
-		Item item = new Item("staff", ')', Tile.BROWN_ROCK.background(), "Melee weapon that counter attacks.");
+		Item item = new Item("staff", ')', Tile.BROWN_ROCK.background(), "Melee weapon that can parry attacks and will counter attack.");
 		item.addTrait(Trait.COUNTER_ATTACK);
 		item.addTrait(Trait.STRONG_ATTACK);
+		item.addTrait(Trait.DEFLECT_MELEE);
 		return item;
 	}
 
@@ -365,7 +366,19 @@ public class Factory {
 	public Item bow() {
 		Item item = new Item("bow", ')', AsciiPanel.brightBlack, "Shoots arrows."){
 			public Screen use(Screen screen, World world, Creature owner){
-				world.add(new Projectile(owner, 9, AsciiPanel.brightWhite, 1, owner.position.copy(), owner.lastMovedDirection()));
+
+				Point dir = owner.lastMovedDirection();
+				char glyph = 9;
+				if (dir.x == -1 && dir.y == -1 || dir.x == 1 && dir.y == 1)
+					glyph = '\\';
+				else if (dir.x == 1 && dir.y == -1 || dir.x == -1 && dir.y == 1)
+					glyph = '/';
+				else if (dir.x == 0 && (dir.y == -1 || dir.y == 1))
+					glyph = 179;
+				else if ((dir.x == -1 || dir.x == 1) && dir.y == 0)
+					glyph = 196;
+				
+				world.add(new Projectile(owner, glyph, AsciiPanel.white, 1, owner.position.copy(), owner.lastMovedDirection()));
 				owner.pay(world, 1);
 				return screen;
 			}
@@ -382,8 +395,10 @@ public class Factory {
 	public Item firstAidKit() {
 		Item item = new Item("first aid kit", '+', AsciiPanel.white, "Use to cure poison or recover health."){
 			public Screen use(Screen screen, World world, Creature owner){
-				if (owner.money() < 5)
+				if (owner.money() < 5){
+					MessageBus.publish(new Note(world, owner, "You need at least 5 rupees to cure poison or heal yourself."));
 					return screen;
+				}
 				
 				if (owner.isPoisoned()){
 					owner.curePoison();
@@ -433,7 +448,7 @@ public class Factory {
 		Item item = new Item("heart increase", 3, AsciiPanel.brightRed, "Increases your max hearts."){
 			public void onCollide(World world, Creature collider){
 				if (collider.glyph() != '@')
-					return;
+					return; // only the player should be able to get these
 				
 				collider.increaseMaxHearts(1);
 				collider.heal(100);
@@ -446,6 +461,9 @@ public class Factory {
 	public Item bigMoney(){
 		return new Item("rupees", 4, Tile.hsv(210, 25, 90), "Rupees are used for special actions."){
 			public void onCollide(World world, Creature collider){
+				if (collider.glyph() != '@')
+					return; // only the player should be able to get these
+				
 				world.removeItem(collider.position.x, collider.position.y);
 				collider.gainMoney(50);
 			}
