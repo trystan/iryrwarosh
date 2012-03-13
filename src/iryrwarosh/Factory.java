@@ -285,6 +285,11 @@ public class Factory {
 				}
 			}
 		};
+		return item;
+	}
+	
+	public Item ringOfRegeneration() {
+		Item item = new Item("ring of regeneration", '=', Tile.LAVA1.color(), "Automatically recover health.");
 		item.addTrait(Trait.REGENERATES);
 		return item;
 	}
