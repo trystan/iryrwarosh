@@ -51,6 +51,8 @@ public class ChooseStartingItemsScreen implements Screen {
 	private void writeChoice(AsciiPanel terminal, int i){
 		Color fg = picked[i] ? AsciiPanel.brightWhite : AsciiPanel.white;
 		
+		System.out.println(items[i].description());
+		
 		terminal.write("[" + (i+1) + "] " + items[i].name(), 1, 3 + i, fg);
 		terminal.write(items[i].description(), descriptionX, 3 + i, fg);
 		

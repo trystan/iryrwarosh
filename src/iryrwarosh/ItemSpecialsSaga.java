@@ -43,7 +43,7 @@ public class ItemSpecialsSaga implements Handler {
 			return;
 		
 		checkComboAttack(m);
-		checkCircleAttack(m);
+		checkKnockbackAttack(m);
 		checkCounterAttack(m);
 	}
 
@@ -53,15 +53,13 @@ public class ItemSpecialsSaga implements Handler {
 		}
 	}
 
-	private void checkCircleAttack(Attacked m) {
-		if (m.attacker.hasTrait(Trait.CIRCLE_ATTACK) && Math.random() < 0.5){
-			for (Point p : m.attacker.position.neighbors()){
-				Creature other = m.world.creature(p.x, p.y);
-				
-				if (other == null || other == m.attacked)
-					continue;
-				
-				m.attacker.attack(m.world, other, "with a circle attack");
+	private void checkKnockbackAttack(Attacked m) {
+		if (m.attacker.hasTrait(Trait.KNOCKBACK)){
+			int dx = m.attacked.position.x - m.attacker.position.x;
+			int dy = m.attacked.position.y - m.attacker.position.y;
+			if (m.attacked.canEnter(m.world.tile(m.attacker.position.x+dx, m.attacker.position.y+dy))){
+				m.attacked.position.x += dx;
+				m.attacked.position.y += dy;
 			}
 		}
 	}

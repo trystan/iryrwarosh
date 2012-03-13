@@ -3,6 +3,7 @@ package iryrwarosh;
 import iryrwarosh.screens.CastAdvancedSpellScreen;
 import iryrwarosh.screens.CastSpellScreen;
 import iryrwarosh.screens.Screen;
+import iryrwarosh.screens.ThrowItemScreen;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -57,29 +58,37 @@ public class Factory {
 		}
 	}
 	
-	public Item knuckles(){
-		Item item = new Item("knuckles", ')', Tile.WHITE_ROCK.background(), "Allows you to do combo attacks.");
-		item.addTrait(Trait.COMBO_ATTACK);
-		item.addTrait(Trait.STRONG_ATTACK);
-		return item;
-	}
-	
 	public Item knife(){
-		Item item = new Item("knife", ')', Tile.WHITE_ROCK.background(), "Allows you to attack when you evade.");
+		Item item = new Item("knife", ')', Tile.WHITE_ROCK.background(), "Allows you to attack when you evade and do combos.");
+		item.addTrait(Trait.COMBO_ATTACK);
 		item.addTrait(Trait.EVADE_ATTACK);
 		item.addTrait(Trait.STRONG_ATTACK);
 		return item;
 	}
 	
 	public Item club(){
-		Item item = new Item("club", ')', Tile.BROWN_ROCK.background(), "Allows you to do a circular attack.");
-		item.addTrait(Trait.CIRCLE_ATTACK);
+		Item item = new Item("club", ')', Tile.BROWN_ROCK.background(), "Mele weapon with knowckback. Can do a circle attack."){
+			public Screen use(Screen screen, World world, Creature owner){
+				if (owner.money() < 3)
+					return screen;
+				
+				for (Point p : owner.position.neighbors()){
+					Creature other = world.creature(p.x, p.y);
+					if (other == null || owner.isFriend(other))
+						continue;
+					
+					owner.attack(world, other, "with a wide swing");
+				}
+				return screen;
+			}
+		};
+		item.addTrait(Trait.KNOCKBACK);
 		item.addTrait(Trait.STRONG_ATTACK);
 		return item;
 	}
 	
 	public Item sword(){
-		Item item = new Item("sword", ')', AsciiPanel.white, "Use to shoot if you are at full health."){
+		Item item = new Item("sword", ')', AsciiPanel.white, "Melee weapon. Can also shoot if you are at full health."){
 			private Projectile last;
 			
 			public Screen use(Screen screen, World world, Creature owner){
@@ -114,26 +123,32 @@ public class Factory {
 	}
 	
 	public Item spear(){
-		Item item = new Item("spear", ')', Tile.BROWN_ROCK.background(), "Allows you to attack anything moving within reach.");
+		Item item = new Item("spear", ')', Tile.BROWN_ROCK.background(), "Melee weapon auto-attacks near you. Can be thrown in one of 4 directions."){
+			public Screen use(Screen screen, World world, Creature owner){
+				if (owner.money() < 2)
+					return screen;
+				else
+					return new ThrowItemScreen(screen, world, owner, this);
+			}
+		};
 		item.addTrait(Trait.REACH_ATTACK);
 		item.addTrait(Trait.STRONG_ATTACK);
 		return item;
 	}
 	
 	public Item staff(){
-		Item item = new Item("staff", ')', Tile.BROWN_ROCK.background(), "Allows you to counter attack.");
+		Item item = new Item("staff", ')', Tile.BROWN_ROCK.background(), "Melee weapon that counter attacks.");
 		item.addTrait(Trait.COUNTER_ATTACK);
 		item.addTrait(Trait.STRONG_ATTACK);
 		return item;
 	}
 
 	public Item weapon() {
-		switch ((int)(Math.random() * 6)){
-		case 0: return knuckles();
-		case 1: return knife();
-		case 2: return club();
-		case 3: return sword();
-		case 4: return spear();
+		switch ((int)(Math.random() * 5)){
+		case 0: return knife();
+		case 1: return club();
+		case 2: return sword();
+		case 3: return spear();
 		default: return staff();
 		}
 	}
@@ -348,7 +363,7 @@ public class Factory {
 	}
 
 	public Item bow() {
-		Item item = new Item("bow", ')', AsciiPanel.brightBlack, "Use to shoot arrows. Cost 1 rupee per shot."){
+		Item item = new Item("bow", ')', AsciiPanel.brightBlack, "Shoots arrows."){
 			public Screen use(Screen screen, World world, Creature owner){
 				world.add(new Projectile(owner, 9, AsciiPanel.brightWhite, 1, owner.position.copy(), owner.lastMovedDirection()));
 				owner.pay(world, 1);
@@ -365,7 +380,7 @@ public class Factory {
 	}
 
 	public Item firstAidKit() {
-		Item item = new Item("first aid kit", '+', AsciiPanel.white, "Use to cure poison and recover health (5 rupees)."){
+		Item item = new Item("first aid kit", '+', AsciiPanel.white, "Use to cure poison or recover health."){
 			public Screen use(Screen screen, World world, Creature owner){
 				if (owner.money() < 5)
 					return screen;
@@ -374,9 +389,9 @@ public class Factory {
 					owner.curePoison();
 					owner.pay(world, 5);
 				} else {
-					int diff = Math.min(owner.money() / 5, owner.maxHearts() - owner.hearts());
-					owner.heal(diff);
-					owner.pay(world, diff * 5);
+					int amount = Math.min(owner.money() / 5, owner.maxHearts() - owner.hearts());
+					owner.heal(amount);
+					owner.pay(world, amount * 5);
 				}
 				return screen;
 			}
@@ -415,7 +430,7 @@ public class Factory {
 	}
 	
 	public Item heartIncrease(){
-		Item item = new Item("heart increase", 3, AsciiPanel.brightRed, "increases your max hearts."){
+		Item item = new Item("heart increase", 3, AsciiPanel.brightRed, "Increases your max hearts."){
 			public void onCollide(World world, Creature collider){
 				if (collider.glyph() != '@')
 					return;
