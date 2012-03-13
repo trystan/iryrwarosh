@@ -105,7 +105,7 @@ public class Factory {
 	
 	public Creature goblin(final World world){
 		int hue = 30 + (int)(Math.random() * 90);
-		Creature goblin = new Creature("goblin", 'g', Tile.hsv(hue, 50, 50), 2){
+		Creature goblin = new Creature("goblin", 'g', Tile.hsv(hue, 50, 50), 4){
 			public void update(World world){
 				super.update(world);
 				wander(world);
