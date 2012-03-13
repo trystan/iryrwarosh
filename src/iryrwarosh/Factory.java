@@ -138,6 +138,8 @@ public class Factory {
 		if (Math.random() < 0.5)
 			boss.equip(world, weapon());
 		
+		boss.setLoot(ringOfRegeneration());
+		
 		return boss;
 	}
 	

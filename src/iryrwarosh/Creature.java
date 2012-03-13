@@ -75,6 +75,10 @@ public class Creature {
 	private Item rightHand;
 	public Item rightHand() { return rightHand; }
 	
+	private Item loot;
+	public Item loot() { return loot; }
+	public void setLoot(Item loot) { this.loot = loot; }
+	
 	public void equip(World world, Item item) {
 		if (leftHand == null)
 			leftHand = item;
@@ -416,5 +420,21 @@ public class Creature {
 			hurt(world, this, 0 - money, null);
 			money = 0;
 		}
+	}
+
+	public void swapLeftHand(World world, Item item) {
+		world.removeItem(position.x, position.y);
+		world.add(leftHand, position.x, position.y);
+		MessageBus.publish(new DroppedWeapon(world, this, leftHand));
+		leftHand = item;
+		MessageBus.publish(new EquipedItem(world, this, item));
+	}
+
+	public void swapRightHand(World world, Item item) {
+		world.removeItem(position.x, position.y);
+		world.add(rightHand, position.x, position.y);
+		MessageBus.publish(new DroppedWeapon(world, this, rightHand));
+		rightHand = item;
+		MessageBus.publish(new EquipedItem(world, this, item));
 	}
 }

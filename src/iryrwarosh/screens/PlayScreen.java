@@ -39,8 +39,8 @@ public class PlayScreen implements Screen, Handler {
 	
 	@Override
 	public void displayOutput(AsciiPanel terminal) {
-		displayHud(terminal);
 		displayTiles(terminal);
+		displayHud(terminal);
 		displayMessages(terminal);
 	}
 
@@ -59,9 +59,12 @@ public class PlayScreen implements Screen, Handler {
 		terminal.write(player.money() + "" + (char)4, 65, 0, Tile.hsv(60, 25, 75), bg);
 		
 		Item item = world.item(player.position.x, player.position.y);
-		if (item != null)
-			terminal.write("(here: " + item.name() + ")", 29, 0, item.color(), bg);
-		
+		if (item != null){
+			terminal.write(" [g] ", 0, 1, AsciiPanel.white, bg);
+			terminal.write(item.name(), item.color(), bg);
+			terminal.write(" (at your feet)", AsciiPanel.white, bg);
+		}
+	
 		Color heartColor = player.isPoisoned() ? AsciiPanel.green : AsciiPanel.red;
 		for (int i = 0; i < player.maxHp(); i++)
 			terminal.write((char)3, 69+i, 0, i < player.hp() ? heartColor : AsciiPanel.brightBlack, bg);
@@ -176,6 +179,9 @@ public class PlayScreen implements Screen, Handler {
         case KeyEvent.VK_N: moveBy( 1, 1); break;
         case KeyEvent.VK_Z: player.leftHand().use(this, world, player); break;
         case KeyEvent.VK_X: player.rightHand().use(this, world, player); break;
+        case KeyEvent.VK_G:
+        case KeyEvent.VK_COMMA:
+        	return new PickupItemScreen(this, world, player);
 		case KeyEvent.VK_M: return new WorldMapScreen(this, world.map(), player.position);
 		case KeyEvent.VK_SPACE: return new LookAtScreen(this, world, player, getScrollX(), getScrollY());
 		default:

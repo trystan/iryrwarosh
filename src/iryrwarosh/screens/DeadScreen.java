@@ -15,8 +15,7 @@ public class DeadScreen implements Screen {
 	public void displayOutput(AsciiPanel terminal) {
 		previous.displayOutput(terminal);
 		
-		terminal.write("You have died.", 1, 1, AsciiPanel.brightWhite);
-		terminal.writeCenter("-- press [enter] to restart --", 1);
+		terminal.writeCenter("-- You have died. Press [enter] to restart --", 2, AsciiPanel.brightWhite);
 	}
 
 	@Override

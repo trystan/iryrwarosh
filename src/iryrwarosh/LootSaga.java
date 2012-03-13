@@ -23,11 +23,18 @@ public class LootSaga implements Handler {
 		if (message.attacked.hasTrait(Trait.LOOTLESS))
 			return;
 		
+		if (message.attacked.loot() != null)
+			message.world.add(message.attacked.loot(), message.attacked.position.x, message.attacked.position.y);
+		else
+			dropRandomLoot(message.world, message.attacked.position);
+	}
+	
+	private void dropRandomLoot(World world, Point point){
 		switch ((int)(Math.random() * 4)){
-		case 0: message.world.add(heart(), message.attacked.position.x, message.attacked.position.y); break;
-		case 1: message.world.add(heart(), message.attacked.position.x, message.attacked.position.y); break;
-		case 2: message.world.add(rupees_1(), message.attacked.position.x, message.attacked.position.y); break;
-		case 3: message.world.add(rupees_5(), message.attacked.position.x, message.attacked.position.y); break;
+		case 0: world.add(heart(), point.x, point.y); break;
+		case 1: world.add(heart(), point.x, point.y); break;
+		case 2: world.add(rupees_1(), point.x, point.y); break;
+		case 3: world.add(rupees_5(), point.x, point.y); break;
 		}
 	}
 	
@@ -41,7 +48,7 @@ public class LootSaga implements Handler {
 	}
 	
 	public Item rupees_1(){
-		return new Item("rupees", 4, Tile.hsv(60, 25, 75), "Rupees used for special actions."){
+		return new Item("rupees", 4, Tile.hsv(60, 50, 75), "Rupees used for special actions."){
 			public void onCollide(World world, Creature collider){
 				world.removeItem(collider.position.x, collider.position.y);
 				collider.gainMoney(1);
@@ -50,7 +57,7 @@ public class LootSaga implements Handler {
 	}
 	
 	public Item rupees_5(){
-		return new Item("rupees", 4, Tile.hsv(240, 25, 75), "Rupees used for special actions."){
+		return new Item("rupees", 4, Tile.hsv(240, 50, 75), "Rupees used for special actions."){
 			public void onCollide(World world, Creature collider){
 				world.removeItem(collider.position.x, collider.position.y);
 				collider.gainMoney(5);
