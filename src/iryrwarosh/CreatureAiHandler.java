@@ -6,6 +6,9 @@ public class CreatureAiHandler implements Handler {
 	public void handle(Message message) {
 		if (CallForHelp.class.isAssignableFrom(message.getClass()))
 			handle((CallForHelp)message);
+		
+		if (Attacked.class.isAssignableFrom(message.getClass()))
+			handle((Attacked)message);
 	}
 
 	public void handle(CallForHelp message) {
@@ -18,5 +21,12 @@ public class CreatureAiHandler implements Handler {
 			
 			c.hunt(message.attacker);
 		}
+	}
+	
+	public void handle(Attacked message) {
+		if (message.attacked.hasTrait(Trait.HUNTER))
+			message.attacked.hunt(message.attacker);
+		else if (message.attacked.hasTrait(Trait.FEARFUL))
+			message.attacked.fleeFrom(message.attacker);
 	}
 }

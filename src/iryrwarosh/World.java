@@ -54,6 +54,7 @@ public class World {
 	}
 	
     public void update(){
+    	updateLava();
     	updateWater();
     	
     	List<Creature> toUpdate = new ArrayList<Creature>();
@@ -81,7 +82,20 @@ public class World {
     	creatures = stillAlive;
     }
     
-    private void updateWater(){
+    private void updateLava() {
+    	for (int x = 0; x < tiles.length; x++)
+        for (int y = 0; y < tiles[0].length; y++){
+        	if (!tiles[x][y].isLava())
+        		continue;
+        	
+        	if (Math.random() < 0.75)
+        		continue;
+        	
+        	tiles[x][y] = Tile.LAVA1.variation();
+        }
+	}
+
+	private void updateWater(){
     	for (int x = 0; x < tiles.length; x++)
         for (int y = 0; y < tiles[0].length; y++){
         	if (!tiles[x][y].isWater())

@@ -9,7 +9,7 @@ public enum Trait {
 	SOCIAL("social"), FEARFUL("fearful"), LOOTLESS("lootless"),
 	EVADE_ATTACK("evasive attacker"), CIRCLE_ATTACK("circular attacker"), COUNTER_ATTACK("counter attack"),
 	REACH_ATTACK("long reach"), COMBO_ATTACK("combo attack"), DETECT_CAMOUFLAGED("perceptive"), 
-	DEFLECT_RANGED("deflects"), SPELL_CASTER("spellcaster");
+	DEFLECT_RANGED("deflects"), SPELL_CASTER("spellcaster"), HUNTER("hunter");
 
 	private String description;
 	public String description() { return description; }

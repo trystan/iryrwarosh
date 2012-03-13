@@ -112,6 +112,7 @@ public class Factory {
 			}
 		};
 		goblin.addTrait(Trait.WALKER);
+		goblin.addTrait(Trait.HUNTER);
 		
 		world.add(goblin);
 		goblin.equip(world, weapon());

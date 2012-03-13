@@ -36,6 +36,11 @@ public class Creature {
 
 	private int money;
 	public int money() { return money; }
+
+	private int lastWanderX;
+	private int lastWanderY;
+	private boolean hasDoubleMovedThisTurn = false;
+	private boolean hasDoubleAttackedThisTurn = false;
 	
 	private List<Trait> traits = new ArrayList<Trait>();
 
@@ -153,7 +158,6 @@ public class Creature {
 		return other.glyph == this.glyph;
 	}
 	
-	private boolean hasDoubleAttackedThisTurn = false;
 	public void attack(World world, Creature other, String specialType){
 		if (other.hp < 1)
 			return;
@@ -286,18 +290,51 @@ public class Creature {
 	}
 
 	public void wander(World world){
-		if (hasTrait(Trait.AGGRESSIVE))
+		if (prey != null && prey.hp < 1)
+			prey = null;
+		else if (prey != null && prey.hp > 0)
+			moveTo(world, prey.position);
+
+		if (preditor != null && preditor.hp < 1)
+			preditor = null;
+		else if (preditor != null && preditor.hp > 0)
+			moveFrom(world, preditor.position);
+		
+		else if (hasTrait(Trait.AGGRESSIVE))
 			fightNearby(world);
-		
-		if (hasTrait(Trait.FEARFUL))
-			fleeFromNearby(world);
-		
-		wanderForReal(world);
+		else
+			wanderForReal(world);
 	}
 
-	private int lastWanderX;
-	private int lastWanderY;
-	private boolean hasDoubleMovedThisTurn = false;
+	private void moveTo(World world, Point target) {
+		if (target.x < 0 || target.y < 0) {
+			wanderForReal(world);
+		} else {
+			int mx = (int)Math.signum(target.x - position.x);
+			int my = (int)Math.signum(target.y - position.y);
+			
+			if (canEnter(world.tile(position.x+mx, position.y+my)))
+				moveBy(world, mx, my);
+			else
+				wanderForReal(world);
+		}
+	}
+	
+	private void moveFrom(World world, Point target) {
+		if (target.x < 0 || target.y < 0) {
+			wanderForReal(world);
+		} else {
+			int mx = -(int)Math.signum(target.x - position.x);
+			int my = -(int)Math.signum(target.y - position.y);
+			
+			if (canEnter(world.tile(position.x+mx, position.y+my)))
+				moveBy(world, mx, my);
+			else
+				wanderForReal(world);
+		}
+	}
+
+	
 	private void wanderForReal(World world) {
 		if (Math.random() < 0.33)
 			lastWanderX = (int)(Math.random() * 3) - 1;
@@ -323,26 +360,13 @@ public class Creature {
 
 		if (candidates.size() == 0)
 			wanderForReal(world);
-		else
-			attack(world, candidates.get((int)(Math.random() * candidates.size())), "aggressively");
-	}
-	
-	public void fleeFromNearby(World world){
-		List<Point> candidates = new ArrayList<Point>();
-		
-		for (Point p : position.neighbors()){
-			if (canEnter(world.tile(p.x, p.y)) && world.creature(p.x, p.y) == null)
-				candidates.add(new Point(p.x-position.x, p.y-position.y));
-		}
-
-		if (candidates.size() == 0)
-			wanderForReal(world);
 		else {
-			Point target = candidates.get((int)(Math.random() * candidates.size()));
-			moveBy(world, target.x, target.y);
+			Creature other = candidates.get((int)(Math.random() * candidates.size()));
+			hunt(other);
+			attack(world, other, "aggressively");
 		}
 	}
-	
+
 	public void finishingKill(World world, Creature other) {
 		other.hurt(world, this, 1000, null);
 	}
@@ -372,11 +396,16 @@ public class Creature {
 			MessageBus.publish(new CallForHelp(world, this, attacker));
 	}
 
+	private Creature prey;
 	public void hunt(Creature prey) {
-		lastWanderX = Math.max(-1, Math.min(prey.position.x - position.x,1));
-		lastWanderY = Math.max(-1, Math.min(prey.position.y - position.y,1));
+		this.prey = prey;
 	}
 
+	private Creature preditor;
+	public void fleeFrom(Creature preditor) {
+		this.preditor = preditor;
+	}
+	
 	public void pay(World world, int i) {
 		money -= i;
 		

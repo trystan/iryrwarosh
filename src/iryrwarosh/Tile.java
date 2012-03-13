@@ -34,7 +34,9 @@ public enum Tile {
 	WATER3      (247, hsv(210, 69, 70), hsv(210, 80, 19), "water"),
     BRIDGE      (240, hsv( 30, 66, 66), hsv( 30, 90, 20), "bridge"),
     STATUE      ('&', hsv( 20, 33, 90), hsv(  0,  0,  5), "statue"),
-    LAVA        (247, hsv(  0, 66, 75), hsv(  0, 75, 20), "lava"),
+    LAVA1       (247, hsv(  0, 64, 79), hsv(  0, 75, 22), "lava"),
+    LAVA2       (247, hsv(  0, 66, 75), hsv(  0, 75, 20), "lava"),
+    LAVA3       (247, hsv(  0, 68, 71), hsv(  0, 75, 18), "lava"),
     OUT_OF_BOUNDS ('x', AsciiPanel.brightBlack, AsciiPanel.black, "OUT OF BOUNDS"),;
 
 	public static Color hsv(int h, int s, int v){
@@ -74,6 +76,11 @@ public enum Tile {
 		case WATER2:
 		case WATER3:
 			varieties = new Tile[]{ WATER1, WATER2, WATER3 };
+			break;
+		case LAVA1:
+		case LAVA2:
+		case LAVA3:
+			varieties = new Tile[]{ LAVA1, LAVA2, LAVA3 };
 			break;
 		case DESERT_SAND1:
 		case DESERT_SAND2:
@@ -124,5 +131,9 @@ public enum Tile {
 	
 	public boolean isFlyable(){
 		return this != OUT_OF_BOUNDS;
+	}
+
+	public boolean isLava() {
+		return this == LAVA1 || this == LAVA2 || this == LAVA3;
 	}
 }

@@ -12,13 +12,13 @@ import java.awt.event.KeyEvent;
 
 import asciiPanel.AsciiPanel;
 
-public class ChooseStartingItemssScreen implements Screen {
+public class ChooseStartingItemsScreen implements Screen {
 	private boolean[] picked;
 	private Item[] items;
 	private Factory factory;
 	private int descriptionX;
 	
-	public ChooseStartingItemssScreen(){
+	public ChooseStartingItemsScreen(){
 		factory = new Factory();
 		items = new Item[]{
 			factory.sword(),

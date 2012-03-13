@@ -1,6 +1,7 @@
 package iryrwarosh.screens;
 
 import iryrwarosh.ArmosSaga;
+import iryrwarosh.CreatureAiHandler;
 import iryrwarosh.Handler;
 import iryrwarosh.LootSaga;
 import iryrwarosh.Message;
@@ -26,6 +27,7 @@ public class StartScreen implements Screen {
 		MessageBus.subscribe(new ItemSpecialsSaga());
 		MessageBus.subscribe(new LootSaga());
 		MessageBus.subscribe(new ArmosSaga());
+		MessageBus.subscribe(new CreatureAiHandler());
 	}
 	
 	@Override
@@ -37,6 +39,6 @@ public class StartScreen implements Screen {
 
 	@Override
 	public Screen respondToUserInput(KeyEvent key) {
-		return key.getKeyCode() == KeyEvent.VK_ENTER ? new ChooseStartingItemssScreen() : this;
+		return key.getKeyCode() == KeyEvent.VK_ENTER ? new ChooseStartingItemsScreen() : this;
 	}
 }

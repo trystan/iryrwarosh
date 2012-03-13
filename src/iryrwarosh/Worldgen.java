@@ -402,7 +402,7 @@ public class Worldgen {
 				  + "#.tt...........tt.#"
 				  + "#..ttt.......ttt..#"
 				  + "#.................#"
-				  + "###################", Tile.LAVA);
+				  + "###################", Tile.LAVA1);
 			break;
 		case 4:
 			addMap(sx, sy, 
@@ -414,7 +414,7 @@ public class Worldgen {
 				  + "t..t..tt...tt..t..t"
 				  + "tt.....t...t.....tt"
 				  + "tttttt.......tttttt"
-				  + "ttttttttttttttttttt", Tile.LAVA);
+				  + "ttttttttttttttttttt", Tile.LAVA1);
 			break;
 		case 5:
 			addMap(sx, sy, 
@@ -476,7 +476,7 @@ public class Worldgen {
 				  + "t......ttttt......t"
 				  + "tt...............tt"
 				  + "tttt...........tttt"
-				  + "ttttttttttttttttttt", Tile.LAVA);
+				  + "ttttttttttttttttttt", Tile.LAVA1);
 			break;
 		}
 		
