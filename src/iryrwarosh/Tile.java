@@ -34,6 +34,7 @@ public enum Tile {
 	WATER3      (247, hsv(210, 69, 70), hsv(210, 80, 19), "water"),
     BRIDGE      (240, hsv( 30, 66, 66), hsv( 30, 90, 20), "bridge"),
     STATUE      ('&', hsv( 20, 33, 90), hsv(  0,  0,  5), "statue"),
+    LAVA        (247, hsv(  0, 66, 75), hsv(  0, 75, 20), "lava"),
     OUT_OF_BOUNDS ('x', AsciiPanel.brightBlack, AsciiPanel.black, "OUT OF BOUNDS"),;
 
 	public static Color hsv(int h, int s, int v){
