@@ -34,7 +34,7 @@ public class ItemSpecialsSaga implements Handler {
 
 	private void checkEvadeAttack(Evaded m) {
 		if (m.evader.hasTrait(Trait.EVADE_ATTACK) && Math.random() < 0.5){
-			m.evader.attack(m.world, m.attacker, "wile evading");
+			m.evader.attack(m.world, m.attacker, "while evading");
 		}
 	}
 
