@@ -360,13 +360,13 @@ public class Worldgen {
 			addMap(sx, sy, 
 				    "###################"
 				  + "#.................#"
-				  + "#.#.~~~~~~~~~~~.#.#"
-				  + "#.................#"
+				  + "#.#.~~~~~t~~~~~.#.#"
+				  + "#...~~.......~~...#"
 				  + "#.~~~.........~~~.#"
+				  + "#...~~.......~~...#"
+				  + "#.#.~~~~~t~~~~~.#.#"
 				  + "#.................#"
-				  + "#.#.~~~~~~~~~~~.#.#"
-				  + "#.................#"
-				  + "###################");
+				  + "###################", Tile.BRIDGE);
 			break;
 		case 1:
 			addMap(sx, sy, 
@@ -384,13 +384,13 @@ public class Worldgen {
 			addMap(sx, sy, 
 				    "###################"
 				  + "#.................#"
-				  + "# .~~~~~~.~~~~~~..#"
+				  + "# .~~~~~~t~~~~~~..#"
 				  + "#.~~~~~~...~~~~~~.#"
-				  + "#.................#"
+				  + "#.t.............t.#"
 				  + "#.~~~~~~...~~~~~~.#"
-				  + "#..~~~~~~.~~~~~~..#"
+				  + "#..~~~~~~t~~~~~~..#"
 				  + "#.................#"
-				  + "###################");
+				  + "###################", Tile.BRIDGE);
 			break;
 		case 3:
 			addMap(sx, sy, 
@@ -458,13 +458,13 @@ public class Worldgen {
 			addMap(sx, sy, 
 				    "###################"
 				  + "#~~~~~~~~.~~~~~~~~#"
-				  + "#~~~~~~~~.~~~~~~~~#"
+				  + "#~~~~~~~~t~~~~~~~~#"
 				  + "#~~~~~~~...~~~~~~~#"
-				  + "#.................#"
+				  + "#......t...t......#"
 				  + "#~~~~~~~...~~~~~~~#"
+				  + "#~~~~~~~~t~~~~~~~~#"
 				  + "#~~~~~~~~.~~~~~~~~#"
-				  + "#~~~~~~~~.~~~~~~~~#"
-				  + "###################");
+				  + "###################", Tile.BRIDGE);
 			break;
 		case 9:
 			addMap(sx, sy, 
@@ -479,7 +479,28 @@ public class Worldgen {
 				  + "ttttttttttttttttttt", Tile.LAVA);
 			break;
 		}
+		
 		cells[sx][sy].canAddQuarterWall = false;
+		convertEdgesToCenter(sx, sy);
+	}
+
+	private void convertEdgesToCenter(int sx, int sy) {
+		if (cells[sx][sy].nEdge != WorldScreen.WALL) {
+			cells[sx][sy].nEdge = WorldScreen.CENTER;
+			cells[sx][sy-1].sEdge = WorldScreen.CENTER;
+		}
+		if (cells[sx][sy].eEdge != WorldScreen.WALL) {
+			cells[sx][sy].eEdge = WorldScreen.CENTER;
+			cells[sx+1][sy].wEdge = WorldScreen.CENTER;
+		}
+		if (cells[sx][sy].sEdge != WorldScreen.WALL) {
+			cells[sx][sy].sEdge = WorldScreen.CENTER;
+			cells[sx][sy+1].nEdge = WorldScreen.CENTER;
+		}
+		if (cells[sx][sy].wEdge != WorldScreen.WALL) {
+			cells[sx][sy].wEdge = WorldScreen.CENTER;
+			cells[sx-1][sy].eEdge = WorldScreen.CENTER;
+		}
 	}
 	
 	private void setTilesFull(int sx, int sy){
