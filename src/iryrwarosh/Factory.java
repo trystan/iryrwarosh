@@ -29,7 +29,14 @@ public class Factory {
 				Tile.GREEN_ROCK, Tile.BROWN_ROCK, Tile.WHITE_ROCK, Tile.DESERT_SAND1, Tile.WATER1 }){
 			
 			List<Trait> traits = new ArrayList<Trait>();
-
+			
+			switch ((int)(Math.random() * 8)){
+			case 0: traits.add(Trait.POISONOUS); break;
+			case 1: traits.add(Trait.AGGRESSIVE); break;
+			case 2: traits.add(Trait.DOUBLE_ATTACK); break;
+			case 3: traits.add(Trait.DOUBLE_MOVE); break;
+			}
+			
 			if (biome == Tile.WATER1){
 				traits.add(Trait.SWIMMER);
 			} else {
@@ -49,21 +56,21 @@ public class Factory {
 	public Item knuckles(){
 		Item item = new Item("knuckles", ')', Tile.WHITE_ROCK.background(), "Allows you to do combo attacks.");
 		item.addTrait(Trait.COMBO_ATTACK);
-		item.addTrait(Trait.EXTRA_ATTACK);
+		item.addTrait(Trait.STRONG_ATTACK);
 		return item;
 	}
 	
 	public Item knife(){
 		Item item = new Item("knife", ')', Tile.WHITE_ROCK.background(), "Allows you to attack when you evade.");
 		item.addTrait(Trait.EVADE_ATTACK);
-		item.addTrait(Trait.EXTRA_ATTACK);
+		item.addTrait(Trait.STRONG_ATTACK);
 		return item;
 	}
 	
 	public Item club(){
 		Item item = new Item("club", ')', Tile.BROWN_ROCK.background(), "Allows you to do a circular attack.");
 		item.addTrait(Trait.CIRCLE_ATTACK);
-		item.addTrait(Trait.EXTRA_ATTACK);
+		item.addTrait(Trait.STRONG_ATTACK);
 		return item;
 	}
 	
@@ -87,21 +94,21 @@ public class Factory {
 				return screen;
 			}
 		};
-		item.addTrait(Trait.EXTRA_ATTACK);
+		item.addTrait(Trait.STRONG_ATTACK);
 		return item;
 	}
 	
 	public Item spear(){
 		Item item = new Item("spear", ')', Tile.BROWN_ROCK.background(), "Allows you to attack anything moving within reach.");
 		item.addTrait(Trait.REACH_ATTACK);
-		item.addTrait(Trait.EXTRA_ATTACK);
+		item.addTrait(Trait.STRONG_ATTACK);
 		return item;
 	}
 	
 	public Item staff(){
 		Item item = new Item("staff", ')', Tile.BROWN_ROCK.background(), "Allows you to counter attack.");
 		item.addTrait(Trait.COUNTER_ATTACK);
-		item.addTrait(Trait.EXTRA_ATTACK);
+		item.addTrait(Trait.STRONG_ATTACK);
 		return item;
 	}
 
@@ -123,7 +130,7 @@ public class Factory {
 		char glyph = glyphs[(int)(Math.random() * glyphs.length)];
 		
 		int hue = (int)(Math.random() * 360);
-		int hp = 3 + (int)(Math.random() * 4);
+		int hp = 5 + (int)(Math.random() * 6);
 		
 		Creature boss = new Creature("miniboss", glyph, Tile.hsv(hue, 33, 66), hp){
 			public void update(World world){
@@ -253,7 +260,7 @@ public class Factory {
 		
 		boolean isBigMonster = Math.random() * 1000 < (monstersCreated - 200);
 		
-		Creature monster = new Creature(name, isBigMonster ? 'M' : 'm', color, isBigMonster ? 5 : 2){
+		Creature monster = new Creature(name, isBigMonster ? 'M' : 'm', color, isBigMonster ? 7 : 3){
 			public void update(World world){
 				super.update(world);
 				wander(world);

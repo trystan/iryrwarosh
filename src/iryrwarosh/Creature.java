@@ -164,9 +164,9 @@ public class Creature {
 		if (other.hp < 1)
 			return;
 		
-		Boolean isSpecial = specialType != null && !specialType.equals("normal");
+		Boolean isSpecial = false; // specialType != null && !specialType.equals("normal");
 
-		other.hurt(world, this, hasTrait(Trait.EXTRA_ATTACK) ? 2 : 1, specialType);
+		other.hurt(world, this, hasTrait(Trait.STRONG_ATTACK) ? 2 : 1, specialType);
 
 		if (!isSpecial && other.hasTrait(Trait.SPIKED)){
 			MessageBus.publish(new HitSpikes(world, this, other));
