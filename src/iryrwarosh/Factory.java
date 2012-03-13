@@ -4,6 +4,7 @@ import iryrwarosh.screens.Screen;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,9 +12,26 @@ import asciiPanel.AsciiPanel;
 
 public class Factory {
 	private HashMap<Tile,List<Trait>> monsterTraits;
+	private List<Item> minibossLoot;
 	
 	public Factory(){
 		setMonsterTraits();
+		minibossLoot = new ArrayList<Item>();
+		minibossLoot.add(this.bow());
+		minibossLoot.add(this.club());
+		minibossLoot.add(this.crystalBall());
+		minibossLoot.add(this.firstAidKit());
+		minibossLoot.add(this.heavyArmor());
+		minibossLoot.add(this.knife());
+		minibossLoot.add(this.knuckles());
+		minibossLoot.add(this.ringOfRegeneration());
+		minibossLoot.add(this.shield());
+		minibossLoot.add(this.snorkel());
+		minibossLoot.add(this.spear());
+		minibossLoot.add(this.spellBook());
+		minibossLoot.add(this.staff());
+		minibossLoot.add(this.sword());
+		Collections.shuffle(minibossLoot);
 	}
 	
 	private void setMonsterTraits(){
@@ -120,6 +138,16 @@ public class Factory {
 		
 		boss.addTrait(Trait.WALKER);
 		boss.addTrait(Trait.TERRITORIAL);
+		boss.addTrait(Trait.HUNTER);
+		
+		switch ((int)(Math.random() * 6)){
+		case 0: boss.addTrait(Trait.DOUBLE_ATTACK); break;
+		case 1: boss.addTrait(Trait.EXTRA_ATTACK); break;
+		case 2: boss.addTrait(Trait.EXTRA_HP); break;
+		case 3: boss.addTrait(Trait.POISONOUS); break;
+		case 4: boss.addTrait(Trait.REACH_ATTACK); break;
+		case 5: boss.addTrait(Trait.COUNTER_ATTACK); break;
+		}
 		
 		List<Trait> traits = new ArrayList<Trait>();
 		while (traits.size() < 2){
@@ -133,12 +161,15 @@ public class Factory {
 		
 		world.addToScreen(boss, sx, sy);
 		
-		if (Math.random() < 0.5)
+		if (Math.random() < 0.25)
 			boss.equip(world, weapon());
-		if (Math.random() < 0.5)
+		if (Math.random() < 0.25)
 			boss.equip(world, weapon());
 		
-		boss.setLoot(ringOfRegeneration());
+		if (minibossLoot.size() > 0)
+			boss.setLoot(minibossLoot.remove(0));
+		else
+			boss.setLoot(weapon());
 		
 		return boss;
 	}
