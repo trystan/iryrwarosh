@@ -41,7 +41,7 @@ public class Factory {
 	}
 	
 	public Item knuckles(){
-		Item w = new Item("knuckes", ')', Tile.WHITE_ROCK.background(), "Allows you to do combo attacks.");
+		Item w = new Item("knuckles", ')', Tile.WHITE_ROCK.background(), "Allows you to do combo attacks.");
 		w.addTrait(Trait.COMBO_ATTACK);
 		return w;
 	}
@@ -127,7 +127,7 @@ public class Factory {
 		
 		switch (biome) {
 		case GREEN_TREE1:
-			name = "evergren monster";
+			name = "evergreen monster";
 			color = biome.color().brighter();
 			candidates.addAll(world.screensOfType(Tile.GREEN_TREE1));
 			candidates.addAll(world.screensOfType(Tile.PINE_TREE1));
@@ -161,7 +161,7 @@ public class Factory {
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case BROWN_ROCK:
-			name = "mountan monster";
+			name = "mountain monster";
 			color = biome.background().darker();
 			candidates.addAll(world.screensOfType(Tile.BROWN_ROCK));
 			if (candidates.size() == 0)
@@ -169,7 +169,7 @@ public class Factory {
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case WHITE_ROCK:
-			name = "glacer monster";
+			name = "glacier monster";
 			color = biome.background().darker();
 			candidates.addAll(world.screensOfType(Tile.WHITE_ROCK));
 			if (candidates.size() == 0)
