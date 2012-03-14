@@ -344,13 +344,13 @@ public class Factory {
 	}
 
 	public Item heavyArmor() {
-		Item item = new Item("heavy armor", '[', AsciiPanel.yellow, "Reduces damage done from heavy hitters.");
+		Item item = new Item("heavy armor", '[', AsciiPanel.yellow, -3, "Reduces damage done from heavy hitters.");
 		item.addTrait(Trait.EXTRA_DEFENSE);
 		return item;
 	}
 
 	public Item shield() {
-		Item item = new Item("shield", '[', AsciiPanel.yellow, "Deflects projectiles half of the time.");
+		Item item = new Item("shield", '[', AsciiPanel.yellow, -1, "Deflects projectiles half of the time.");
 		item.addTrait(Trait.DEFLECT_RANGED);
 		return item;
 	}

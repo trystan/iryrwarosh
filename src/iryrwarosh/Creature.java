@@ -194,7 +194,15 @@ public class Creature {
 	}
 	
 	public int evadePercent(World world){
-		return evasionCandidates(world).size() * (hasTrait(Trait.EXTRA_EVADE) ? 8 : 5);
+		int perOpenSpace = hasTrait(Trait.EXTRA_EVADE) ? 10 : 5;
+		
+		if (leftHand != null)
+			perOpenSpace += leftHand.evasionModifier();
+		
+		if (rightHand != null)
+			perOpenSpace += rightHand.evasionModifier();
+		
+		return evasionCandidates(world).size() * perOpenSpace;
 	}
 	
 	public boolean evadeCheck(World world){

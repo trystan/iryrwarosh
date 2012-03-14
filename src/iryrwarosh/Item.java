@@ -26,12 +26,20 @@ public class Item {
 		return traits.contains(trait);
 	}
 	
+	private int evasionModifier;
+	public int evasionModifier() { return evasionModifier; }
+	
 	Item(String name, int glyph, Color color, String description){
+		this(name, glyph, color, 0, description); 
+	}
+
+	Item(String name, int glyph, Color color, int evasionModifier, String description){
 		this.name = name;
 		this.glyph = (char)glyph;
 		this.color = color;
 		this.traits = new ArrayList<Trait>();
 		this.description = description;
+		this.evasionModifier = evasionModifier;
 	}
 	
 	public void onCollide(World world, Creature colider){
