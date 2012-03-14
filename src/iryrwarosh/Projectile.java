@@ -32,7 +32,7 @@ public class Projectile {
 		this.damage = damage;
 	}
 	
-	public void update(World world){
+	public void move(World world){
 		position.x += velocity.x;
 		position.y += velocity.y;
 		
@@ -43,7 +43,11 @@ public class Projectile {
 			isDone = true;
 			return;
 		}
-			
+		
+		update(world);
+	}
+	
+	public void update(World world){
 		Creature creature = world.creature(position.x, position.y);
 		
 		if (creature == null || origin.isFriendlyTo(creature))

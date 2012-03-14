@@ -57,13 +57,6 @@ public class World {
     	updateLava();
     	updateWater();
     	
-    	List<Creature> toUpdate = new ArrayList<Creature>();
-    	toUpdate.addAll(creatures);
-    	for (Creature c : toUpdate)
-    		if (c.hearts() > 0)
-    			c.update(this);
-    	
-    	
     	List<Projectile> stillFlying = new ArrayList<Projectile>();
     	for (Projectile p : projectiles){
     		p.update(this);
@@ -72,7 +65,21 @@ public class World {
     	}
     	projectiles = stillFlying;
     	
-
+    	List<Creature> toUpdate = new ArrayList<Creature>();
+    	toUpdate.addAll(creatures);
+    	for (Creature c : toUpdate)
+    		if (c.hearts() > 0)
+    			c.update(this);
+    	
+    	stillFlying = new ArrayList<Projectile>();
+    	for (Projectile p : projectiles){
+    		p.move(this);
+    		if (!p.isDone())
+    			stillFlying.add(p);
+    	}
+    	projectiles = stillFlying;
+    	
+    	
     	List<Creature> stillAlive = new ArrayList<Creature>();
     	
     	for (Creature c : creatures)

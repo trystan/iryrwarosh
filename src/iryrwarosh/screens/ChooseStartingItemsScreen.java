@@ -32,7 +32,7 @@ public class ChooseStartingItemsScreen implements Screen {
 			factory.snorkel(),
 			factory.bow(),
 			factory.firstAidKit(),
-			factory.crystalBall(),
+			factory.spectacles(),
 			factory.spellBook(),
 			factory.jumpingBoots(),
 			factory.heavyArmor(),
@@ -115,16 +115,14 @@ public class ChooseStartingItemsScreen implements Screen {
 			factory.rival(world, "rival");
 		
 		for (Tile biome : new Tile[]{ 
-				Tile.GREEN_TREE1, Tile.BROWN_TREE1, 
-				Tile.GREEN_TREE1, Tile.BROWN_TREE1, 
+				Tile.GREEN_TREE1, Tile.GREEN_TREE1, Tile.GREEN_TREE1,
+				Tile.BROWN_TREE1, Tile.BROWN_TREE1, Tile.BROWN_TREE1,  
 				Tile.WHITE_TREE1, 
-				Tile.GREEN_ROCK, Tile.BROWN_ROCK, Tile.WHITE_ROCK, 
-				Tile.GREEN_TREE1, Tile.BROWN_TREE1, 
-				Tile.GREEN_TREE1, Tile.BROWN_TREE1, 
-				Tile.WHITE_TREE1, 
-				Tile.GREEN_ROCK, Tile.BROWN_ROCK, Tile.WHITE_ROCK, 
+				Tile.GREEN_ROCK, Tile.GREEN_ROCK, Tile.GREEN_ROCK, 
+				Tile.BROWN_ROCK, Tile.BROWN_ROCK, Tile.BROWN_ROCK, 
+				Tile.WHITE_ROCK, 
 				Tile.DESERT_SAND1, Tile.WATER1 }){
-			for (int i = 0; i < 15; i++)
+			for (int i = 0; i < 20; i++)
 				factory.monster(world, biome);
 		}
 

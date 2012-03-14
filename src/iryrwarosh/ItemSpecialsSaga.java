@@ -22,8 +22,8 @@ public class ItemSpecialsSaga implements Handler {
 			Creature other = m.world.creature(p.x, p.y);
 			if (other != null 
 					&& !m.creature.isFriendlyTo(other) 
-					&& other.hasTrait(Trait.REACH_ATTACK) && Math.random() < 0.5){
-				other.attack(m.world, m.creature, "with a long reach");
+					&& other.hasTrait(Trait.REACH_ATTACK) && Math.random() < 0.75){
+				other.attack(m.world, m.creature, "with it's long reach");
 			}
 		}
 	}
@@ -33,21 +33,18 @@ public class ItemSpecialsSaga implements Handler {
 	}
 
 	private void checkEvadeAttack(Evaded m) {
-		if (m.evader.hasTrait(Trait.EVADE_ATTACK) && Math.random() < 0.5){
+		if (m.evader.hasTrait(Trait.EVADE_ATTACK) && Math.random() < 0.75){
 			m.evader.attack(m.world, m.attacker, "while evading");
 		}
 	}
 
 	private void onAttacked(Attacked m) {
-		if (m.isSpecial)
-			return;
-		
 		checkKnockbackAttack(m);
 		checkCounterAttack(m);
 	}
 
 	private void checkCounterAttack(Attacked m) {
-		if (m.attacked.hasTrait(Trait.COUNTER_ATTACK) && m.attacked.hearts() > 0 && Math.random() < 0.5) {
+		if (m.attacked.hasTrait(Trait.COUNTER_ATTACK) && m.attacked.hearts() > 0 && Math.random() < 0.75) {
 			m.attacked.attack(m.world, m.attacker, "with a counter attack");
 		}
 	}
@@ -56,9 +53,13 @@ public class ItemSpecialsSaga implements Handler {
 		if (m.attacker.hasTrait(Trait.KNOCKBACK)){
 			int dx = m.attacked.position.x - m.attacker.position.x;
 			int dy = m.attacked.position.y - m.attacker.position.y;
-			if (m.attacked.canEnter(m.world.tile(m.attacker.position.x+dx, m.attacker.position.y+dy))){
-				m.attacked.position.x += dx;
-				m.attacked.position.y += dy;
+			
+			for (int i = 0; i < 2; i++) {
+				if (m.attacked.canEnter(m.world.tile(m.attacked.position.x+dx, m.attacked.position.y+dy))
+						&& m.world.creature(m.attacked.position.x+dx, m.attacked.position.y+dy) == null){
+					m.attacked.position.x += dx;
+					m.attacked.position.y += dy;
+				}
 			}
 		}
 	}

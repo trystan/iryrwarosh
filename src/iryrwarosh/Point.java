@@ -25,7 +25,7 @@ public class Point {
 	public Collection<? extends Point> neighbors() {
 		List<Point> neighbors = Arrays.asList(
 				new Point(x-1,y-1), new Point(x+0,y-1), new Point(x+1,y-1), 
-				new Point(x+1,y), new Point(x-1,y),
+				new Point(x-1,y+0),                     new Point(x+1,y+0),
 				new Point(x-1,y+1), new Point(x+0,y+1), new Point(x+1,y+1));
 				
 		Collections.shuffle(neighbors);
@@ -34,5 +34,13 @@ public class Point {
 
 	public Point plus(int dx, int dy) {
 		return new Point(x+dx, y+dy);
+	}
+
+	public Point plus(Point other){
+		return new Point(x+other.x, y+other.y);
+	}
+
+	public Point minus(Point other){
+		return new Point(x-other.x, y-other.y);
 	}
 }

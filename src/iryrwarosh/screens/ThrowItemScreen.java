@@ -33,7 +33,7 @@ public class ThrowItemScreen implements Screen {
 
 	@Override
 	public Screen respondToUserInput(KeyEvent key) {
-		switch (key.getKeyChar()){
+		switch (key.getKeyCode()){
         case KeyEvent.VK_LEFT:
         case KeyEvent.VK_4:
         case KeyEvent.VK_H: throwDirection(-1, 0); break;
@@ -68,5 +68,6 @@ public class ThrowItemScreen implements Screen {
 				return tile.isGround() || tile.isWater();
 			}
 		});
+		player.loseRupees(world, 2);
 	}
 }

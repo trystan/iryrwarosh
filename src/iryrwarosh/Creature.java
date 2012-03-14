@@ -176,8 +176,8 @@ public class Creature {
 				hasMovedThisTurn = true;
 				MessageBus.publish(new Moved(world, this));
 			} else {
-				lastWanderX = (int)(Math.random() * 3) - 1;
-				lastWanderY = (int)(Math.random() * 3) - 1;
+				lastWanderX = -lastWanderX;
+				lastWanderY = -lastWanderY;
 				MessageBus.publish(new BumpedIntoObsticle(world, this, position.x+x, position.y+y));
 			}
 		} else if (isFriendlyTo(other)) {
@@ -194,7 +194,7 @@ public class Creature {
 		if (glyph == '@' && other.glyph == '@')
 			return this == other;
 		else
-			return other.glyph == this.glyph;
+			return Character.toLowerCase(other.glyph) == Character.toLowerCase(this.glyph);
 	}
 	
 	public void attack(World world, Creature other, String specialType){
@@ -312,10 +312,10 @@ public class Creature {
 			homeScreenPosition = new Point(position.x / 19, position.y / 9); 
 		
 		if (leftHand != null)
-			leftHand.update();
+			leftHand.update(this);
 
 		if (rightHand != null)
-			rightHand.update();
+			rightHand.update(this);
 		
 		if (poisonCounter > 0 && poisonCounter-- % 5 == 0)
 			loseHearts(world, lastPoisonedBy, 1, null, "You died of poison from a " + lastPoisonedBy.name());

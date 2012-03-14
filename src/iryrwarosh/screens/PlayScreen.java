@@ -226,6 +226,7 @@ public class PlayScreen implements Screen, Handler {
         case KeyEvent.VK_B: moveBy(-1, 1); break;
         case KeyEvent.VK_NUMPAD3:
         case KeyEvent.VK_N: moveBy( 1, 1); break;
+        case KeyEvent.VK_PERIOD: moveBy( 0, 0); break;
         case KeyEvent.VK_Z: 
         	Screen lhs = player.leftHand().use(this, world, player);
         	if (lhs != this) 
@@ -261,6 +262,11 @@ public class PlayScreen implements Screen, Handler {
 		} else if (fameHandler.getFame(player) > 99){
 			MessageBus.unsubscribe(this);
 			return new VictoryScreen(this);
+		} else {
+			for (Creature creature : fameHandler.getFamousPeople()){
+				if (fameHandler.getFame(creature) > 99)
+					return new LostScreen(this);
+			}
 		}
 		
 		return this;

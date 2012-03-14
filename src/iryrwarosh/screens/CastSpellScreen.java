@@ -27,11 +27,11 @@ public class CastSpellScreen implements Screen {
 		
 		terminal.clear(' ', 1, 20, 31, 4);
 		terminal.write("What do you want to cast?", 1, 20);
-		terminal.write(" [1] Fireball          cost 10", 1, 21)
+		terminal.write(" [1] Fireball      cost 10", 1, 21)
 				.write((char)4, Tile.hsv(60, 25, 75));
-		terminal.write(" [2] Blink             cost  5", 1, 22)
+		terminal.write(" [2] Blink         cost  5", 1, 22)
 				.write((char)4, Tile.hsv(60, 25, 75));
-		terminal.write(" [3] Heart to rupees   cost  1", 1, 23)
+		terminal.write(" [3] Fireblast     cost 25", 1, 23)
 				.write((char)3, AsciiPanel.red);
 	}
 
@@ -40,7 +40,7 @@ public class CastSpellScreen implements Screen {
 		switch (key.getKeyChar()){
 		case '1': fireball(); break;
 		case '2': blink(); break;
-		case '3': heartsToRupees(); break;
+		case '3': fireblast(); break;
 		}
 		
 		return previous;
@@ -74,8 +74,19 @@ public class CastSpellScreen implements Screen {
 		player.position.y = y;
 	}
 
-	private void heartsToRupees() {
-		player.loseHearts(world, player, 1, null, "You turned the last of your hearts into rupees");
-		player.gainRupees(10);
+	private void fireblast() {
+		Point dir = player.lastMovedDirection();
+		Point side = new Point(dir.y, dir.x);
+		
+		world.add(new Projectile("fireball", player, 7, Tile.LAVA1.color(), 5, player.position.plus(dir), dir));
+		world.add(new Projectile("fireball", player, 250, Tile.LAVA2.color(), 2, player.position.copy(), dir));
+		
+		world.add(new Projectile("fireball", player, 7, Tile.LAVA2.color(), 5, player.position.plus(dir).plus(side), dir));
+		world.add(new Projectile("fireball", player, 250, Tile.LAVA3.color(), 2, player.position.plus(side), dir));
+		
+		world.add(new Projectile("fireball", player, 7, Tile.LAVA2.color(), 5, player.position.plus(dir).minus(side), dir));
+		world.add(new Projectile("fireball", player, 250, Tile.LAVA3.color(), 2, player.position.minus(side), dir));
+		
+		player.loseRupees(world, 10);
 	}
 }

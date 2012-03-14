@@ -44,7 +44,7 @@ public class Item {
 		this.evasionModifier = evasionModifier;
 	}
 	
-	public void update(){
+	public void update(Creature owner){
 		
 	}
 	

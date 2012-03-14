@@ -2,10 +2,12 @@ package iryrwarosh;
 
 import iryrwarosh.screens.CastAdvancedSpellScreen;
 import iryrwarosh.screens.CastSpellScreen;
+import iryrwarosh.screens.DiveScreen;
 import iryrwarosh.screens.JumpScreen;
 import iryrwarosh.screens.Screen;
 import iryrwarosh.screens.SneakScreen;
 import iryrwarosh.screens.ThrowItemScreen;
+import iryrwarosh.screens.WorldMapScreen;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -28,6 +30,8 @@ public class Factory {
 		minibossLoot.add(this.advancedSpellBook());
 		minibossLoot.add(this.ringOfEvasion());
 		minibossLoot.add(this.darkCloak());
+		minibossLoot.add(this.rupeeMachine());
+		minibossLoot.add(this.rupeeAmulet());
 		minibossLoot.add(this.evasionPotion());
 		minibossLoot.add(this.evasionPotion());
 		minibossLoot.add(this.evasionPotion());
@@ -69,10 +73,9 @@ public class Factory {
 		Item item = new Item("knife", ')', Tile.WHITE_ROCK.background(), "Melee weapon that attacks when you evade. Can be poisoned."){
 			int poisonCounter = 0;
 			World world;
-			Creature owner;
 			
-			public void update(){
-				super.update();
+			public void update(Creature owner){
+				super.update(owner);
 				
 				if (poisonCounter > 0)
 					poisonCounter--;
@@ -84,19 +87,18 @@ public class Factory {
 			}
 
 			public Screen use(Screen screen, World world, Creature owner){
-				if (owner.rupees() + owner.hearts() <= 5) {
-					MessageBus.publish(new Note(world, owner, "You need more than 5 rupees or hearts to poison your knife."));
+				if (owner.rupees() + owner.hearts() <= 1) {
+					MessageBus.publish(new Note(world, owner, "You need more than 1 rupee or heart to poison your knife."));
 					return screen;
 				}
 				
 				this.world = world;
-				this.owner = owner;
 				
 				if (!hasTrait(Trait.POISONOUS))
 					addTrait(Trait.POISONOUS);
 
-				owner.loseRupees(world, 5);
-				poisonCounter += 10;
+				owner.loseRupees(world, 1);
+				poisonCounter += 3;
 				MessageBus.publish(new Note(world, owner, "Your knife is now poisonous for " + poisonCounter + " turns."));
 				
 				return screen;
@@ -110,8 +112,8 @@ public class Factory {
 	public Item club(){
 		Item item = new Item("club", ')', Tile.BROWN_ROCK.background(), "Melee weapon with knockback. Can do a circle attack."){
 			public Screen use(Screen screen, World world, Creature owner){
-				if (owner.rupees() + owner.hearts() <= 3) {
-					MessageBus.publish(new Note(world, owner, "You need more than 3 rupees or hearts to shoot arrows."));
+				if (owner.rupees() + owner.hearts() <= 1) {
+					MessageBus.publish(new Note(world, owner, "You need more than 1 rupee or heart to do a circle attack."));
 					return screen;
 				}
 				
@@ -347,7 +349,7 @@ public class Factory {
 			break;
 		}
 		
-		boolean isBigMonster = Math.random() * 1000 < (monstersCreated - 200);
+		boolean isBigMonster = Math.random() * 1000 < (monstersCreated - 300);
 		
 		Creature monster = new Creature(name, isBigMonster ? 'M' : 'm', color, isBigMonster ? 7 : 3){
 			public void update(World world){
@@ -397,7 +399,7 @@ public class Factory {
 	public Creature rival(World world, String name){
 		int hue = (int)(Math.random() * 360);
 		
-		Creature rival = new Creature(name, '@', Tile.hsv(hue, 75, 75), 10){
+		Creature rival = new Creature(name, '@', Tile.hsv(hue, 80, 80), 10){
 			public void update(World world){
 				super.update(world);
 				wander(world);
@@ -441,13 +443,16 @@ public class Factory {
 		return item;
 	}
 
-	public Item crystalBall() {
-		Item item = new Item("crystal ball", '+', Tile.hsv(220, 25, 25), "With this you will see anything camouflaged."){
+	public Item spectacles() {
+		Item item = new Item("spectacles", '/', Tile.hsv(220, 15, 50), "Allows you to see camouflaged creatures. Use to see far away."){
 			public Screen use(Screen screen, World world, Creature player) {
-				String text = "You see nothing special";
+				if (player.rupees() + player.hearts() <= 1){
+					MessageBus.publish(new Note(world, player, "You need more than 1 rupee or heart to look far away."));
+					return screen;
+				}
 				
-				MessageBus.publish(new Note(world, player, "You look into the crystal ball: " + text));
-				return screen;
+				player.loseRupees(world, 1);
+				return new WorldMapScreen(screen, world.map(), player.position, true);
 			}
 		};
 		item.addTrait(Trait.DETECT_CAMOUFLAGED);
@@ -482,7 +487,19 @@ public class Factory {
 	}
 
 	public Item snorkel() {
-		Item item = new Item("snorkel", '/', Tile.WATER1.background(), "Allows you to swim in the water.");
+		Item item = new Item("snorkel", '/', Tile.WATER2.color(), "Allows you to swim. Can be used to swim underwater."){
+			public Screen use(Screen screen, World world, Creature owner){
+				if (owner.rupees() + owner.hearts() <= 1){
+					MessageBus.publish(new Note(world, owner, "You need more than 1 rupee or heart to dive underwater."));
+					return screen;
+				} if (!world.tile(owner.position.x, owner.position.y).isSwimmable()){
+					MessageBus.publish(new Note(world, owner, "You must he ob a bridge or water to dive underwater."));
+					return screen;
+				}
+				
+				return new DiveScreen(screen, world, owner);
+			}
+		};
 		item.addTrait(Trait.SWIMMER);
 		return item;
 	}
@@ -515,8 +532,31 @@ public class Factory {
 		return item;
 	}
 
+	public Item rupeeMachine() {
+		Item item = new Item("rupee machine", '/', Tile.hsv(60, 75, 25), "Automatically creates rupees."){
+			public void update(Creature owner){
+				super.update(owner);
+				
+				if (Math.random() < 0.05)
+					owner.gainRupees(1);
+			}
+		};
+		return item;
+	}
+	
+	public Item rupeeAmulet() {
+		Item item = new Item("rupee amulet", '=', Tile.hsv(60, 75, 25), "Can be used to convert your hearts into rupees."){
+			public Screen use(Screen screen, World world, Creature owner){
+				owner.loseHearts(world, owner, 1, null, "You turned the last of your hearts into rupees");
+				owner.gainRupees(10);
+				return screen;
+			}
+		};
+		return item;
+	}
+	
 	public Item spellBook() {
-		Item item = new Item("spellbook", '+', Tile.hsv(200, 50, 50), "Used to cast fireball, blink, and heart to rupees."){
+		Item item = new Item("spellbook", '+', Tile.hsv(200, 50, 50), "Used to cast one of 3 basic spells."){
 			public Screen use(Screen screen, World world, Creature owner){
 				return new CastSpellScreen(screen, world, owner);
 			}
@@ -577,18 +617,6 @@ public class Factory {
 		};
 	}
 	
-	public Item heartPotion(){
-		return new Item("heart potion", '!', Tile.hsv(0, 33, 66), "Refill all your hearts."){
-			public void onCollide(World world, Creature collider){
-				if (collider.glyph() != '@')
-					return; // only the player should be able to get these
-				
-				world.removeItem(collider.position.x, collider.position.y);
-				collider.recoverHearts(100);
-			}
-		};
-	}
-	
 	public Item jumpingBoots() {
 		Item item = new Item("jumping boots", '[', Tile.hsv(180, 50, 50), "Makes you more evasive and can be used to jump."){
 			public Screen use(Screen screen, World world, Creature owner){
@@ -599,7 +627,7 @@ public class Factory {
 	}
 
 	public Item ringOfEvasion() {
-		Item item = new Item("ring of evasion", '=', Tile.hsv(90, 33, 66), +4, "Makes you much more evasive.");
+		Item item = new Item("ring of evasion", '=', Tile.hsv(90, 33, 66), +5, "Makes you much more evasive.");
 		return item;
 	}
 	

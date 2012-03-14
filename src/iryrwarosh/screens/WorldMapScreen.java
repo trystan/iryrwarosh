@@ -13,21 +13,32 @@ public class WorldMapScreen implements Screen {
 	private Screen previous;
 	private WorldMap map;
 	private Point playerPosition;
+	private boolean showAll;
 	
 	public WorldMapScreen(Screen previous, WorldMap map, Point playerPosition){
+		this(previous, map, playerPosition, false);
+	}
+
+	public WorldMapScreen(Screen previous, WorldMap map, Point playerPosition, boolean showAll){
 		this.previous = previous;
 		this.map = map;
 		this.playerPosition = playerPosition;
+		this.showAll = showAll;
 	}
 	
 	@Override
 	public void displayOutput(AsciiPanel terminal) {
 		for (int x = 0; x < map.width(); x++)
 		for (int y = 0; y < map.height(); y++){
-			switch (map.explorationStatus(x, y)){
-			case 0: break;
-			case 1: displayUnexploredScreen(x*3+1, y*3+1, map.screen(x, y), terminal); break;
-			case 2: displayExploredScreen(x*3+1, y*3+1, map.screen(x, y), terminal); break;
+			if (showAll)
+				displayExploredScreen(x*3+1, y*3+1, map.screen(x, y), terminal);
+			else
+			{
+				switch (map.explorationStatus(x, y)){
+				case 0: break;
+				case 1: displayUnexploredScreen(x*3+1, y*3+1, map.screen(x, y), terminal); break;
+				case 2: displayExploredScreen(x*3+1, y*3+1, map.screen(x, y), terminal); break;
+				}
 			}
 		}
 		terminal.write('@', playerPosition.x / 19 * 3 + 1, playerPosition.y / 9 * 3 + 1);

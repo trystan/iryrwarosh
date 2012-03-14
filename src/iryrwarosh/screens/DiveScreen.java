@@ -9,12 +9,12 @@ import asciiPanel.AsciiCharacterData;
 import asciiPanel.AsciiPanel;
 import asciiPanel.TileTransformer;
 
-public class SneakScreen implements Screen {
+public class DiveScreen implements Screen {
 	private Screen previous;
 	private World world;
 	private Creature player;
 	
-	public SneakScreen(Screen previous, World world, Creature player){
+	public DiveScreen(Screen previous, World world, Creature player){
 		this.previous = previous;
 		this.world = world;
 		this.player = player;
@@ -35,7 +35,7 @@ public class SneakScreen implements Screen {
 			}
 		});
 		
-		terminal.write("(sneak mode)", 1, 20);
+		terminal.write("(underwater mode)", 1, 20);
 	}
 
 	@Override
@@ -64,15 +64,18 @@ public class SneakScreen implements Screen {
         default: return previous;
 		}
 		
-		if (player.rupees() < 5)
+		if (player.rupees() < 1)
 			return previous;
 		
 		return this;
 	}
 
 	private void swim(int dx, int dy) {
+		if (!world.tile(player.position.x+dx, player.position.y+dy).isSwimmable())
+			return;
+		
 		player.moveBy(world, dx, dy);
 		player.update(world);
-		player.loseRupees(world, 5);
+		player.loseRupees(world, 1);
 	}
 }
