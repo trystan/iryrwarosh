@@ -43,7 +43,8 @@ public class ChooseStartingItemsScreen implements Screen {
 		terminal.clear();
 		terminal.write(" Choose your two items. Each item has at least one passive ability and an", 1, 1);
 		terminal.write("active ability that cost rupees to use. You should start with at least one", 1, 2);
-		terminal.write("mele weapon since they increase the damage done when bumping into others.", 1, 3);
+		terminal.write("melee weapon since they increase the damage done when bumping into others", 1, 3);
+		terminal.write("and give you chances to make free attacks.", 1, 4);
 		
 		
 		for (int i = 0; i < picked.length; i++)
