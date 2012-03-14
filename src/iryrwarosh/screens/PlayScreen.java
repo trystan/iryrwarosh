@@ -9,6 +9,7 @@ import iryrwarosh.Killed;
 import iryrwarosh.Message;
 import iryrwarosh.MessageBus;
 import iryrwarosh.Moved;
+import iryrwarosh.Note;
 import iryrwarosh.Projectile;
 import iryrwarosh.Tile;
 import iryrwarosh.World;
@@ -201,7 +202,12 @@ public class PlayScreen implements Screen, Handler {
         	break;
         case KeyEvent.VK_G:
         case KeyEvent.VK_COMMA:
-        	return new PickupItemScreen(this, world, player);
+            if (world.item(player.position.x, player.position.y) == null) {
+                MessageBus.publish(new Note(world, player, "Nothing to pick up here"));
+                return this; //Don't spend an action when nothing to pick up
+            } else {
+                return new PickupItemScreen(this, world, player);
+            }
 		case KeyEvent.VK_M: return new WorldMapScreen(this, world.map(), player.position);
 		case KeyEvent.VK_SPACE: return new LookAtScreen(this, world, player, getScrollX(), getScrollY());
 		default:
