@@ -114,6 +114,9 @@ public class Creature {
 		boolean didJump = false;
 		
 		for (int i = 0; i < 3; i++){
+			if (glyph == '@' && rupees < 1)
+				break;
+			
 			Tile tile = world.tile(position.x+dx, position.y+dy);
 			if (!tile.isGround() && !tile.isSwimmable() && !tile.isLava())
 				break;
@@ -127,6 +130,7 @@ public class Creature {
 			didJump = true;
 			position.x += dx;
 			position.y += dy;
+			
 			loseRupees(world, 1);
 		}
 		
@@ -220,6 +224,12 @@ public class Creature {
 		poisonCounter = 0;
 	}
 	
+	private int evasionPerOpenSpace = 5;
+	
+	public void modifyEvasion(int amount) {
+		evasionPerOpenSpace += amount;
+	}
+	
 	private List<Point> evasionCandidates(World world){
 		List<Point> candidates = new ArrayList<Point>();
 		
@@ -233,7 +243,10 @@ public class Creature {
 	}
 	
 	public int evadePercent(World world){
-		int perOpenSpace = hasTrait(Trait.EXTRA_EVADE) ? 10 : 5;
+		int perOpenSpace = evasionPerOpenSpace;
+		
+		if (hasTrait(Trait.EXTRA_EVADE))
+			perOpenSpace += 5;
 		
 		if (leftHand != null)
 			perOpenSpace += leftHand.evasionModifier();
@@ -462,11 +475,15 @@ public class Creature {
 	}
 	
 	public void loseRupees(World world, int amount) {
+		if (glyph != '@') // Only the player needs to pay for things
+			return;
+		
 		rupees -= amount;
 		
 		if (rupees < 0) {
-			loseHearts(world, this, 0 - rupees, null, "You spent you last heart after running out of rupees.");
+			int debt = 0 - rupees;
 			rupees = 0;
+			loseHearts(world, this, debt, null, "You spent you last heart after running out of rupees.");
 		}
 	}
 
@@ -486,5 +503,18 @@ public class Creature {
 			MessageBus.publish(new DroppedWeapon(world, this, rightHand));
 		rightHand = item;
 		MessageBus.publish(new EquipedItem(world, this, item));
+	}
+	
+	public boolean canSee(Creature other){
+		int viewDistance = 9;
+		
+		if (other.hasTrait(Trait.CAMOUFLAGED) && !hasTrait(Trait.DETECT_CAMOUFLAGED))
+			viewDistance = 5;
+		
+		return position.distanceTo(other.position) < viewDistance;
+	}
+	
+	public boolean canHear(Creature other) {
+		return position.distanceTo(other.position) < 12;
 	}
 }

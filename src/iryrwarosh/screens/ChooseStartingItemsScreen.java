@@ -116,10 +116,13 @@ public class ChooseStartingItemsScreen implements Screen {
 		}
 
 		for (Point screen : world.map().getDeadEnds()){
-			if (Math.random() < 0.5)
-				factory.miniboss(world, screen.x, screen.y);
-			else
-				world.addToScreen(factory.heartIncrease(), screen.x, screen.y);
+			switch ((int)(Math.random() * 5)){
+			case 0: world.addToScreen(factory.evasionPotion(), screen.x, screen.y); break;
+			case 1: 
+			case 2: world.addToScreen(factory.heartIncrease(), screen.x, screen.y); break;
+			case 3: 
+			case 4: factory.miniboss(world, screen.x, screen.y); break;
+			}				
 		}
 		
 		world.update();

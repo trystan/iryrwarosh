@@ -16,7 +16,7 @@ public class CreatureAiHandler implements Handler {
 			if (!message.attacked.isFriendlyTo(c) || c == message.attacked)
 				continue;
 			
-			if (c.position.distanceTo(message.attacked.position) > 12)
+			if (c.canHear(message.attacked))
 				continue;
 			
 			c.hunt(message.attacker);

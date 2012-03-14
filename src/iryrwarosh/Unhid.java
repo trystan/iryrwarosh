@@ -10,7 +10,6 @@ public class Unhid extends Message {
 	
 	@Override
 	public boolean involves(Creature player) {
-		return creature == player 
-			|| player.position.distanceTo(creature.position) < 6;
+		return creature == player || player.canSee(creature);
 	}
 }

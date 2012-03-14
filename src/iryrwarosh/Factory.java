@@ -25,6 +25,10 @@ public class Factory {
 		minibossLoot.add(this.ringOfRegeneration());
 		minibossLoot.add(this.magicCape());
 		minibossLoot.add(this.advancedSpellBook());
+		minibossLoot.add(this.ringOfEvasion());
+		minibossLoot.add(this.evasionPotion());
+		minibossLoot.add(this.evasionPotion());
+		minibossLoot.add(this.evasionPotion());
 		Collections.shuffle(minibossLoot);
 	}
 	
@@ -480,12 +484,41 @@ public class Factory {
 		};
 	}
 
+	public Item evasionPotion(){
+		return new Item("evasion potion", '!', Tile.hsv(90, 33, 66), "Perminantely boost your evasion."){
+			public void onCollide(World world, Creature collider){
+				if (collider.glyph() != '@')
+					return; // only the player should be able to get these
+				
+				world.removeItem(collider.position.x, collider.position.y);
+				collider.modifyEvasion(1);
+			}
+		};
+	}
+	
+	public Item heartPotion(){
+		return new Item("heart potion", '!', Tile.hsv(0, 33, 66), "Refill all your hearts."){
+			public void onCollide(World world, Creature collider){
+				if (collider.glyph() != '@')
+					return; // only the player should be able to get these
+				
+				world.removeItem(collider.position.x, collider.position.y);
+				collider.recoverHearts(100);
+			}
+		};
+	}
+	
 	public Item jumpingBoots() {
 		Item item = new Item("jumping boots", '[', Tile.hsv(180, 50, 50), "Makes you more evasive and can be used to jump."){
 			public Screen use(Screen screen, World world, Creature owner){
 				return new JumpScreen(screen, world, owner);
 			}
 		};
+		return item;
+	}
+
+	public Item ringOfEvasion() {
+		Item item = new Item("ringOfEvasion", '=', Tile.hsv(90, 33, 66), +4, "Makes you much more evasive.");
 		return item;
 	}
 }
