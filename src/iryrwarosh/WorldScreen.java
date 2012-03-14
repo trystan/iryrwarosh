@@ -22,5 +22,5 @@ public class WorldScreen {
 	public Boolean neWater = false;
 	public Boolean swWater = false;
 	public Boolean seWater = false;
-	public Boolean canAddQuarterWall = true;
+	public Boolean canAddQuarterSection = true;
 }

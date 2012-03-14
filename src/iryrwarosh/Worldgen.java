@@ -17,26 +17,25 @@ public class Worldgen {
 		this.tiles = new Tile[width * screenWidth][height * screenHeight];
 
 		for (int x = 0; x < cells.length; x++)
-		for (int y = 0; y < cells[0].length; y++){
+		for (int y = 0; y < cells[0].length; y++)
 			this.cells[x][y] = new WorldScreen();
-		}
 	}
 
 	public World build(){
-		makePerfectMaze();
-		addExtraConnections();
-		addThemes();
-		addDesert();
+		makePerfectMazeWithCells();
+		addExtraConnectionsToCells();
+		addThemesToCells();
+		addDesertToCells();
 		setTiles();
-		addExtraQuarterScreens();
-		addShoreLine();
-		addShoreLine();
-		addLake();
-		addLake();
+		addExtraQuarterScreenWallsToTiles();
+		addShoreLineToTiles();
+		addShoreLineToTiles();
+		addLakeToTiles();
+		addLakeToTiles();
 		return new World(tiles, new WorldMap(cells));
 	}
 
-	private void makePerfectMaze(){
+	private void makePerfectMazeWithCells(){
 		int width = cells.length;
 		int height = cells[0].length;
 		boolean[][] connected = new boolean[cells.length][cells[0].length];
@@ -77,7 +76,7 @@ public class Worldgen {
 		}
 	}
 
-	private void addExtraConnections(){
+	private void addExtraConnectionsToCells(){
 		int width = cells.length;
 		int height = cells[0].length;
 		int total = Math.max(width, height);
@@ -116,6 +115,7 @@ public class Worldgen {
 		case 2: pathType = WorldScreen.WIDE; break;
 		}
 		
+		// make sure the edges are clear for the shore line
 		if (p.x == 0 && pathType == WorldScreen.TOP_LEFT)
 			pathType = WorldScreen.CENTER;
 		else if (p.y == 0 && pathType == WorldScreen.TOP_LEFT)
@@ -149,7 +149,7 @@ public class Worldgen {
 		}
 	}
 	
-	public void addThemes(){
+	public void addThemesToCells(){
 		Tile[][] themes = new Tile[cells.length][cells[0].length];
 		for (Tile theme : new Tile[]{ 
 				Tile.BROWN_ROCK, Tile.BROWN_TREE1, Tile.BROWN_TREE4, 
@@ -259,29 +259,29 @@ public class Worldgen {
 		}
 	}
 	
-	private void addDesert(){
+	private void addDesertToCells(){
 		int x = (int)(Math.random() * cells.length - 2) + 1;
 		int y = (int)(Math.random() * cells[0].length - 2) + 1;
 		
-		cells[x][y].canAddQuarterWall = false;
+		cells[x][y].canAddQuarterSection = false;
 		cells[x][y].defaultGround = Tile.DESERT_SAND1;
 		cells[x][y].defaultWall = Tile.BROWN_ROCK;
 		cells[x][y].sEdge = WorldScreen.WIDE;
 		cells[x][y].eEdge = WorldScreen.WIDE;
 
-		cells[x+1][y].canAddQuarterWall = false;
+		cells[x+1][y].canAddQuarterSection = false;
 		cells[x+1][y].defaultGround = Tile.DESERT_SAND1;
 		cells[x+1][y].defaultWall = Tile.BROWN_ROCK;
 		cells[x+1][y].sEdge = WorldScreen.WIDE;
 		cells[x+1][y].wEdge = WorldScreen.WIDE;
 
-		cells[x][y+1].canAddQuarterWall = false;
+		cells[x][y+1].canAddQuarterSection = false;
 		cells[x][y+1].defaultGround = Tile.DESERT_SAND1;
 		cells[x][y+1].defaultWall = Tile.BROWN_ROCK;
 		cells[x][y+1].nEdge = WorldScreen.WIDE;
 		cells[x][y+1].eEdge = WorldScreen.WIDE;
 
-		cells[x+1][y+1].canAddQuarterWall = false;
+		cells[x+1][y+1].canAddQuarterSection = false;
 		cells[x+1][y+1].defaultGround = Tile.DESERT_SAND1;
 		cells[x+1][y+1].defaultWall = Tile.BROWN_ROCK;
 		cells[x+1][y+1].nEdge = WorldScreen.WIDE;
@@ -291,14 +291,14 @@ public class Worldgen {
 	private void setTiles(){
 		for (int x = 0; x < cells.length; x++)
 		for (int y = 0; y < cells[0].length; y++)
-			setTiles(x, y);
+			setTilesForScreen(x, y);
 
 		for (int x = 0; x < cells.length; x++)
 		for (int y = 0; y < cells[0].length; y++)
 			addBorderOpenings(x, y);
 	}
 
-	private void setTiles(int sx, int sy){
+	private void setTilesForScreen(int sx, int sy){
 		addMap(sx, sy, 
 			    "###################"
 			  + "#.................#"
@@ -313,45 +313,49 @@ public class Worldgen {
 		if (cells[sx][sy].defaultGround == Tile.DESERT_SAND1)
 			return;
 		
-		int openings = 0;
-		if (cells[sx][sy].nEdge != WorldScreen.WALL) openings++;
-		if (cells[sx][sy].eEdge != WorldScreen.WALL) openings++;
-		if (cells[sx][sy].sEdge != WorldScreen.WALL) openings++;
-		if (cells[sx][sy].wEdge != WorldScreen.WALL) openings++;
-		if (openings == 1 && Math.random() < 0.5){
+		if (isDeadEnd(sx, sy) && Math.random() < 0.5){
 			setDeadEndTiles(sx,sy);
 			return;
 		}
 		
 		switch ((int)(Math.random() * 7)){
 		case 0:
-			setTilesFull(sx, sy);
+			setTilesFullScreen(sx, sy);
 			break;
 		case 1:
 		case 2:
-			setTilesOuter(sx, sy);
-			setTilesInner(sx, sy);
+			setTilesOuterScreen(sx, sy);
+			setTilesInnerScreen(sx, sy);
 			break;
 		case 3:
 		case 4:
-			setTilesLeft(sx, sy);
-			setTilesRight(sx, sy);
+			setTilesLeftScreen(sx, sy);
+			setTilesRightScreen(sx, sy);
 			break;
 		case 5:
 		case 6:
-			setTilesTop(sx, sy);
-			setTilesBottom(sx, sy);
+			setTilesTopOfScreen(sx, sy);
+			setTilesBottomOfScreen(sx, sy);
 			break;
 		}
 
 		switch ((int)(Math.random() * 60)){
-		case 0: setTilesOuter(sx, sy); break;
-		case 1: setTilesInner(sx, sy); break;
-		case 2: setTilesLeft(sx, sy); break;
-		case 3: setTilesRight(sx, sy); break;
-		case 4: setTilesTop(sx, sy); break;
-		case 5: setTilesBottom(sx, sy); break;
+		case 0: setTilesOuterScreen(sx, sy); break;
+		case 1: setTilesInnerScreen(sx, sy); break;
+		case 2: setTilesLeftScreen(sx, sy); break;
+		case 3: setTilesRightScreen(sx, sy); break;
+		case 4: setTilesTopOfScreen(sx, sy); break;
+		case 5: setTilesBottomOfScreen(sx, sy); break;
 		}
+	}
+
+	private boolean isDeadEnd(int sx, int sy) {
+		int openings = 0;
+		if (cells[sx][sy].nEdge != WorldScreen.WALL) openings++;
+		if (cells[sx][sy].eEdge != WorldScreen.WALL) openings++;
+		if (cells[sx][sy].sEdge != WorldScreen.WALL) openings++;
+		if (cells[sx][sy].wEdge != WorldScreen.WALL) openings++;
+		return openings == 1;
 	}
 	
 	private void setDeadEndTiles(int sx, int sy){
@@ -480,7 +484,7 @@ public class Worldgen {
 			break;
 		}
 		
-		cells[sx][sy].canAddQuarterWall = false;
+		cells[sx][sy].canAddQuarterSection = false;
 		convertEdgesToCenter(sx, sy);
 	}
 
@@ -503,7 +507,7 @@ public class Worldgen {
 		}
 	}
 	
-	private void setTilesFull(int sx, int sy){
+	private void setTilesFullScreen(int sx, int sy){
 		switch ((int)(Math.random() * 10)){
 		case 0:
 			addMap(sx, sy, 
@@ -540,7 +544,7 @@ public class Worldgen {
 				  + "#.xxxxxxxxxxxxxxx.#"
 				  + "#.................#"
 				  + "###################");
-			cells[sx][sy].canAddQuarterWall = false;
+			cells[sx][sy].canAddQuarterSection = false;
 			break;
 		case 3:
 			addMap(sx, sy, 
@@ -577,7 +581,7 @@ public class Worldgen {
 				  + "#.~~~~~~~~~~~~~~~.#"
 				  + "#.................#"
 				  + "###################");
-			cells[sx][sy].canAddQuarterWall = false;
+			cells[sx][sy].canAddQuarterSection = false;
 			break;
 		case 6:
 			addMap(sx, sy, 
@@ -590,7 +594,7 @@ public class Worldgen {
 				  + "#......&.&.&......#"
 				  + "#.................#"
 				  + "###################");
-			cells[sx][sy].canAddQuarterWall = false;
+			cells[sx][sy].canAddQuarterSection = false;
 			break;
 		case 7:
 			addMap(sx, sy, 
@@ -603,7 +607,7 @@ public class Worldgen {
 				  + "#.................#"
 				  + "##...............##"
 				  + "###################");
-			cells[sx][sy].canAddQuarterWall = false;
+			cells[sx][sy].canAddQuarterSection = false;
 			break;
 		case 8:
 			addMap(sx, sy, 
@@ -628,12 +632,12 @@ public class Worldgen {
 				  + "##...............##"
 				  + "###################"
 				  + "###################");
-			cells[sx][sy].canAddQuarterWall = false;
+			cells[sx][sy].canAddQuarterSection = false;
 			break;
 		}
 	}
 	
-	private void setTilesInner(int sx, int sy){
+	private void setTilesInnerScreen(int sx, int sy){
 		switch ((int)(Math.random() * 10)){
 		case 0:
 			addMap(sx, sy, 
@@ -682,7 +686,7 @@ public class Worldgen {
 				  + "                   "
 				  + "                   "
 				  + "                   ");
-			cells[sx][sy].canAddQuarterWall = false;
+			cells[sx][sy].canAddQuarterSection = false;
 			break;
 		case 4:
 			addMap(sx, sy, 
@@ -707,7 +711,7 @@ public class Worldgen {
 				  + "   .~~~~~~~~~~~.   "
 				  + "                   "
 				  + "                   ");
-			cells[sx][sy].canAddQuarterWall = false;
+			cells[sx][sy].canAddQuarterSection = false;
 			break;
 		case 6:
 			addMap(sx, sy, 
@@ -720,7 +724,7 @@ public class Worldgen {
 				  + "                   "
 				  + "                   "
 				  + "                   ");
-			cells[sx][sy].canAddQuarterWall = false;
+			cells[sx][sy].canAddQuarterSection = false;
 			break;
 		case 7:
 			addMap(sx, sy, 
@@ -761,7 +765,7 @@ public class Worldgen {
 		}
 	}
 	
-	private void setTilesOuter(int sx, int sy){
+	private void setTilesOuterScreen(int sx, int sy){
 		switch ((int)(Math.random() * 10)){
 		case 0:
 			addMap(sx, sy, 
@@ -886,7 +890,7 @@ public class Worldgen {
 		}
 	}
 
-	private void setTilesLeft(int sx, int sy){
+	private void setTilesLeftScreen(int sx, int sy){
 		switch ((int)(Math.random() * 10)){
 		case 0:
 			addMap(sx, sy, 
@@ -1011,7 +1015,7 @@ public class Worldgen {
 		}
 	}
 
-	private void setTilesRight(int sx, int sy){
+	private void setTilesRightScreen(int sx, int sy){
 		switch ((int)(Math.random() * 10)){
 		case 0:
 			addMap(sx, sy,
@@ -1136,7 +1140,7 @@ public class Worldgen {
 		}
 	}
 
-	private void setTilesTop(int sx, int sy){
+	private void setTilesTopOfScreen(int sx, int sy){
 		switch ((int)(Math.random() * 5)){
 		case 0:
 			addMap(sx, sy,
@@ -1201,7 +1205,7 @@ public class Worldgen {
 		}
 	}
 
-	private void setTilesBottom(int sx, int sy){
+	private void setTilesBottomOfScreen(int sx, int sy){
 		switch ((int)(Math.random() * 5)){
 		case 0:
 			addMap(sx, sy,
@@ -1270,7 +1274,7 @@ public class Worldgen {
 		addMap(sx, sy, data, Tile.STATUE);
 	}
 	
-	private void addMap(int sx, int sy, String data, Tile specific) {
+	private void addMap(int sx, int sy, String data, Tile specificTile) {
 		int mx = sx * screenWidth;
 		int my = sy * screenHeight;
 		Tile floor   = cells[sx][sy].defaultGround;
@@ -1289,7 +1293,7 @@ public class Worldgen {
 			case 'x': tiles[mx+x][my+y] = local.variation(); break;
 			case '~': tiles[mx+x][my+y] = Tile.WATER1.variation(); break;
 			case '&': tiles[mx+x][my+y] = special; break;
-			case 't': tiles[mx+x][my+y] = specific; break;
+			case 't': tiles[mx+x][my+y] = specificTile; break;
 			case ' ': break;
 			}
 		}
@@ -1350,7 +1354,7 @@ public class Worldgen {
 				tiles[x2][y2] = tile.variation();
 	}
 	
-	public void addLake(){
+	public void addLakeToTiles(){
 		int w = cells.length;
 		int h = cells[0].length;
 		int x = (int)(Math.random() * (w - 2) + 1);
@@ -1369,7 +1373,7 @@ public class Worldgen {
 		addRiver(x, y, 2, 2);
 	}
 
-	public void addShoreLine(){
+	public void addShoreLineToTiles(){
 		char dir = 'N';
 		int totalWidth = cells.length * screenWidth;
 		int totalHeight = cells[0].length * screenHeight;
@@ -1520,29 +1524,35 @@ public class Worldgen {
 		
 		for (int rx = 1; rx < screenWidth-1; rx++)
 		for (int ry = 1; ry < screenHeight-1; ry++)
-			addLocationIfTileIsWater(x * screenWidth + rx, y * screenHeight + ry, candidates);
+			addLocationIfTileIsBridgeCandidate(x * screenWidth + rx, y * screenHeight + ry, candidates);
 		
 		return candidates;
 	}
 
-	private void addLocationIfTileIsWater(int tx, int ty, List<Point> candidates) {
+	private void addLocationIfTileIsBridgeCandidate(int tx, int ty, List<Point> candidates) {
 		if (!tiles[tx][ty].isWater())
 			return;
 		
-		if (tiles[tx][ty-1].isWater() && tiles[tx][ty+1].isWater() && tiles[tx-1][ty].isGround() && tiles[tx+1][ty].isGround())
+		if (tiles[tx][ty-1].isWater() 
+				&& tiles[tx][ty+1].isWater() 
+				&& tiles[tx-1][ty].isGround() 
+				&& tiles[tx+1][ty].isGround())
 			candidates.add(new Point(tx, ty));
-		else if (tiles[tx][ty-1].isGround() && tiles[tx][ty+1].isGround() && tiles[tx-1][ty].isWater() && tiles[tx+1][ty].isWater())
+		else if (tiles[tx][ty-1].isGround() 
+				&& tiles[tx][ty+1].isGround() 
+				&& tiles[tx-1][ty].isWater() 
+				&& tiles[tx+1][ty].isWater())
 			candidates.add(new Point(tx, ty));
 	}
 
-	private void addExtraQuarterScreens() {
+	private void addExtraQuarterScreenWallsToTiles() {
 		for (int x = 0; x < cells.length; x++)
 		for (int y = 0; y < cells[0].length; y++)
-			addExtraQuarterScreens(x,y);
+			addExtraQuarterScreenOfWalls(x,y);
 	}
 
-	private void addExtraQuarterScreens(int x, int y) {
-		if (!cells[x][y].canAddQuarterWall)
+	private void addExtraQuarterScreenOfWalls(int x, int y) {
+		if (!cells[x][y].canAddQuarterSection)
 			return;
 		
 		int hw = screenWidth / 2;
