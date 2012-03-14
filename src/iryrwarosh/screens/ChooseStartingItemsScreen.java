@@ -97,7 +97,7 @@ public class ChooseStartingItemsScreen implements Screen {
 	}
 	
 	private Screen newGame(Factory factory, Item item1, Item item2){
-		World world = new Worldgen(48 / 3, 24 / 3).build();
+		World world = new Worldgen(80 / 3, 24 / 3).build();
 		
 		Creature player = factory.player(world);
 		player.swapLeftHand(world, item1); 
