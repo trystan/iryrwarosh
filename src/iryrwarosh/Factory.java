@@ -214,8 +214,8 @@ public class Factory {
 			if (!traits.contains(trait))
 				traits.add(trait);
 		}
-
-		Creature boss = new Creature("miniboss", glyph, Tile.hsv(hue, 33, 66), hp){
+		
+		Creature boss = new Creature(makeMinibossName(traits), glyph, Tile.hsv(hue, 33, 66), hp){
 			public void update(World world){
 				super.update(world);
 				wander(world);
@@ -242,6 +242,20 @@ public class Factory {
 			boss.setLoot(bigMoney());
 		
 		return boss;
+	}
+
+	private String makeMinibossName(List<Trait> traits) {
+		
+		String[] first = { "giant", "ugly", "malformed", "putrid", "rotten", "infested", "putrid", "crazed" };
+
+		String[] second = { "spider", "squid", "jellyfish", "bird", "urchin", "demon", "scorpion", "insect", "blob",
+				"wolf", "thing", "monster" };
+		
+		String name = first[(int)(Math.random() * first.length)]
+		            + " " + second[(int)(Math.random() * second.length)];
+		
+		System.out.println(name);
+		return name;
 	}
 	
 	public Creature goblin(final World world){
