@@ -1572,7 +1572,7 @@ public class Worldgen {
 				return;
 		}
 		
-		if (Math.random() < 0.1 && cells[sx][sy].nEdge != WorldScreen.BOTTOM_RIGHT && cells[sx][sy].wEdge != WorldScreen.TOP_LEFT){
+		if (Math.random() < 0.1 && cells[sx][sy].nEdge != WorldScreen.BOTTOM_RIGHT && cells[sx][sy].eEdge != WorldScreen.TOP_LEFT){
 			clear(sx*screenWidth+hw+1, sy*screenHeight, hw, hh, cells[sx][sy].defaultWall);
 			if (allowOnlyOnce)
 				return;
@@ -1584,7 +1584,7 @@ public class Worldgen {
 				return;
 		}
 		
-		if (Math.random() < 0.1 && cells[sx][sy].sEdge != WorldScreen.TOP_LEFT && cells[sx][sy].eEdge != WorldScreen.BOTTOM_RIGHT){
+		if (Math.random() < 0.1 && cells[sx][sy].sEdge != WorldScreen.TOP_LEFT && cells[sx][sy].wEdge != WorldScreen.BOTTOM_RIGHT){
 			clear(sx*screenWidth, sy*screenHeight+hh+1, hw, hh, cells[sx][sy].defaultWall);
 			if (allowOnlyOnce)
 				return;
