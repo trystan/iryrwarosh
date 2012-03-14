@@ -10,7 +10,7 @@ public enum Trait {
 	EVADE_ATTACK("evasive attacker"), COUNTER_ATTACK("counter attack"),
 	REACH_ATTACK("long reach"), COMBO_ATTACK("combo attack"), DETECT_CAMOUFLAGED("perceptive"), 
 	DEFLECT_RANGED("deflects projectiles"), DEFLECT_MELEE("blocks melee"),
-	HUNTER("hunter"), MYSTERIOUS("mysterious"), KNOCKBACK("knockback");
+	HUNTER("hunter"), MYSTERIOUS("mysterious"), KNOCKBACK("knockback"), SLOWING_ATTACK("slowing attack");
 
 	private String description;
 	public String description() { return description; }

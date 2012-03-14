@@ -87,6 +87,8 @@ public class Creature {
 	public Item loot() { return loot; }
 	public void setLoot(Item loot) { this.loot = loot; }
 	
+	private int reducedEvasionCounter;
+	
 	public Creature(String name, char glyph, Color color, int maxHp){
 		this.name = name;
 		this.glyph = glyph;
@@ -160,6 +162,9 @@ public class Creature {
 			loseHearts(world, other, 1, null, "You impaled youself on the spikes of a " + other.name());
 		}
 
+		if (hasTrait(Trait.SLOWING_ATTACK) && other.hearts > 0)
+			reduceEvasion(world, other);
+		
 		if (hasTrait(Trait.POISONOUS) && other.hearts > 0)
 			poison(world, other);
 		
@@ -169,6 +174,13 @@ public class Creature {
 			hasDoubleAttackedThisTurn = true;
 			attack(world, other, "again");
 		}
+	}
+	
+	private void reduceEvasion(World world, Creature other) {
+		other.reducedEvasionCounter += 10;
+		
+		if (other.reducedEvasionCounter == 10)
+			MessageBus.publish(new ReducedEvasion(world, this, other));
 	}
 	
 	private void poison(World world, Creature other){
@@ -202,6 +214,9 @@ public class Creature {
 		if (rightHand != null)
 			perOpenSpace += rightHand.evasionModifier();
 		
+		if (reducedEvasionCounter > 0)
+			perOpenSpace /= 3;
+		
 		return evasionCandidates(world).size() * perOpenSpace;
 	}
 	
@@ -227,6 +242,9 @@ public class Creature {
 				
 		if (poisonCounter > 0 && poisonCounter-- % 5 == 0)
 			loseHearts(world, lastPoisonedBy, 1, null, "You died of poison from a " + lastPoisonedBy.name());
+		
+		if (reducedEvasionCounter > 0)
+			reducedEvasionCounter--;
 		
 		if (hasTrait(Trait.REGENERATES) && regenerateCounter-- < 1){
 			regenerateCounter = 10;
