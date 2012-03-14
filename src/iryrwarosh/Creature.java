@@ -110,6 +110,30 @@ public class Creature {
 		return false;
 	}
 
+	public void jumpBy(World world, int dx, int dy){
+		boolean didJump = false;
+		
+		for (int i = 0; i < 3; i++){
+			Tile tile = world.tile(position.x+dx, position.y+dy);
+			if (!tile.isGround() && !tile.isSwimmable() && !tile.isLava())
+				break;
+
+			Creature other = world.creature(position.x+dx, position.y+dy);
+			if (other != null){
+				other.loseHearts(world, this, 1, null, "A " + name() + " bumped into you while jumping");
+				break;
+			}
+			
+			didJump = true;
+			position.x += dx;
+			position.y += dy;
+			loseRupees(world, 1);
+		}
+		
+		if (didJump)
+			MessageBus.publish(new Jumped(world, this));
+	}
+	
 	public void moveBy(World world, int x, int y) {
 		if (x==0 && y==0)
 			return;
@@ -258,6 +282,10 @@ public class Creature {
 				hide(world);
 			else
 				unhide(world);
+		}
+		
+		if (!canEnter(world.tile(position.x, position.y))){
+			loseHearts(world, this, 1, null, "You died from standing in " + world.tile(position.x, position.y).description());
 		}
 		
 		if (hasTrait(Trait.ROCK_SPITTER) 

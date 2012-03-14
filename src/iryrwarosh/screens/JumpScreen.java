@@ -1,8 +1,6 @@
 package iryrwarosh.screens;
 
 import iryrwarosh.Creature;
-import iryrwarosh.Jumped;
-import iryrwarosh.MessageBus;
 import iryrwarosh.World;
 
 import java.awt.event.KeyEvent;
@@ -56,23 +54,6 @@ public class JumpScreen implements Screen {
 	}
 
 	private void jumpBy(int dx, int dy) {
-		boolean didJump = false;
-		for (int i = 0; i < 3; i++){
-			if (!player.canEnter(world.tile(player.position.x+dx, player.position.y+dy)))
-				break;
-
-			Creature other = world.creature(player.position.x+dx, player.position.y+dy);
-			if (other != null){
-				other.loseHearts(world, player, 1, null, "A " + player.name() + " bumped into you while jumping");
-				break;
-			}
-			
-			didJump = true;
-			player.position.x += dx;
-			player.position.y += dy;
-			player.loseRupees(world, 1);
-		}
-		if (didJump)
-			MessageBus.publish(new Jumped(world, player));
+		player.jumpBy(world, dx, dy);
 	}
 }

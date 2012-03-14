@@ -55,8 +55,6 @@ public class ChooseStartingItemsScreen implements Screen {
 	private void writeChoice(AsciiPanel terminal, int i){
 		Color fg = picked[i] ? AsciiPanel.brightWhite : AsciiPanel.white;
 		
-		System.out.println(items[i].description());
-		
 		char key = (char)('a' + i);
 		terminal.write("[" + key + "] ", 1, 6 + i, fg);
 		terminal.write(items[i].name(), items[i].color());
@@ -80,6 +78,7 @@ public class ChooseStartingItemsScreen implements Screen {
 		case 'j': picked[9] = !picked[8]; break;
 		case 'k': picked[10] = !picked[10]; break;
 		case 'l': picked[11] = !picked[11]; break;
+		case 'm': picked[11] = !picked[11]; break;
 		}
 		
 		Item item1 = null;
