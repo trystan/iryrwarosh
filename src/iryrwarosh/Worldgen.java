@@ -1551,23 +1551,43 @@ public class Worldgen {
 			addExtraQuarterScreenOfWalls(x,y);
 	}
 
-	private void addExtraQuarterScreenOfWalls(int x, int y) {
-		if (!cells[x][y].canAddQuarterSection)
+	private void addExtraQuarterScreenOfWalls(int sx, int sy) {
+		if (!cells[sx][sy].canAddQuarterSection)
 			return;
 		
 		int hw = screenWidth / 2;
 		int hh = screenHeight / 2;
 		
-		if (Math.random() < 0.1 && cells[x][y].nEdge != WorldScreen.TOP_LEFT && cells[x][y].wEdge != WorldScreen.TOP_LEFT)
-			clear(x*screenWidth, y*screenHeight, hw, hh, cells[x][y].defaultWall);
+		int centerBlockers = 0;
+		for (Point p : new Point[]{ new Point(0,0), new Point(0,-1), new Point(0,1), new Point(-1,0), new Point(1,0)}){
+			if (tiles[sx * screenWidth + hw + p.x][sy * screenHeight + hh + p.y] != cells[sx][sy].defaultGround)
+				centerBlockers++;
+		}
 		
-		if (Math.random() < 0.1 && cells[x][y].nEdge != WorldScreen.BOTTOM_RIGHT && cells[x][y].wEdge != WorldScreen.TOP_LEFT)
-			clear(x*screenWidth+hw+1, y*screenHeight, hw, hh, cells[x][y].defaultWall);
+		boolean allowOnlyOnce = centerBlockers > 2;
 		
-		if (Math.random() < 0.1 && cells[x][y].sEdge != WorldScreen.BOTTOM_RIGHT && cells[x][y].eEdge != WorldScreen.BOTTOM_RIGHT)
-			clear(x*screenWidth+hw+1, y*screenHeight+hh+1, hw, hh, cells[x][y].defaultWall);
+		if (Math.random() < 0.1 && cells[sx][sy].nEdge != WorldScreen.TOP_LEFT && cells[sx][sy].wEdge != WorldScreen.TOP_LEFT){
+			clear(sx*screenWidth, sy*screenHeight, hw, hh, cells[sx][sy].defaultWall);
+			if (allowOnlyOnce)
+				return;
+		}
 		
-		if (Math.random() < 0.1 && cells[x][y].sEdge != WorldScreen.TOP_LEFT && cells[x][y].eEdge != WorldScreen.BOTTOM_RIGHT)
-			clear(x*screenWidth, y*screenHeight+hh+1, hw, hh, cells[x][y].defaultWall);
+		if (Math.random() < 0.1 && cells[sx][sy].nEdge != WorldScreen.BOTTOM_RIGHT && cells[sx][sy].wEdge != WorldScreen.TOP_LEFT){
+			clear(sx*screenWidth+hw+1, sy*screenHeight, hw, hh, cells[sx][sy].defaultWall);
+			if (allowOnlyOnce)
+				return;
+		}
+		
+		if (Math.random() < 0.1 && cells[sx][sy].sEdge != WorldScreen.BOTTOM_RIGHT && cells[sx][sy].eEdge != WorldScreen.BOTTOM_RIGHT){
+			clear(sx*screenWidth+hw+1, sy*screenHeight+hh+1, hw, hh, cells[sx][sy].defaultWall);
+			if (allowOnlyOnce)
+				return;
+		}
+		
+		if (Math.random() < 0.1 && cells[sx][sy].sEdge != WorldScreen.TOP_LEFT && cells[sx][sy].eEdge != WorldScreen.BOTTOM_RIGHT){
+			clear(sx*screenWidth, sy*screenHeight+hh+1, hw, hh, cells[sx][sy].defaultWall);
+			if (allowOnlyOnce)
+				return;
+		}
 	}
 }
