@@ -5,6 +5,7 @@ import java.util.List;
 
 public class WorldMap {
 	private WorldScreen[][] screens;
+	private int[][] exploration;
 
 	public int width() { return screens.length; }
 
@@ -12,12 +13,17 @@ public class WorldMap {
 	
 	public WorldMap(WorldScreen[][] screens){
 		this.screens = screens;
+		this.exploration = new int[screens.length][screens[0].length];
 	}
 	
 	public WorldScreen screen(int x, int y) {
 		return screens[x][y];
 	}
 
+	public int explorationStatus(int x, int y){
+		return exploration[x][y];
+	}
+	
 	public List<Point> scrensOfType(Tile biome) {
 		List<Point> candidates = new ArrayList<Point>();
 		
@@ -46,5 +52,17 @@ public class WorldMap {
         }
     	
     	return candidates;
+	}
+
+	public void markAsExplored(int sx, int sy) {
+		exploration[sx][sy] = 2;
+		
+		for (Point p : new Point(sx,sy).neighbors()){
+			if (p.x < 0 || p.y < 0 || p.x >= exploration.length || p.y >= exploration[0].length)
+				continue;
+				
+			if (exploration[p.x][p.y] == 0)
+				exploration[p.x][p.y] = 1; 
+		}
 	}
 }

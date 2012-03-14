@@ -3,9 +3,11 @@ package iryrwarosh.screens;
 import iryrwarosh.Creature;
 import iryrwarosh.Factory;
 import iryrwarosh.Item;
+import iryrwarosh.MessageBus;
 import iryrwarosh.Point;
 import iryrwarosh.Tile;
 import iryrwarosh.World;
+import iryrwarosh.WorldCreated;
 import iryrwarosh.Worldgen;
 
 import java.awt.Color;
@@ -126,6 +128,7 @@ public class ChooseStartingItemsScreen implements Screen {
 		}
 		
 		world.update();
+		MessageBus.publish(new WorldCreated(world, player, "The world has been created."));
 		
 		return new PlayScreen(world, factory, player);
 	}

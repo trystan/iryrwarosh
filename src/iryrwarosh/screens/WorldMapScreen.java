@@ -23,11 +23,33 @@ public class WorldMapScreen implements Screen {
 	@Override
 	public void displayOutput(AsciiPanel terminal) {
 		for (int x = 0; x < map.width(); x++)
-		for (int y = 0; y < map.height(); y++)
-			displayScreen(x*3+1, y*3+1, map.screen(x, y), terminal);
+		for (int y = 0; y < map.height(); y++){
+			switch (map.explorationStatus(x, y)){
+			case 0: break;
+			case 1: displayUnexploredScreen(x*3+1, y*3+1, map.screen(x, y), terminal); break;
+			case 2: displayExploredScreen(x*3+1, y*3+1, map.screen(x, y), terminal); break;
+			}
+		}
+		terminal.write('@', playerPosition.x / 19 * 3 + 1, playerPosition.y / 9 * 3 + 1);
 	}
 
-	private void displayScreen(int x, int y, WorldScreen screen, AsciiPanel terminal) {
+	private void displayUnexploredScreen(int x, int y, WorldScreen screen, AsciiPanel terminal) {
+		int wall = WorldScreen.WALL;
+
+		displayDarkTile(terminal, x-1, y-1, screen.nwWater ? Tile.WATER1 : screen.defaultWall);
+		displayDarkTile(terminal, x,   y-1, screen.nWater ? Tile.WATER1 : (screen.nEdge==wall ? screen.defaultWall : screen.defaultGround));
+		displayDarkTile(terminal, x+1, y-1, screen.neWater ? Tile.WATER1 : screen.defaultWall);
+
+		displayDarkTile(terminal, x-1, y,   screen.wWater ? Tile.WATER1 : (screen.wEdge==wall ? screen.defaultWall : screen.defaultGround));
+		displayDarkTile(terminal, x,   y,   screen.defaultGround);
+		displayDarkTile(terminal, x+1, y,   screen.eWater ? Tile.WATER1 : (screen.eEdge==wall ? screen.defaultWall : screen.defaultGround));
+
+		displayDarkTile(terminal, x-1, y+1, screen.swWater ? Tile.WATER1 : screen.defaultWall);
+		displayDarkTile(terminal, x,   y+1, screen.sWater ? Tile.WATER1 : (screen.sEdge==wall ? screen.defaultWall : screen.defaultGround));
+		displayDarkTile(terminal, x+1, y+1, screen.seWater ? Tile.WATER1 : screen.defaultWall);
+	}
+	
+	private void displayExploredScreen(int x, int y, WorldScreen screen, AsciiPanel terminal) {
 		int wall = WorldScreen.WALL;
 
 		displayTile(terminal, x-1, y-1, screen.nwWater ? Tile.WATER1 : screen.defaultWall);
@@ -41,9 +63,10 @@ public class WorldMapScreen implements Screen {
 		displayTile(terminal, x-1, y+1, screen.swWater ? Tile.WATER1 : screen.defaultWall);
 		displayTile(terminal, x,   y+1, screen.sWater ? Tile.WATER1 : (screen.sEdge==wall ? screen.defaultWall : screen.defaultGround));
 		displayTile(terminal, x+1, y+1, screen.seWater ? Tile.WATER1 : screen.defaultWall);
-		
-		terminal.write('@', playerPosition.x / 19 * 3 + 1, playerPosition.y / 9 * 3 + 1);
-
+	}
+	
+	private void displayDarkTile(AsciiPanel terminal, int x, int y, Tile t){
+		terminal.write(t.glyph(), x, y, t.color().darker().darker().darker(), t.background().darker().darker().darker());
 	}
 	
 	private void displayTile(AsciiPanel terminal, int x, int y, Tile t){

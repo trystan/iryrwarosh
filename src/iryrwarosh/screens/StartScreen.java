@@ -4,6 +4,7 @@ import iryrwarosh.ArmosSaga;
 import iryrwarosh.CreatureAiHandler;
 import iryrwarosh.Handler;
 import iryrwarosh.LootSaga;
+import iryrwarosh.MapExplorationHandler;
 import iryrwarosh.Message;
 import iryrwarosh.MessageBus;
 import iryrwarosh.ItemSpecialsSaga;
@@ -24,6 +25,7 @@ public class StartScreen implements Screen {
 			
 		});
 
+		MessageBus.subscribe(new MapExplorationHandler());
 		MessageBus.subscribe(new ItemSpecialsSaga());
 		MessageBus.subscribe(new LootSaga());
 		MessageBus.subscribe(new ArmosSaga());

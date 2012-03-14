@@ -24,7 +24,7 @@ public class Point {
 
 	public Collection<? extends Point> neighbors() {
 		List<Point> neighbors = Arrays.asList(
-				new Point(x+1,y-1), new Point(x+0,y-1), new Point(x+1,y-1), 
+				new Point(x-1,y-1), new Point(x+0,y-1), new Point(x+1,y-1), 
 				new Point(x+1,y), new Point(x-1,y),
 				new Point(x-1,y+1), new Point(x+0,y+1), new Point(x+1,y+1));
 				
