@@ -56,7 +56,7 @@ public class PlayScreen implements Screen, Handler {
 		
 		terminal.write("evade: " + player.evadePercent(world) + "%", 45, 0, AsciiPanel.yellow, bg);
 
-		terminal.write(player.money() + "" + (char)4, 65, 0, Tile.hsv(60, 25, 75), bg);
+		terminal.write(player.rupees() + "" + (char)4, 65, 0, Tile.hsv(60, 25, 75), bg);
 		
 		Item item = world.item(player.position.x, player.position.y);
 		if (item != null){

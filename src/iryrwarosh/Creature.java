@@ -33,9 +33,10 @@ public class Creature {
 
 	private int maxHearts;
 	public int maxHearts() { return maxHearts + (hasTrait(Trait.EXTRA_HP) ? 3 : 0); }
+	public void increaseMaxHearts(int amount) { maxHearts += amount; }
 
-	private int money;
-	public int money() { return money; }
+	private int rupees;
+	public int rupees() { return rupees; }
 
 	private int lastWanderX;
 	private int lastWanderY;
@@ -52,7 +53,7 @@ public class Creature {
 				|| rightHand != null && rightHand.hasTrait(trait);
 	}
 	
-	public String describe(){
+	public String description(){
 		String text = "";
 		
 		if (hasTrait(Trait.MYSTERIOUS))
@@ -82,26 +83,6 @@ public class Creature {
 	private Item loot;
 	public Item loot() { return loot; }
 	public void setLoot(Item loot) { this.loot = loot; }
-	
-	public int evadePercent(World world){
-		int moveable = 0;
-		
-		for (int ox = -1; ox < 2; ox++)
-		for (int oy = -1; oy < 2; oy++){
-			if (ox==0 && oy==0)
-				continue;
-			
-			if (canEnter(world.tile(position.x+ox, position.y+oy))
-					&& world.creature(position.x+ox, position.y+oy) == null)
-				moveable++;
-		}
-		
-		return moveable * (hasTrait(Trait.EXTRA_EVADE) ? 8 : 5);
-	}
-	
-	public boolean evadeCheck(World world){
-		return Math.random() * 100 < evadePercent(world);
-	}
 	
 	public Creature(String name, char glyph, Color color, int maxHp){
 		this.name = name;
@@ -146,7 +127,7 @@ public class Creature {
 				lastWanderY = (int)(Math.random() * 3) - 1;
 				MessageBus.publish(new BumpedIntoObsticle(world, this, position.x+x, position.y+y));
 			}
-		} else if (isFriend(other)) {
+		} else if (isFriendlyTo(other)) {
 			return;
 		} else if (hasDoubleAttackedThisTurn == false 
 				&& other.evadeCheck(world)){
@@ -156,7 +137,7 @@ public class Creature {
 		}
 	}
 	
-	public boolean isFriend(Creature other){
+	public boolean isFriendlyTo(Creature other){
 		return other.glyph == this.glyph;
 	}
 	
@@ -169,15 +150,15 @@ public class Creature {
 			return;
 		}
 		
-		other.hurt(world, this, hasTrait(Trait.STRONG_ATTACK) ? 2 : 1, specialType);
+		other.loseHearts(world, this, hasTrait(Trait.STRONG_ATTACK) ? 2 : 1, specialType);
 
 		if (other.hasTrait(Trait.SPIKED)){
 			MessageBus.publish(new HitSpikes(world, this, other));
-			hurt(world, other, 1, null);
+			loseHearts(world, other, 1, null);
 		}
 
 		if (hasTrait(Trait.POISONOUS) && other.hearts > 0)
-			other.poisonedBy(world, this);
+			poison(world, other);
 		
 		if (hasTrait(Trait.DOUBLE_ATTACK)
 				&& !hasDoubleAttackedThisTurn
@@ -187,35 +168,42 @@ public class Creature {
 		}
 	}
 	
-	private void poisonedBy(World world, Creature attacker){
-		poisonCounter += 10;
-		lastPoisonedBy = attacker;
-		MessageBus.publish(new Poisoned(world, attacker, this));
+	private void poison(World world, Creature other){
+		other.poisonCounter += 10;
+		other.lastPoisonedBy = this;
+		MessageBus.publish(new Poisoned(world, this, other));
 	}
 	
 	public void curePoison() {
 		poisonCounter = 0;
 	}
 	
-	public void evade(World world, Creature other){
-		List<Point> evadeTo = new ArrayList<Point>();
+	private List<Point> evasionCandidates(World world){
+		List<Point> candidates = new ArrayList<Point>();
 		
-		for (int ox = -1; ox < 2; ox++)
-		for (int oy = -1; oy < 2; oy++){
-			if (ox==0 && oy==0)
-				continue;
-			
-			if (canEnter(world.tile(position.x+ox, position.y+oy))
-					&& world.creature(position.x+ox, position.y+oy) == null)
-				evadeTo.add(new Point(position.x+ox, position.y+oy));
+		for (Point p : position.neighbors()) {
+			if (canEnter(world.tile(p.x, p.y)) && world.creature(p.x, p.y) == null)
+				candidates.add(p);
 		}
 		
-		Collections.shuffle(evadeTo);
-		position = evadeTo.get(0);
+		Collections.shuffle(candidates);
+		return candidates;
+	}
+	
+	public int evadePercent(World world){
+		return evasionCandidates(world).size() * (hasTrait(Trait.EXTRA_EVADE) ? 8 : 5);
+	}
+	
+	public boolean evadeCheck(World world){
+		return Math.random() * 100 < evadePercent(world);
+	}
+	
+	public void evade(World world, Creature other){
+		position = evasionCandidates(world).get(0);
 		MessageBus.publish(new Evaded(world, other, this));
 	}
 	
-	private Point hiddenPoint;
+	private Point positionBeforeHiding;
 	private int hiddenCounter;
 	private int projectileCooldown;
 	
@@ -226,20 +214,18 @@ public class Creature {
 		if (homeScreenPosition == null)
 			homeScreenPosition = new Point(position.x / 19, position.y / 9); 
 				
-		if (poisonCounter > 0){
-			if (poisonCounter-- % 5 == 0)
-				hurt(world, lastPoisonedBy, 1, null);
-		}
+		if (poisonCounter > 0 && poisonCounter-- % 5 == 0)
+			loseHearts(world, lastPoisonedBy, 1, null);
 		
-		if (hasTrait(Trait.REGENERATES) && --regenerateCounter < 0){
+		if (hasTrait(Trait.REGENERATES) && regenerateCounter-- < 1){
 			regenerateCounter = 10;
 			if (hearts < maxHearts)
-				heal(1);
+				recoverHearts(1);
 		}
 		
 		if (hasTrait(Trait.HIDER) && hiddenCounter-- < 1){
 			hiddenCounter = 5 + (int)(Math.random() * 5);
-			if (hiddenPoint == null)
+			if (positionBeforeHiding == null)
 				hide(world);
 			else
 				unhide(world);
@@ -252,7 +238,7 @@ public class Creature {
 	}
 
 	private void spitRock(World world) {
-		while (lastWanderX == 0 && lastWanderY == 0){
+		while (lastWanderX == 0 && lastWanderY == 0){ // don't spit rock at yourself
 			lastWanderX = (int)(Math.random() * 3) - 1;
 			lastWanderY = (int)(Math.random() * 3) - 1;
 		}
@@ -265,13 +251,14 @@ public class Creature {
 	private void unhide(World world) {
 		int x = 0;
 		int y = 0;
-		while (hiddenPoint != null){
+		
+		while (positionBeforeHiding != null){
 			if (hasTrait(Trait.TERRITORIAL)){
 				x = homeScreenPosition.x * 19 + (int)(Math.random() * 19);
 				y = homeScreenPosition.y *  9 + (int)(Math.random() * 9);	
 			} else {
-				x = hiddenPoint.x + (int)(Math.random() * 7) - 3;
-				y = hiddenPoint.y + (int)(Math.random() * 7) - 3;
+				x = positionBeforeHiding.x + (int)(Math.random() * 7) - 3;
+				y = positionBeforeHiding.y + (int)(Math.random() * 7) - 3;
 			}
 			
 			if (!canEnter(world.tile(x, y)) || world.creature(x, y) != null)
@@ -279,31 +266,36 @@ public class Creature {
 			
 			position.x = x;
 			position.y = y;
-			hiddenPoint = null;
+			positionBeforeHiding = null;
 		}
 		
 		MessageBus.publish(new Unhid(world, this));
+		
 		if (hasTrait(Trait.ROCK_SPITTER))
 			spitRock(world);
 	}
 
 	private void hide(World world) {
-		hiddenPoint = new Point(position.x, position.y);
+		positionBeforeHiding = position.copy();
 		MessageBus.publish(new Hid(world, this));
 		position.x = -100;
 		position.y = -100;
 	}
 
+	public boolean isHidden(){
+		return position.x == -100 && position.y == -100;
+	}
+
 	public void wander(World world){
-		if (prey != null && prey.hearts < 1)
+		if (prey != null && (prey.hearts < 1 || prey.isHidden()))
 			prey = null;
 		else if (prey != null && prey.hearts > 0)
-			moveTo(world, prey.position);
+			moveTo(world, prey);
 
-		if (preditor != null && preditor.hearts < 1)
+		if (preditor != null && (preditor.hearts < 1 || preditor.isHidden()))
 			preditor = null;
 		else if (preditor != null && preditor.hearts > 0)
-			moveFrom(world, preditor.position);
+			moveFrom(world, preditor);
 		
 		else if (hasTrait(Trait.AGGRESSIVE))
 			fightNearby(world);
@@ -311,41 +303,33 @@ public class Creature {
 			wanderForReal(world);
 	}
 
-	private void moveTo(World world, Point target) {
-		if (target.x < 0 || target.y < 0) {
+	private void moveTo(World world, Creature target) {
+		int mx = (int)Math.signum(target.position.x - position.x);
+		int my = (int)Math.signum(target.position.y - position.y);
+		
+		if (canEnter(world.tile(position.x+mx, position.y+my)))
+			moveBy(world, mx, my);
+		else
 			wanderForReal(world);
-		} else {
-			int mx = (int)Math.signum(target.x - position.x);
-			int my = (int)Math.signum(target.y - position.y);
-			
-			if (canEnter(world.tile(position.x+mx, position.y+my)))
-				moveBy(world, mx, my);
-			else
-				wanderForReal(world);
-			
-			if (hasTrait(Trait.DOUBLE_MOVE) && !hasDoubleMovedThisTurn){
-				hasDoubleMovedThisTurn = true;
-				moveTo(world, target);
-			}
+		
+		if (hasTrait(Trait.DOUBLE_MOVE) && !hasDoubleMovedThisTurn){
+			hasDoubleMovedThisTurn = true;
+			moveTo(world, target);
 		}
 	}
 	
-	private void moveFrom(World world, Point target) {
-		if (target.x < 0 || target.y < 0) {
+	private void moveFrom(World world, Creature target) {
+		int mx = -(int)Math.signum(target.position.x - position.x);
+		int my = -(int)Math.signum(target.position.y - position.y);
+		
+		if (canEnter(world.tile(position.x+mx, position.y+my)))
+			moveBy(world, mx, my);
+		else
 			wanderForReal(world);
-		} else {
-			int mx = -(int)Math.signum(target.x - position.x);
-			int my = -(int)Math.signum(target.y - position.y);
-			
-			if (canEnter(world.tile(position.x+mx, position.y+my)))
-				moveBy(world, mx, my);
-			else
-				wanderForReal(world);
-			
-			if (hasTrait(Trait.DOUBLE_MOVE) && !hasDoubleMovedThisTurn){
-				hasDoubleMovedThisTurn = true;
-				moveTo(world, target);
-			}
+		
+		if (hasTrait(Trait.DOUBLE_MOVE) && !hasDoubleMovedThisTurn){
+			hasDoubleMovedThisTurn = true;
+			moveFrom(world, target);
 		}
 	}
 	
@@ -368,7 +352,7 @@ public class Creature {
 		
 		for (Point p : position.neighbors()){
 			Creature other = world.creature(p.x, p.y);
-			if (other != null && !isFriend(other))
+			if (other != null && !isFriendlyTo(other))
 				candidates.add(other);
 		}
 
@@ -381,25 +365,17 @@ public class Creature {
 		}
 	}
 
-	public void finishingKill(World world, Creature other) {
-		other.hurt(world, this, 1000, null);
+	public void recoverHearts(int amount) {
+		hearts = Math.min(hearts + amount, maxHearts);
 	}
 
-	public void heal(int i) {
-		hearts = Math.min(hearts + i, maxHearts);
-	}
-
-	public void gainMoney(int i) {
-		money = Math.min(money + i, 255);
-	}
-
-	public void hurt(World world, Creature attacker, int i, String specialType) {
-		if (i > 1 && hasTrait(Trait.EXTRA_DEFENSE)){
-			i--;
+	public void loseHearts(World world, Creature attacker, int amount, String specialType) {
+		if (amount > 1 && hasTrait(Trait.EXTRA_DEFENSE)){
+			amount--;
 			MessageBus.publish(new BlockSomeDamage(world, this, rightHand));
 		}
 		
-		hearts -= i;
+		hearts -= amount;
 
 		if (specialType != null)
 			MessageBus.publish(new Attacked(world, attacker, this, specialType));
@@ -420,12 +396,16 @@ public class Creature {
 		this.preditor = preditor;
 	}
 	
-	public void pay(World world, int i) {
-		money -= i;
+	public void gainRupees(int amount) {
+		rupees = Math.min(rupees + amount, 255);
+	}
+	
+	public void loseRupees(World world, int amount) {
+		rupees -= amount;
 		
-		if (money < 0) {
-			hurt(world, this, 0 - money, null);
-			money = 0;
+		if (rupees < 0) {
+			loseHearts(world, this, 0 - rupees, null);
+			rupees = 0;
 		}
 	}
 
@@ -445,9 +425,5 @@ public class Creature {
 			MessageBus.publish(new DroppedWeapon(world, this, rightHand));
 		rightHand = item;
 		MessageBus.publish(new EquipedItem(world, this, item));
-	}
-
-	public void increaseMaxHearts(int amount) {
-		maxHearts += amount;
 	}
 }

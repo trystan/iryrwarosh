@@ -69,14 +69,14 @@ public class Factory {
 	public Item club(){
 		Item item = new Item("club", ')', Tile.BROWN_ROCK.background(), "Mele weapon with knowckback. Can do a circle attack."){
 			public Screen use(Screen screen, World world, Creature owner){
-				if (owner.money() + owner.hearts() <= 3) {
+				if (owner.rupees() + owner.hearts() <= 3) {
 					MessageBus.publish(new Note(world, owner, "You need more than 3 rupees or hearts to shoot arrows."));
 					return screen;
 				}
 				
 				for (Point p : owner.position.neighbors()){
 					Creature other = world.creature(p.x, p.y);
-					if (other == null || owner.isFriend(other))
+					if (other == null || owner.isFriendlyTo(other))
 						continue;
 					
 					owner.attack(world, other, "with a wide swing");
@@ -129,7 +129,7 @@ public class Factory {
 	public Item spear(){
 		Item item = new Item("spear", ')', Tile.BROWN_ROCK.background(), "Melee weapon auto-attacks near you. Can be thrown in one of 4 directions."){
 			public Screen use(Screen screen, World world, Creature owner){
-				if (owner.money() + owner.hearts() <= 2) {
+				if (owner.rupees() + owner.hearts() <= 2) {
 					MessageBus.publish(new Note(world, owner, "You need more than 2 rupees or hearts to throw a spear."));
 					return screen;
 				} else
@@ -371,7 +371,7 @@ public class Factory {
 	public Item bow() {
 		Item item = new Item("bow", ')', AsciiPanel.brightBlack, "Shoots arrows."){
 			public Screen use(Screen screen, World world, Creature owner){
-				if (owner.money() + owner.hearts() <= 1){
+				if (owner.rupees() + owner.hearts() <= 1){
 					MessageBus.publish(new Note(world, owner, "You more than 1 rupee or heart to shoot arrows."));
 					return screen;
 				}
@@ -388,7 +388,7 @@ public class Factory {
 					glyph = 196;
 				
 				world.add(new Projectile(owner, glyph, AsciiPanel.white, 1, owner.position.copy(), owner.lastMovedDirection()));
-				owner.pay(world, 1);
+				owner.loseRupees(world, 1);
 				return screen;
 			}
 		};
@@ -404,18 +404,18 @@ public class Factory {
 	public Item firstAidKit() {
 		Item item = new Item("first aid kit", '+', AsciiPanel.white, "Use to cure poison or recover health."){
 			public Screen use(Screen screen, World world, Creature owner){
-				if (owner.money() < 5){
+				if (owner.rupees() < 5){
 					MessageBus.publish(new Note(world, owner, "You need at least 5 rupees to cure poison or heal yourself."));
 					return screen;
 				}
 				
 				if (owner.isPoisoned()){
 					owner.curePoison();
-					owner.pay(world, 5);
+					owner.loseRupees(world, 5);
 				} else {
-					int amount = Math.min(owner.money() / 5, owner.maxHearts() - owner.hearts());
-					owner.heal(amount);
-					owner.pay(world, amount * 5);
+					int amount = Math.min(owner.rupees() / 5, owner.maxHearts() - owner.hearts());
+					owner.recoverHearts(amount);
+					owner.loseRupees(world, amount * 5);
 				}
 				return screen;
 			}
@@ -460,7 +460,7 @@ public class Factory {
 					return; // only the player should be able to get these
 				
 				collider.increaseMaxHearts(1);
-				collider.heal(100);
+				collider.recoverHearts(100);
 				world.removeItem(collider.position.x, collider.position.y);
 			}
 		};
@@ -474,7 +474,7 @@ public class Factory {
 					return; // only the player should be able to get these
 				
 				world.removeItem(collider.position.x, collider.position.y);
-				collider.gainMoney(50);
+				collider.gainRupees(50);
 			}
 		};
 	}

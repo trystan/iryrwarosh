@@ -42,7 +42,7 @@ public class LootSaga implements Handler {
 		return new Item("health", 3, AsciiPanel.red, "A heart that refills health."){
 			public void onCollide(World world, Creature collider){
 				world.removeItem(collider.position.x, collider.position.y);
-				collider.heal(1);
+				collider.recoverHearts(1);
 			}
 		};
 	}
@@ -51,7 +51,7 @@ public class LootSaga implements Handler {
 		return new Item("rupees", 4, Tile.hsv(60, 50, 75), "Rupees used for special actions."){
 			public void onCollide(World world, Creature collider){
 				world.removeItem(collider.position.x, collider.position.y);
-				collider.gainMoney(1);
+				collider.gainRupees(1);
 			}
 		};
 	}
@@ -60,7 +60,7 @@ public class LootSaga implements Handler {
 		return new Item("rupees", 4, Tile.hsv(240, 50, 75), "Rupees used for special actions."){
 			public void onCollide(World world, Creature collider){
 				world.removeItem(collider.position.x, collider.position.y);
-				collider.gainMoney(5);
+				collider.gainRupees(5);
 			}
 		};
 	}

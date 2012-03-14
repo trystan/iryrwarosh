@@ -50,7 +50,7 @@ public class CastSpellScreen implements Screen {
 		Point dir = player.lastMovedDirection();
 		world.add(new Projectile(player, 7, Tile.LAVA1.color(), 5, player.position.plus(dir.x, dir.y), dir));
 		world.add(new Projectile(player, 250, Tile.LAVA2.color(), 2, player.position.copy(), dir));
-		player.pay(world, 10);
+		player.loseRupees(world, 10);
 	}
 	
 	private void blink() {
@@ -68,14 +68,14 @@ public class CastSpellScreen implements Screen {
 		if (tries == 30)
 			return;
 
-		player.pay(world, 5);
+		player.loseRupees(world, 5);
 		
 		player.position.x = x;
 		player.position.y = y;
 	}
 
 	private void heartsToRupees() {
-		player.hurt(world, player, 1, "with magic");
-		player.gainMoney(10);
+		player.loseHearts(world, player, 1, "with magic");
+		player.gainRupees(10);
 	}
 }

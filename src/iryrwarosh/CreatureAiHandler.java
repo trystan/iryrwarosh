@@ -13,7 +13,7 @@ public class CreatureAiHandler implements Handler {
 
 	public void handle(CallForHelp message) {
 		for (Creature c : message.world.creatures()){
-			if (!message.attacked.isFriend(c) || c == message.attacked)
+			if (!message.attacked.isFriendlyTo(c) || c == message.attacked)
 				continue;
 			
 			if (c.position.distanceTo(message.attacked.position) > 12)

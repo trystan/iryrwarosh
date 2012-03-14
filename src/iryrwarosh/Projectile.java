@@ -42,13 +42,13 @@ public class Projectile {
 			
 		Creature c = world.creature(position.x, position.y);
 		
-		if (c == null || origin.isFriend(c))
+		if (c == null || origin.isFriendlyTo(c))
 			return;
 		
 		if (c.rightHand() != null && c.hasTrait(Trait.DEFLECT_RANGED) && Math.random() < 0.5){
 			MessageBus.publish(new DeflectRanged(world, c, this));
 		} else {
-			c.hurt(world, origin, damage, "from a distance");
+			c.loseHearts(world, origin, damage, "from a distance");
 		}
 		isDone = true;
 	}

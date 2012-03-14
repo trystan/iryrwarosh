@@ -21,7 +21,7 @@ public class ItemSpecialsSaga implements Handler {
 		for (Point p : m.creature.position.neighbors()){
 			Creature other = m.world.creature(p.x, p.y);
 			if (other != null 
-					&& !m.creature.isFriend(other) 
+					&& !m.creature.isFriendlyTo(other) 
 					&& other.hasTrait(Trait.REACH_ATTACK) && Math.random() < 0.5){
 				other.attack(m.world, m.creature, "with a long reach");
 			}

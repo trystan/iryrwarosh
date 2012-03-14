@@ -56,7 +56,7 @@ public class CastAdvancedSpellScreen implements Screen {
 		world.add(new Projectile(player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(-1, 1), new Point(-1, 1)));
 		world.add(new Projectile(player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(1,-1), new Point( 1,-1)));
 		world.add(new Projectile(player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(1, 1), new Point( 1, 1)));
-		player.pay(world, 10);
+		player.loseRupees(world, 10);
 	}
 	
 	private void summonImp() {
@@ -73,7 +73,7 @@ public class CastAdvancedSpellScreen implements Screen {
 		Point dir = player.lastMovedDirection();
 		imp.position = player.position.plus(dir.x, dir.y).plus(dir.x, dir.y);
 		
-		player.pay(world, 15);
+		player.loseRupees(world, 15);
 	}
 
 	private void mutateSelf() {
@@ -82,6 +82,6 @@ public class CastAdvancedSpellScreen implements Screen {
 			trait = Trait.getRandom();
 		
 		player.addTrait(trait);
-		player.pay(world, 20);
+		player.loseRupees(world, 20);
 	}
 }
