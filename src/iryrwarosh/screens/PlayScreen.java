@@ -1,6 +1,7 @@
 package iryrwarosh.screens;
 
 import iryrwarosh.Creature;
+import iryrwarosh.FameHandler;
 import iryrwarosh.Trait;
 import iryrwarosh.Factory;
 import iryrwarosh.Handler;
@@ -18,10 +19,13 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import asciiPanel.AsciiPanel;
 
 public class PlayScreen implements Screen, Handler {
+	private FameHandler fameHandler;
+	
 	private World world;
 	private Creature player;
 	private Factory factory;
@@ -33,6 +37,7 @@ public class PlayScreen implements Screen, Handler {
 	
 	public PlayScreen(World world, Factory factory, Creature player){
 		MessageBus.subscribe(this);
+		this.fameHandler = new FameHandler();
 		this.world = world;
 		this.factory = factory;
 		this.player = player;
@@ -75,6 +80,24 @@ public class PlayScreen implements Screen, Handler {
 			terminal.write((char)3, i < player.hearts() ? heartColor : AsciiPanel.brightBlack, bg);
 			if (((i+1) % 10) == 0)
 				terminal.setCursorPosition(69, terminal.getCursorY() + 1);
+		}
+
+		displayFame(terminal, bg);
+	}
+
+	private void displayFame(AsciiPanel terminal, Color bg) {
+		Set<Creature> people = fameHandler.getFamousPeople();
+		
+		if (people.size() == 0)
+			return;
+		
+		terminal.setCursorPosition(69, terminal.getCursorY() + 1);
+		terminal.write("- fame -", AsciiPanel.brightGreen, bg);
+		terminal.setCursorPosition(69, terminal.getCursorY() + 1);
+		for (Creature famousPerson : people){
+			terminal.write(" " + famousPerson.glyph(), famousPerson.color(), bg);
+			terminal.write(String.format(" %3d%% ", fameHandler.getFame(famousPerson)), AsciiPanel.white, bg);
+			terminal.setCursorPosition(69, terminal.getCursorY() + 1);
 		}
 	}
 	
@@ -242,6 +265,8 @@ public class PlayScreen implements Screen, Handler {
 
 	@Override
 	public void handle(Message message) {
+		fameHandler.handle(message);
+		
 		if (message.involves(player) && !Moved.class.isAssignableFrom(message.getClass()))
 			messages.add(message);
 		

@@ -1,6 +1,13 @@
 package iryrwarosh;
 
+import java.util.Hashtable;
+
 public class MapExplorationHandler implements Handler {
+	private Hashtable<Creature, boolean[][]> exploration;
+	
+	public MapExplorationHandler(){
+		exploration = new Hashtable<Creature, boolean[][]>();
+	}
 	
 	@Override
 	public void handle(Message message) {
@@ -12,17 +19,30 @@ public class MapExplorationHandler implements Handler {
 	}
 
 	public void handle(Moved message) {
-		if (!message.creature.isPlayer())
+		if (message.creature.glyph() != '@')
 			return;
 
-		explored(message.world, message.creature.position);
+		explored(message.world, message.creature);
 	}
 	
 	public void handle(WorldCreated message) {
-		explored(message.world, message.player.position);
+		exploration.clear();
+		explored(message.world, message.player);
 	}
 	
-	private void explored(World world, Point position){
-		world.map().markAsExplored(position.x / 19, position.y / 9);
+	private void explored(World world, Creature creature){
+		int sx = creature.position.x / 19;
+		int sy = creature.position.y / 9;
+		
+		if (creature.isPlayer())
+			world.map().markAsExplored(sx, sy);
+
+		if (!exploration.containsKey(creature))
+			exploration.put(creature, new boolean[world.map().width()][world.map().height()]);
+		
+		if (exploration.get(creature)[sx][sy] == false){
+			exploration.get(creature)[sx][sy] = true;
+			MessageBus.publish(new ExploredNewLocation(world, creature, ""));
+		}
 	}
 }
