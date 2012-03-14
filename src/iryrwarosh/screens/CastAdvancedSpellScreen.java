@@ -48,14 +48,14 @@ public class CastAdvancedSpellScreen implements Screen {
 	}
 
 	private void magicMissiles() {
-		world.add(new Projectile(player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(1, 0), new Point( 1, 0)));
-		world.add(new Projectile(player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(-1, 0), new Point(-1, 0)));
-		world.add(new Projectile(player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(0, 1), new Point( 0, 1)));
-		world.add(new Projectile(player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(0,-1), new Point( 0,-1)));
-		world.add(new Projectile(player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(-1,-1), new Point(-1,-1)));
-		world.add(new Projectile(player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(-1, 1), new Point(-1, 1)));
-		world.add(new Projectile(player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(1,-1), new Point( 1,-1)));
-		world.add(new Projectile(player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(1, 1), new Point( 1, 1)));
+		world.add(new Projectile("magic missile", player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(1, 0), new Point( 1, 0)));
+		world.add(new Projectile("magic missile", player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(-1, 0), new Point(-1, 0)));
+		world.add(new Projectile("magic missile", player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(0, 1), new Point( 0, 1)));
+		world.add(new Projectile("magic missile", player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(0,-1), new Point( 0,-1)));
+		world.add(new Projectile("magic missile", player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(-1,-1), new Point(-1,-1)));
+		world.add(new Projectile("magic missile", player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(-1, 1), new Point(-1, 1)));
+		world.add(new Projectile("magic missile", player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(1,-1), new Point( 1,-1)));
+		world.add(new Projectile("magic missile", player, 7, Tile.hsv(210, 33, 66), 2, player.position.plus(1, 1), new Point( 1, 1)));
 		player.loseRupees(world, 10);
 	}
 	

@@ -18,7 +18,10 @@ public class Creature {
 	private int poisonCounter;
 	private Creature lastPoisonedBy;
 	public boolean isPoisoned() { return poisonCounter > 0; }
-
+	
+	private String causeOfDeath;
+	public String causeOfDeath() { return causeOfDeath; }
+	
 	private String name;
 	public String name() { return name; }
 	
@@ -150,11 +153,11 @@ public class Creature {
 			return;
 		}
 		
-		other.loseHearts(world, this, hasTrait(Trait.STRONG_ATTACK) ? 2 : 1, specialType);
+		other.loseHearts(world, this, hasTrait(Trait.STRONG_ATTACK) ? 2 : 1, specialType, "You were slain by a " + name());
 
 		if (other.hasTrait(Trait.SPIKED)){
 			MessageBus.publish(new HitSpikes(world, this, other));
-			loseHearts(world, other, 1, null);
+			loseHearts(world, other, 1, null, "You impaled youself on the spikes of a " + other.name());
 		}
 
 		if (hasTrait(Trait.POISONOUS) && other.hearts > 0)
@@ -215,7 +218,7 @@ public class Creature {
 			homeScreenPosition = new Point(position.x / 19, position.y / 9); 
 				
 		if (poisonCounter > 0 && poisonCounter-- % 5 == 0)
-			loseHearts(world, lastPoisonedBy, 1, null);
+			loseHearts(world, lastPoisonedBy, 1, null, "You died of poison from a " + lastPoisonedBy.name());
 		
 		if (hasTrait(Trait.REGENERATES) && regenerateCounter-- < 1){
 			regenerateCounter = 10;
@@ -244,8 +247,8 @@ public class Creature {
 		}
 		
 		projectileCooldown += 10 + (int)(Math.random() * 10);
-		world.add(new Projectile(this,   7, AsciiPanel.brightYellow, 1, position.plus(lastWanderX, lastWanderY), new Point(lastWanderX, lastWanderY)));
-		world.add(new Projectile(this, 250, AsciiPanel.brightYellow, 0, position.copy(), new Point(lastWanderX, lastWanderY)));
+		world.add(new Projectile("rock", this,   7, AsciiPanel.brightYellow, 1, position.plus(lastWanderX, lastWanderY), new Point(lastWanderX, lastWanderY)));
+		world.add(new Projectile("", this, 250, AsciiPanel.brightYellow, 0, position.copy(), new Point(lastWanderX, lastWanderY)));
 	}
 
 	private void unhide(World world) {
@@ -369,7 +372,7 @@ public class Creature {
 		hearts = Math.min(hearts + amount, maxHearts);
 	}
 
-	public void loseHearts(World world, Creature attacker, int amount, String specialType) {
+	public void loseHearts(World world, Creature attacker, int amount, String specialType, String causeOfDeath) {
 		if (amount > 1 && hasTrait(Trait.EXTRA_DEFENSE)){
 			amount--;
 			MessageBus.publish(new BlockSomeDamage(world, this, rightHand));
@@ -380,9 +383,10 @@ public class Creature {
 		if (specialType != null)
 			MessageBus.publish(new Attacked(world, attacker, this, specialType));
 		
-		if (hearts < 1)
+		if (hearts < 1) {
+			this.causeOfDeath = causeOfDeath;
 			MessageBus.publish(new Killed(world, attacker, this));
-		else if (hasTrait(Trait.SOCIAL))
+		} else if (hasTrait(Trait.SOCIAL))
 			MessageBus.publish(new CallForHelp(world, this, attacker));
 	}
 
@@ -404,7 +408,7 @@ public class Creature {
 		rupees -= amount;
 		
 		if (rupees < 0) {
-			loseHearts(world, this, 0 - rupees, null);
+			loseHearts(world, this, 0 - rupees, null, "You spent you last heart after running out of rupees.");
 			rupees = 0;
 		}
 	}

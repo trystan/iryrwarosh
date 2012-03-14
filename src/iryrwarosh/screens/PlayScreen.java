@@ -169,6 +169,11 @@ public class PlayScreen implements Screen, Handler {
 	
 	@Override
 	public Screen respondToUserInput(KeyEvent key) {
+		if (player.hearts() < 1) {
+			MessageBus.unsubscribe(this);
+			return new DeadScreen(this, player.causeOfDeath());
+		}
+		
 		switch (key.getKeyCode()){
         case KeyEvent.VK_LEFT:
         case KeyEvent.VK_4:
@@ -218,7 +223,7 @@ public class PlayScreen implements Screen, Handler {
 		
 		if (player.hearts() < 1) {
 			MessageBus.unsubscribe(this);
-			return new DeadScreen(this);
+			return new DeadScreen(this, player.causeOfDeath());
 		}
 		
 		return this;

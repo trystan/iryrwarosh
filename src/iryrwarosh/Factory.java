@@ -113,7 +113,7 @@ public class Factory {
 				else if ((dir.x == -1 || dir.x == 1) && dir.y == 0)
 					glyph = 196;
 				
-				last = new Projectile(owner, glyph, AsciiPanel.brightWhite, 1, owner.position.copy(), dir){
+				last = new Projectile("sword", owner, glyph, AsciiPanel.brightWhite, 1, owner.position.copy(), dir){
 					public boolean canEnter(Tile tile){
 						return tile.isGround() || tile.isWater();
 					}
@@ -387,7 +387,7 @@ public class Factory {
 				else if ((dir.x == -1 || dir.x == 1) && dir.y == 0)
 					glyph = 196;
 				
-				world.add(new Projectile(owner, glyph, AsciiPanel.white, 1, owner.position.copy(), owner.lastMovedDirection()));
+				world.add(new Projectile("arrow", owner, glyph, AsciiPanel.white, 1, owner.position.copy(), owner.lastMovedDirection()));
 				owner.loseRupees(world, 1);
 				return screen;
 			}

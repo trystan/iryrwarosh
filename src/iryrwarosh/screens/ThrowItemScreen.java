@@ -63,7 +63,7 @@ public class ThrowItemScreen implements Screen {
 		else if (dy == 1)
 			glyph = 25;
 		
-		world.add(new Projectile(player, glyph, AsciiPanel.brightWhite, 1, player.position.plus(dx, dy), new Point(dx, dy)){
+		world.add(new Projectile(item.name(), player, glyph, AsciiPanel.brightWhite, 1, player.position.plus(dx, dy), new Point(dx, dy)){
 			public boolean canEnter(Tile tile){
 				return tile.isGround() || tile.isWater();
 			}

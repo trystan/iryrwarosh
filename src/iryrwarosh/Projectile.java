@@ -9,6 +9,9 @@ public class Projectile {
 	
 	private boolean isDone;
 	public boolean isDone() { return isDone; }
+
+	private String name;
+	public String name() { return name; }
 	
 	private char glyph;
 	public char glyph() { return glyph; }
@@ -19,7 +22,8 @@ public class Projectile {
 	private int damage;
 	private int airTime = 0;
 	
-	public Projectile(Creature origin, int glyph, Color color, int damage, Point position, Point velocity){
+	public Projectile(String name, Creature origin, int glyph, Color color, int damage, Point position, Point velocity){
+		this.name = name;
 		this.position = position;
 		this.velocity = velocity;
 		this.glyph = (char)glyph;
@@ -40,15 +44,15 @@ public class Projectile {
 			return;
 		}
 			
-		Creature c = world.creature(position.x, position.y);
+		Creature creature = world.creature(position.x, position.y);
 		
-		if (c == null || origin.isFriendlyTo(c))
+		if (creature == null || origin.isFriendlyTo(creature))
 			return;
 		
-		if (c.rightHand() != null && c.hasTrait(Trait.DEFLECT_RANGED) && Math.random() < 0.5){
-			MessageBus.publish(new DeflectRanged(world, c, this));
+		if (creature.rightHand() != null && creature.hasTrait(Trait.DEFLECT_RANGED) && Math.random() < 0.5){
+			MessageBus.publish(new DeflectRanged(world, creature, this));
 		} else {
-			c.loseHearts(world, origin, damage, "from a distance");
+			creature.loseHearts(world, origin, damage, "from a distance", "You were slain by the " + name() + " from a " + origin.name());
 		}
 		isDone = true;
 	}

@@ -48,8 +48,8 @@ public class CastSpellScreen implements Screen {
 
 	private void fireball() {
 		Point dir = player.lastMovedDirection();
-		world.add(new Projectile(player, 7, Tile.LAVA1.color(), 5, player.position.plus(dir.x, dir.y), dir));
-		world.add(new Projectile(player, 250, Tile.LAVA2.color(), 2, player.position.copy(), dir));
+		world.add(new Projectile("fireball", player, 7, Tile.LAVA1.color(), 5, player.position.plus(dir.x, dir.y), dir));
+		world.add(new Projectile("fireball", player, 250, Tile.LAVA2.color(), 2, player.position.copy(), dir));
 		player.loseRupees(world, 10);
 	}
 	
@@ -75,7 +75,7 @@ public class CastSpellScreen implements Screen {
 	}
 
 	private void heartsToRupees() {
-		player.loseHearts(world, player, 1, "with magic");
+		player.loseHearts(world, player, 1, null, "You turned the last of your hearts into rupees");
 		player.gainRupees(10);
 	}
 }
