@@ -59,7 +59,7 @@ public class Factory {
 	}
 	
 	public Item knife(){
-		Item item = new Item("knife", ')', Tile.WHITE_ROCK.background(), "Allows you to attack when you evade and do combos.");
+		Item item = new Item("knife", ')', Tile.WHITE_ROCK.background(), "Melee weapon you will attack with when you evade. Can do combos.");
 		item.addTrait(Trait.COMBO_ATTACK);
 		item.addTrait(Trait.EVADE_ATTACK);
 		item.addTrait(Trait.STRONG_ATTACK);
@@ -67,7 +67,7 @@ public class Factory {
 	}
 	
 	public Item club(){
-		Item item = new Item("club", ')', Tile.BROWN_ROCK.background(), "Mele weapon with knowckback. Can do a circle attack."){
+		Item item = new Item("club", ')', Tile.BROWN_ROCK.background(), "Melee weapon with knockback. Can do a circle attack."){
 			public Screen use(Screen screen, World world, Creature owner){
 				if (owner.rupees() + owner.hearts() <= 3) {
 					MessageBus.publish(new Note(world, owner, "You need more than 3 rupees or hearts to shoot arrows."));
@@ -127,7 +127,7 @@ public class Factory {
 	}
 	
 	public Item spear(){
-		Item item = new Item("spear", ')', Tile.BROWN_ROCK.background(), "Melee weapon auto-attacks near you. Can be thrown in one of 4 directions."){
+		Item item = new Item("spear", ')', Tile.BROWN_ROCK.background(), "Melee weapon that auto-attacks near you. Can be thrown."){
 			public Screen use(Screen screen, World world, Creature owner){
 				if (owner.rupees() + owner.hearts() <= 2) {
 					MessageBus.publish(new Note(world, owner, "You need more than 2 rupees or hearts to throw a spear."));
@@ -344,7 +344,7 @@ public class Factory {
 	}
 
 	public Item heavyArmor() {
-		Item item = new Item("heavy armor", '[', AsciiPanel.white, "Reduces damage done from heavy hitters.");
+		Item item = new Item("heavy armor", '[', AsciiPanel.yellow, "Reduces damage done from heavy hitters.");
 		item.addTrait(Trait.EXTRA_DEFENSE);
 		return item;
 	}
@@ -356,7 +356,7 @@ public class Factory {
 	}
 
 	public Item crystalBall() {
-		Item item = new Item("crystal ball", '+', AsciiPanel.white, "Allows you too see anything camouflaged."){
+		Item item = new Item("crystal ball", '+', Tile.hsv(220, 25, 25), "With this you can see anything camouflaged."){
 			public Screen use(Screen screen, World world, Creature player) {
 				String text = "You see nothing special";
 				
@@ -369,7 +369,7 @@ public class Factory {
 	}
 
 	public Item bow() {
-		Item item = new Item("bow", ')', AsciiPanel.brightBlack, "Shoots arrows."){
+		Item item = new Item("bow", ')', Tile.hsv(45, 50, 50), "Shoots arrows."){
 			public Screen use(Screen screen, World world, Creature owner){
 				if (owner.rupees() + owner.hearts() <= 1){
 					MessageBus.publish(new Note(world, owner, "You more than 1 rupee or heart to shoot arrows."));
@@ -396,13 +396,13 @@ public class Factory {
 	}
 
 	public Item snorkel() {
-		Item item = new Item("snorkel", '/', Tile.WATER1.color(), "Allows you to swim in the water.");
+		Item item = new Item("snorkel", '/', Tile.WATER1.background(), "Allows you to swim in the water.");
 		item.addTrait(Trait.SWIMMER);
 		return item;
 	}
 
 	public Item firstAidKit() {
-		Item item = new Item("first aid kit", '+', AsciiPanel.white, "Use to cure poison or recover health."){
+		Item item = new Item("first aid kit", '+', Tile.hsv(20, 50, 50), "Use to cure poison or recover health."){
 			public Screen use(Screen screen, World world, Creature owner){
 				if (owner.rupees() < 5){
 					MessageBus.publish(new Note(world, owner, "You need at least 5 rupees to cure poison or heal yourself."));
@@ -430,7 +430,7 @@ public class Factory {
 	}
 
 	public Item spellBook() {
-		Item item = new Item("spellbook", '+', AsciiPanel.white, "Use to cast one of 3 spells."){
+		Item item = new Item("spellbook", '+', Tile.hsv(200, 50, 50), "Used to cast fireball, blink, and heart to rupees."){
 			public Screen use(Screen screen, World world, Creature owner){
 				return new CastSpellScreen(screen, world, owner);
 			}

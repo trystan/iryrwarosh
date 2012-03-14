@@ -17,32 +17,34 @@ public class ChooseStartingItemsScreen implements Screen {
 	private boolean[] picked;
 	private Item[] items;
 	private Factory factory;
-	private int descriptionX;
 	
 	public ChooseStartingItemsScreen(){
 		factory = new Factory();
 		items = new Item[]{
 			factory.sword(),
+			factory.club(),
+			factory.knife(),
+			factory.spear(),
+			factory.staff(),
 			factory.shield(),
-			factory.spellBook(),
+			factory.snorkel(),
 			factory.bow(),
 			factory.firstAidKit(),
 			factory.crystalBall(),
-			factory.snorkel(),
+			factory.spellBook(),
 			factory.heavyArmor(),
-			factory.club()
 		};
 		
 		picked = new boolean[items.length];
-		
-		for (Item item : items)
-			descriptionX = Math.max(descriptionX, 6 + item.name().length());
 	}
 	
 	@Override
 	public void displayOutput(AsciiPanel terminal) {
 		terminal.clear();
-		terminal.write("Choose your two items.", 1, 1);
+		terminal.write(" Choose your two items. Each item has at least one passive ability and an", 1, 1);
+		terminal.write("active ability that cost rupees to use. You should start with at least one", 1, 2);
+		terminal.write("mele weapon since they increase the damage done when bumping into others.", 1, 3);
+		
 		
 		for (int i = 0; i < picked.length; i++)
 			writeChoice(terminal, i);
@@ -53,8 +55,10 @@ public class ChooseStartingItemsScreen implements Screen {
 		
 		System.out.println(items[i].description());
 		
-		terminal.write("[" + (i+1) + "] " + items[i].name(), 1, 3 + i, fg);
-		terminal.write(items[i].description(), descriptionX, 3 + i, fg);
+		char key = (char)('a' + i);
+		terminal.write("[" + key + "] ", 1, 6 + i, fg);
+		terminal.write(items[i].name(), items[i].color());
+		terminal.write(". " + items[i].description(), fg);
 		
 	}
 
@@ -62,15 +66,18 @@ public class ChooseStartingItemsScreen implements Screen {
 	public Screen respondToUserInput(KeyEvent key) {
 		
 		switch (key.getKeyChar()){
-		case '1': picked[0] = !picked[0]; break;
-		case '2': picked[1] = !picked[1]; break;
-		case '3': picked[2] = !picked[2]; break;
-		case '4': picked[3] = !picked[3]; break;
-		case '5': picked[4] = !picked[4]; break;
-		case '6': picked[5] = !picked[5]; break;
-		case '7': picked[6] = !picked[6]; break;
-		case '8': picked[7] = !picked[7]; break;
-		case '9': picked[8] = !picked[8]; break;
+		case 'a': picked[0] = !picked[0]; break;
+		case 'b': picked[1] = !picked[1]; break;
+		case 'c': picked[2] = !picked[2]; break;
+		case 'd': picked[3] = !picked[3]; break;
+		case 'e': picked[4] = !picked[4]; break;
+		case 'f': picked[5] = !picked[5]; break;
+		case 'g': picked[6] = !picked[6]; break;
+		case 'h': picked[7] = !picked[7]; break;
+		case 'i': picked[8] = !picked[8]; break;
+		case 'j': picked[9] = !picked[8]; break;
+		case 'k': picked[10] = !picked[10]; break;
+		case 'l': picked[11] = !picked[11]; break;
 		}
 		
 		Item item1 = null;
