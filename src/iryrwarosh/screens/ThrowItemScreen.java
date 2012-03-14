@@ -35,12 +35,16 @@ public class ThrowItemScreen implements Screen {
 	public Screen respondToUserInput(KeyEvent key) {
 		switch (key.getKeyChar()){
         case KeyEvent.VK_LEFT:
+        case KeyEvent.VK_4:
         case KeyEvent.VK_H: throwDirection(-1, 0); break;
         case KeyEvent.VK_RIGHT:
+        case KeyEvent.VK_6:
         case KeyEvent.VK_L: throwDirection( 1, 0); break;
         case KeyEvent.VK_UP:
+        case KeyEvent.VK_8:
         case KeyEvent.VK_K: throwDirection( 0,-1); break;
         case KeyEvent.VK_DOWN:
+        case KeyEvent.VK_2:
         case KeyEvent.VK_J: throwDirection( 0, 1); break;
 		}
 		
