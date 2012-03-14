@@ -215,6 +215,9 @@ public class PlayScreen implements Screen, Handler {
             }
 		case KeyEvent.VK_M: return new WorldMapScreen(this, world.map(), player.position);
 		case KeyEvent.VK_SPACE: return new LookAtScreen(this, world, player, getScrollX(), getScrollY());
+		case KeyEvent.VK_Q:
+		case KeyEvent.VK_ESCAPE:
+			return new ConfirmationScreen(this, new ChooseStartingItemsScreen(), "Are you sure youd like to quit?");
 		default:
 			return this;
 		}
