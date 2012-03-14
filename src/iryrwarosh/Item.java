@@ -21,7 +21,9 @@ public class Item {
 
 	private List<Trait> traits;
 	public void addTrait(Trait trait) { traits.add(trait); }
-
+	
+	public void removeTrait(Trait trait) { traits.remove(trait); }
+	
 	public boolean hasTrait(Trait trait) {
 		return traits.contains(trait);
 	}
@@ -40,6 +42,10 @@ public class Item {
 		this.traits = new ArrayList<Trait>();
 		this.description = description;
 		this.evasionModifier = evasionModifier;
+	}
+	
+	public void update(){
+		
 	}
 	
 	public void onCollide(World world, Creature colider){

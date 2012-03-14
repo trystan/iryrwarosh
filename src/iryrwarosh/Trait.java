@@ -8,7 +8,7 @@ public enum Trait {
 	AGGRESSIVE("aggressive"), HIDER("hider"), TERRITORIAL("territorial"), ROCK_SPITTER("rock spitter"),
 	SOCIAL("social"), FEARFUL("fearful"), LOOTLESS("lootless"),
 	EVADE_ATTACK("evasive attacker"), COUNTER_ATTACK("counter attack"),
-	REACH_ATTACK("long reach"), COMBO_ATTACK("combo attack"), DETECT_CAMOUFLAGED("perceptive"), 
+	REACH_ATTACK("long reach"), DETECT_CAMOUFLAGED("perceptive"), 
 	DEFLECT_RANGED("deflects projectiles"), DEFLECT_MELEE("blocks melee"),
 	HUNTER("hunter"), MYSTERIOUS("mysterious"), KNOCKBACK("knockback"), SLOWING_ATTACK("slowing attack");
 

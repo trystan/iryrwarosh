@@ -279,7 +279,13 @@ public class Creature {
 		
 		if (homeScreenPosition == null)
 			homeScreenPosition = new Point(position.x / 19, position.y / 9); 
-				
+		
+		if (leftHand != null)
+			leftHand.update();
+
+		if (rightHand != null)
+			rightHand.update();
+		
 		if (poisonCounter > 0 && poisonCounter-- % 5 == 0)
 			loseHearts(world, lastPoisonedBy, 1, null, "You died of poison from a " + lastPoisonedBy.name());
 		
@@ -300,9 +306,8 @@ public class Creature {
 				unhide(world);
 		}
 		
-		if (!canEnter(world.tile(position.x, position.y))){
+		if (!canEnter(world.tile(position.x, position.y)))
 			loseHearts(world, this, 1, null, "You died from standing in " + world.tile(position.x, position.y).description());
-		}
 		
 		if (hasTrait(Trait.ROCK_SPITTER) 
 				&& projectileCooldown-- < 1 

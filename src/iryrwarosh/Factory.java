@@ -23,7 +23,7 @@ public class Factory {
 		
 		minibossLoot = new ArrayList<Item>();
 		minibossLoot.add(this.ringOfRegeneration());
-		minibossLoot.add(this.magicCape());
+		minibossLoot.add(this.magicCarpet());
 		minibossLoot.add(this.advancedSpellBook());
 		minibossLoot.add(this.ringOfEvasion());
 		minibossLoot.add(this.evasionPotion());
@@ -64,8 +64,42 @@ public class Factory {
 	}
 	
 	public Item knife(){
-		Item item = new Item("knife", ')', Tile.WHITE_ROCK.background(), "Melee weapon you will attack with when you evade. Can do combos.");
-		item.addTrait(Trait.COMBO_ATTACK);
+		Item item = new Item("knife", ')', Tile.WHITE_ROCK.background(), "Melee weapon that attacks when you evade. Can be poisoned."){
+			int poisonCounter = 0;
+			World world;
+			Creature owner;
+			
+			public void update(){
+				super.update();
+				
+				if (poisonCounter > 0)
+					poisonCounter--;
+				
+				if (poisonCounter == 0 && hasTrait(Trait.POISONOUS)) {
+					removeTrait(Trait.POISONOUS);
+					MessageBus.publish(new Note(world, owner, "Your knife is no longer poisonous."));
+				}
+			}
+
+			public Screen use(Screen screen, World world, Creature owner){
+				if (owner.rupees() + owner.hearts() <= 5) {
+					MessageBus.publish(new Note(world, owner, "You need more than 5 rupees or hearts to poison your knife."));
+					return screen;
+				}
+				
+				this.world = world;
+				this.owner = owner;
+				
+				if (!hasTrait(Trait.POISONOUS))
+					addTrait(Trait.POISONOUS);
+
+				owner.loseRupees(world, 5);
+				poisonCounter += 10;
+				MessageBus.publish(new Note(world, owner, "Your knife is now poisonous for " + poisonCounter + " turns."));
+				
+				return screen;
+			}
+		};
 		item.addTrait(Trait.EVADE_ATTACK);
 		item.addTrait(Trait.STRONG_ATTACK);
 		return item;
@@ -95,15 +129,10 @@ public class Factory {
 	}
 	
 	public Item sword(){
-		Item item = new Item("sword", ')', AsciiPanel.white, "Melee weapon. Can also shoot if you are at full health."){
+		Item item = new Item("sword", ')', AsciiPanel.white, "Simple melee weapon. Can also shoot at no cost to you."){
 			private Projectile last;
 			
 			public Screen use(Screen screen, World world, Creature owner){
-				if (owner.hearts() != owner.maxHearts()){
-					MessageBus.publish(new Note(world, owner, "Your sword can only shoot when all your hearts are full."));
-					return screen;
-				}
-				
 				if (last != null && !last.isDone())
 					return screen;
 				
@@ -149,8 +178,8 @@ public class Factory {
 	public Item staff(){
 		Item item = new Item("staff", ')', Tile.BROWN_ROCK.background(), "Melee weapon that can parry attacks and will counter attack.");
 		item.addTrait(Trait.COUNTER_ATTACK);
-		item.addTrait(Trait.STRONG_ATTACK);
 		item.addTrait(Trait.DEFLECT_MELEE);
+		item.addTrait(Trait.STRONG_ATTACK);
 		return item;
 	}
 
@@ -349,7 +378,7 @@ public class Factory {
 	}
 
 	public Item heavyArmor() {
-		Item item = new Item("heavy armor", '[', AsciiPanel.yellow, -3, "Reduces damage done from heavy hitters.");
+		Item item = new Item("heavy armor", '[', AsciiPanel.yellow, -2, "Reduces damage done from heavy hitters.");
 		item.addTrait(Trait.EXTRA_DEFENSE);
 		return item;
 	}
@@ -361,7 +390,7 @@ public class Factory {
 	}
 
 	public Item crystalBall() {
-		Item item = new Item("crystal ball", '+', Tile.hsv(220, 25, 25), "With this you can see anything camouflaged."){
+		Item item = new Item("crystal ball", '+', Tile.hsv(220, 25, 25), "With this you will see anything camouflaged."){
 			public Screen use(Screen screen, World world, Creature player) {
 				String text = "You see nothing special";
 				
@@ -377,7 +406,7 @@ public class Factory {
 		Item item = new Item("bow", ')', Tile.hsv(45, 50, 50), "Shoots arrows."){
 			public Screen use(Screen screen, World world, Creature owner){
 				if (owner.rupees() + owner.hearts() <= 1){
-					MessageBus.publish(new Note(world, owner, "You more than 1 rupee or heart to shoot arrows."));
+					MessageBus.publish(new Note(world, owner, "You need more than 1 rupee or heart to shoot arrows."));
 					return screen;
 				}
 				
@@ -443,8 +472,8 @@ public class Factory {
 		return item;
 	}
 	
-	public Item magicCape() {
-		Item item = new Item("magic cape", '[', AsciiPanel.red, "You can fly with this.");
+	public Item magicCarpet() {
+		Item item = new Item("magic carpet", Tile.WATER1.glyph(), AsciiPanel.red, +1, "You can fly on this.");
 		item.addTrait(Trait.FLIER);
 		return item;
 	}
@@ -485,7 +514,7 @@ public class Factory {
 	}
 
 	public Item evasionPotion(){
-		return new Item("evasion potion", '!', Tile.hsv(90, 33, 66), "Perminantely boost your evasion."){
+		return new Item("evasion potion", '!', Tile.hsv(90, 33, 66), "Permanently boost your evasion."){
 			public void onCollide(World world, Creature collider){
 				if (collider.glyph() != '@')
 					return; // only the player should be able to get these
