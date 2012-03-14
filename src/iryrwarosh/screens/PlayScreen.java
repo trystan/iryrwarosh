@@ -46,6 +46,7 @@ public class PlayScreen implements Screen, Handler {
 	}
 
 	private void displayHud(AsciiPanel terminal) {
+		player.gainRupees(200);
 		Color bg = Tile.hsv(30, 30, 15);
 		terminal.clear(' ', 0, 0, 80, 1, Tile.hsv(0, 0, 15), bg);
 		
@@ -54,10 +55,13 @@ public class PlayScreen implements Screen, Handler {
 		
 		terminal.write("[x] ", 20, 0, AsciiPanel.white, bg);
 		terminal.write(player.rightHand().name(), player.rightHand().color(), bg);
-		
-		terminal.write("evade: " + player.evadePercent(world) + "%", 45, 0, AsciiPanel.yellow, bg);
 
-		terminal.write(player.rupees() + "" + (char)4, 65, 0, Tile.hsv(60, 25, 75), bg);
+		terminal.write("[m] ", 40, 0, AsciiPanel.white, bg);
+		terminal.write("map", AsciiPanel.white, bg);
+
+		terminal.write("evade: " + player.evadePercent(world) + "%", 52, 0, AsciiPanel.yellow, bg);
+
+		terminal.write(player.rupees() + "" + (char)4, 64, 0, Tile.hsv(60, 25, 75), bg);
 		
 		Item item = world.item(player.position.x, player.position.y);
 		if (item != null){
