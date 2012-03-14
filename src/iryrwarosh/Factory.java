@@ -267,7 +267,7 @@ public class Factory {
 		
 		switch (biome) {
 		case GREEN_TREE1:
-			name = "evergreen monster";
+			name = "green forest monster";
 			color = biome.color().brighter();
 			candidates.addAll(world.screensOfType(Tile.GREEN_TREE1));
 			candidates.addAll(world.screensOfType(Tile.PINE_TREE1));
@@ -276,7 +276,7 @@ public class Factory {
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case BROWN_TREE1:
-			name = "forest monster";
+			name = "brown forest monster";
 			color = biome.color().brighter();
 			candidates.addAll(world.screensOfType(Tile.BROWN_TREE1));
 			candidates.addAll(world.screensOfType(Tile.BROWN_TREE4));
@@ -285,7 +285,7 @@ public class Factory {
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case WHITE_TREE1:
-			name = "boreal monster";
+			name = "white forest monster";
 			color = biome.color().brighter();
 			candidates.addAll(world.screensOfType(Tile.WHITE_TREE1));
 			if (candidates.size() == 0)
@@ -293,7 +293,7 @@ public class Factory {
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case GREEN_ROCK:
-			name = "hill monster";
+			name = "green hill monster";
 			color = biome.background().darker();
 			candidates.addAll(world.screensOfType(Tile.GREEN_ROCK));
 			if (candidates.size() == 0)
@@ -301,7 +301,7 @@ public class Factory {
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case BROWN_ROCK:
-			name = "mountain monster";
+			name = "brown mountain monster";
 			color = biome.background().darker();
 			candidates.addAll(world.screensOfType(Tile.BROWN_ROCK));
 			if (candidates.size() == 0)
@@ -309,7 +309,7 @@ public class Factory {
 			candidate = candidates.get((int)(Math.random() * candidates.size()));
 			break;
 		case WHITE_ROCK:
-			name = "glacier monster";
+			name = "white mountain monster";
 			color = biome.background().darker();
 			candidates.addAll(world.screensOfType(Tile.WHITE_ROCK));
 			if (candidates.size() == 0)

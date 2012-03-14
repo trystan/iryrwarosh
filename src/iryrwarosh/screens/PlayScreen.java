@@ -248,7 +248,7 @@ public class PlayScreen implements Screen, Handler {
 		if (Math.random() < 0.25){
 			factory.goblin(world);
 		} else {
-			Tile[] biomes = { Tile.GREEN_TREE1, Tile.BROWN_TREE1, Tile.WHITE_TREE1, 
+			Tile[] biomes = { Tile.GREEN_TREE1, Tile.BROWN_TREE1, Tile.WHITE_TREE1, Tile.GREEN_TREE1, Tile.BROWN_TREE1, 
 				Tile.GREEN_ROCK, Tile.BROWN_ROCK, Tile.WHITE_ROCK, Tile.DESERT_SAND1, Tile.WATER1 };
 			Tile biome = biomes[(int)(Math.random() * biomes.length)];
 			factory.monster(world, biome);

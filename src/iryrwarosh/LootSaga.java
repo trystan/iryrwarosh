@@ -11,9 +11,18 @@ public class LootSaga implements Handler {
 		
 		if (Moved.class.isAssignableFrom(message.getClass()))
 			handle((Moved)message);
+		
+		if (Jumped.class.isAssignableFrom(message.getClass()))
+			handle((Jumped)message);
 	}
 	
 	public void handle(Moved message){
+		Item item = message.world.item(message.creature.position.x, message.creature.position.y);
+		if (item != null)
+			item.onCollide(message.world, message.creature);
+	}
+	
+	public void handle(Jumped message){
 		Item item = message.world.item(message.creature.position.x, message.creature.position.y);
 		if (item != null)
 			item.onCollide(message.world, message.creature);

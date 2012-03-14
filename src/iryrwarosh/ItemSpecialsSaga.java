@@ -47,7 +47,7 @@ public class ItemSpecialsSaga implements Handler {
 	}
 
 	private void checkCounterAttack(Attacked m) {
-		if (m.attacked.hasTrait(Trait.COUNTER_ATTACK) && Math.random() < 0.5) {
+		if (m.attacked.hasTrait(Trait.COUNTER_ATTACK) && m.attacked.hearts() > 0 && Math.random() < 0.5) {
 			m.attacked.attack(m.world, m.attacker, "with a counter attack");
 		}
 	}

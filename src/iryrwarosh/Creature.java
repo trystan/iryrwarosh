@@ -43,6 +43,8 @@ public class Creature {
 
 	private int lastWanderX;
 	private int lastWanderY;
+	private boolean hasMovedThisTurn = false;
+	private boolean hasAttackedThisTurn = false;
 	private boolean hasDoubleMovedThisTurn = false;
 	private boolean hasDoubleAttackedThisTurn = false;
 	
@@ -60,7 +62,7 @@ public class Creature {
 		String text = "";
 		
 		if (hasTrait(Trait.MYSTERIOUS))
-			text += ", ???";
+			text += ", mysterious";
 		else {
 			for (Trait trait : traits)
 				text += ", " + trait.description();
@@ -134,12 +136,18 @@ public class Creature {
 			loseRupees(world, 1);
 		}
 		
-		if (didJump)
+		if (didJump) {
+			hasMovedThisTurn = true;
 			MessageBus.publish(new Jumped(world, this));
+		}
 	}
 	
 	public void moveBy(World world, int x, int y) {
 		if (x==0 && y==0)
+			return;
+		
+		if (hasDoubleMovedThisTurn 
+				|| hasMovedThisTurn && !hasTrait(Trait.DOUBLE_MOVE))
 			return;
 		
 		if (hasTrait(Trait.TERRITORIAL)
@@ -157,6 +165,7 @@ public class Creature {
 				position.y += y;
 				lastMovedDirection.x = x;
 				lastMovedDirection.y = y;
+				hasMovedThisTurn = true;
 				MessageBus.publish(new Moved(world, this));
 			} else {
 				lastWanderX = (int)(Math.random() * 3) - 1;
@@ -178,24 +187,33 @@ public class Creature {
 	}
 	
 	public void attack(World world, Creature other, String specialType){
-		if (other.hearts < 1)
+		if (other.hearts < 1 || hearts < 1)
 			return;
+		
+		if (hasDoubleAttackedThisTurn
+				|| hasAttackedThisTurn && !hasTrait(Trait.DOUBLE_ATTACK))
+			return;
+			
+		hasAttackedThisTurn = true;
 		
 		if (hasTrait(Trait.DEFLECT_MELEE) && Math.random() < 0.33){
 			MessageBus.publish(new DeflectedMelee(world, other, this));
 			return;
 		}
-		
-		other.loseHearts(world, this, hasTrait(Trait.STRONG_ATTACK) ? 2 : 1, specialType, "You were slain by a " + name());
 
 		if (other.hasTrait(Trait.SPIKED)){
 			MessageBus.publish(new HitSpikes(world, this, other));
 			loseHearts(world, other, 1, null, "You impaled youself on the spikes of a " + other.name());
+			
+			if (hearts < 1)
+				return;
 		}
-
+			
 		if (hasTrait(Trait.SLOWING_ATTACK) && other.hearts > 0)
 			reduceEvasion(world, other);
 		
+		other.loseHearts(world, this, hasTrait(Trait.STRONG_ATTACK) ? 2 : 1, specialType, "You were slain by a " + name());
+
 		if (hasTrait(Trait.POISONOUS) && other.hearts > 0)
 			poison(world, other);
 		
@@ -274,6 +292,8 @@ public class Creature {
 	private int projectileCooldown;
 	
 	public void update(World world){
+		hasMovedThisTurn = false;
+		hasAttackedThisTurn = false;
 		hasDoubleAttackedThisTurn = false;
 		hasDoubleMovedThisTurn = false;
 		
@@ -450,7 +470,7 @@ public class Creature {
 	public void loseHearts(World world, Creature attacker, int amount, String specialType, String causeOfDeath) {
 		if (amount > 1 && hasTrait(Trait.EXTRA_DEFENSE)){
 			amount--;
-			MessageBus.publish(new BlockSomeDamage(world, this, rightHand));
+			MessageBus.publish(new BlockSomeDamage(world, attacker, this, rightHand));
 		}
 		
 		hearts -= amount;
