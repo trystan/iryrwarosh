@@ -35,12 +35,10 @@ public class FameHandler implements Handler {
 			return;
 		
 		if (message.attacked.glyph() == '@')
-			gainFame(message.attacker, 20);
+			gainFame(message.attacker, 15);
 		else if (message.attacked.isMiniboss())
-			gainFame(message.attacker, 10);
+			gainFame(message.attacker, 5);
 		else if (message.attacked.glyph() == 'M')
-			gainFame(message.attacker, 2);
-		else
 			gainFame(message.attacker, 1);
 	}
 
@@ -48,7 +46,7 @@ public class FameHandler implements Handler {
 		if (message.creature.glyph() != '@')
 			return;
 		
-		gainFame(message.creature, 2);
+		gainFame(message.creature, 1);
 	}
 	
 	private void gainFame(Creature creature, int amount){

@@ -258,6 +258,9 @@ public class PlayScreen implements Screen, Handler {
 		if (player.hearts() < 1) {
 			MessageBus.unsubscribe(this);
 			return new DeadScreen(this, player.causeOfDeath());
+		} else if (fameHandler.getFame(player) > 99){
+			MessageBus.unsubscribe(this);
+			return new VictoryScreen(this);
 		}
 		
 		return this;

@@ -584,7 +584,7 @@ public class Factory {
 	}
 
 	public Item ringOfEvasion() {
-		Item item = new Item("ringOfEvasion", '=', Tile.hsv(90, 33, 66), +4, "Makes you much more evasive.");
+		Item item = new Item("ring of evasion", '=', Tile.hsv(90, 33, 66), +4, "Makes you much more evasive.");
 		return item;
 	}
 }
