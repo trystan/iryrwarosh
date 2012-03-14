@@ -41,6 +41,10 @@ public class Creature {
 	private int rupees;
 	public int rupees() { return rupees; }
 
+	private boolean isMiniboss;
+	public boolean isMiniboss() { return isMiniboss; }
+	public void setIsMiniboss(boolean value) { isMiniboss = value; }
+	
 	private int lastWanderX;
 	private int lastWanderY;
 	private boolean hasMovedThisTurn = false;
@@ -56,6 +60,10 @@ public class Creature {
 		return traits.contains(trait)
 				|| leftHand != null && leftHand.hasTrait(trait)
 				|| rightHand != null && rightHand.hasTrait(trait);
+	}
+	
+	public boolean isPlayer(){
+		return name.equals("player");
 	}
 	
 	public String description(){
@@ -183,7 +191,10 @@ public class Creature {
 	}
 	
 	public boolean isFriendlyTo(Creature other){
-		return other.glyph == this.glyph;
+		if (glyph == '@' && other.glyph == '@')
+			return this == other;
+		else
+			return other.glyph == this.glyph;
 	}
 	
 	public void attack(World world, Creature other, String specialType){
@@ -500,7 +511,7 @@ public class Creature {
 	}
 	
 	public void loseRupees(World world, int amount) {
-		if (glyph != '@') // Only the player needs to pay for things
+		if (!isPlayer())
 			return;
 		
 		rupees -= amount;
@@ -541,5 +552,14 @@ public class Creature {
 	
 	public boolean canHear(Creature other) {
 		return position.distanceTo(other.position) < 12;
+	}
+	
+	public boolean isInterestedIn(Creature other) {
+		if (other == this)
+			return true;
+		else if (isPlayer())
+			return other.glyph == '@';
+		else
+			return false;
 	}
 }

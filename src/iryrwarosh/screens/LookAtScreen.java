@@ -45,6 +45,9 @@ public class LookAtScreen implements Screen {
 		else
 			text = tile.description();
 
+		if (text.length() > 78)
+			text = text.substring(0, 75) + "...";
+		
 		terminal.write(text, 1, 23);
 	}
 

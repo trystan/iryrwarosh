@@ -5,7 +5,7 @@ public class ReducedEvasion extends Message {
 	public Creature attacked;
 	
 	public ReducedEvasion(World world, Creature attacker, Creature attacked){
-		super(world, "The " + attacker.name() + "'s attack reduced the " + attacked.name() + " ability to evade");
+		super(world, "The " + attacker.name() + "'s attack reduced the " + attacked.name() + "'s ability to evade");
 		this.attacker = attacker;
 		this.attacked = attacked;
 	}

@@ -110,6 +110,9 @@ public class ChooseStartingItemsScreen implements Screen {
 		
 		for (int i = 0; i < 100; i++)
 			factory.goblin(world);
+
+		for (int i = 0; i < 4; i++)
+			factory.rival(world, "rival");
 		
 		for (Tile biome : new Tile[]{ 
 				Tile.GREEN_TREE1, Tile.BROWN_TREE1, 

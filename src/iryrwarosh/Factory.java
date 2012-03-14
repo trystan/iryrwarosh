@@ -225,6 +225,8 @@ public class Factory {
 		for (Trait trait : traits)
 			boss.addTrait(trait);
 		
+		boss.setIsMiniboss(true);
+		
 		world.addToScreen(boss, sx, sy);
 		
 		if (Math.random() < 0.25)
@@ -375,6 +377,41 @@ public class Factory {
 		zora.addTrait(Trait.ROCK_SPITTER);
 		world.add(zora);
 		return zora;
+	}
+
+	public Creature rival(World world, String name){
+		int hue = (int)(Math.random() * 360);
+		
+		Creature rival = new Creature(name, '@', Tile.hsv(hue, 75, 75), 10){
+			public void update(World world){
+				super.update(world);
+				wander(world);
+			}
+		};
+		
+		rival.addTrait(Trait.WALKER);
+		rival.addTrait(Trait.HUNTER);
+		rival.addTrait(Trait.REGENERATES);
+		
+		Trait trait = Trait.getRandom();
+		while (rival.hasTrait(trait)){
+			trait = Trait.getRandom();
+		}
+		rival.addTrait(trait);
+		
+		world.add(rival);
+		
+		rival.swapRightHand(world, weapon());
+		
+		if (minibossLoot.size() > 0) {
+			rival.setLoot(minibossLoot.remove(0));
+			rival.swapLeftHand(world, rival.loot());
+		} else if (Math.random() < 0.5)
+			rival.setLoot(heartIncrease());
+		else
+			rival.setLoot(bigMoney());
+		
+		return rival;
 	}
 
 	public Item heavyArmor() {

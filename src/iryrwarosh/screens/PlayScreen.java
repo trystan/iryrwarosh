@@ -154,8 +154,13 @@ public class PlayScreen implements Screen, Handler {
 	private void displayMessages(AsciiPanel terminal) {
 		int i = terminal.getHeightInCharacters() - messages.size();
 		for (Message m : messages)
-			terminal.writeCenter(m.text().replace("The player", "You").replace("the player", "you").replace("player", "you"), i++);
+			terminal.writeCenter(clean(m.text()), i++);
 		messages.clear();
+	}
+	
+	private String clean(String text){
+		return text.replace("The player's", "Your").replace("the player's", "your").replace("player's", "your")
+			       .replace("The player", "You").replace("the player", "you").replace("player", "you");
 	}
 	
 	public int getScrollX() {

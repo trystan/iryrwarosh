@@ -12,7 +12,7 @@ public class MapExplorationHandler implements Handler {
 	}
 
 	public void handle(Moved message) {
-		if (message.creature.glyph() != '@')
+		if (!message.creature.isPlayer())
 			return;
 
 		explored(message.world, message.creature.position);
