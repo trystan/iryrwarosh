@@ -32,6 +32,7 @@ public class ChooseStartingItemsScreen implements Screen {
 			factory.firstAidKit(),
 			factory.crystalBall(),
 			factory.spellBook(),
+			factory.jumpingBoots(),
 			factory.heavyArmor(),
 		};
 		

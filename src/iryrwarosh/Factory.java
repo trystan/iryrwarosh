@@ -2,6 +2,7 @@ package iryrwarosh;
 
 import iryrwarosh.screens.CastAdvancedSpellScreen;
 import iryrwarosh.screens.CastSpellScreen;
+import iryrwarosh.screens.JumpScreen;
 import iryrwarosh.screens.Screen;
 import iryrwarosh.screens.ThrowItemScreen;
 
@@ -477,5 +478,14 @@ public class Factory {
 				collider.gainRupees(50);
 			}
 		};
+	}
+
+	public Item jumpingBoots() {
+		Item item = new Item("jumping boots", '[', Tile.hsv(180, 50, 50), "Makes you more evasive and can be used to jump."){
+			public Screen use(Screen screen, World world, Creature owner){
+				return new JumpScreen(screen, world, owner);
+			}
+		};
+		return item;
 	}
 }

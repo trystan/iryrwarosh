@@ -46,7 +46,6 @@ public class PlayScreen implements Screen, Handler {
 	}
 
 	private void displayHud(AsciiPanel terminal) {
-		player.gainRupees(200);
 		Color bg = Tile.hsv(30, 30, 15);
 		terminal.clear(' ', 0, 0, 80, 1, Tile.hsv(0, 0, 15), bg);
 		
