@@ -142,6 +142,9 @@ public class Creature {
 				&& ((position.x+x) / 19 != homeScreenPosition.x || (position.y+y) / 9 != homeScreenPosition.y))
 			return;
 		
+		if (hasTrait(Trait.JUMPER) && !hasTrait(Trait.TERRITORIAL) && Math.random() < 0.25) 
+			jumpBy(world, x, y);
+		
 		Creature other = world.creature(position.x+x, position.y+y);
 		
 		if (other == null) {
