@@ -4,6 +4,7 @@ import iryrwarosh.screens.CastAdvancedSpellScreen;
 import iryrwarosh.screens.CastSpellScreen;
 import iryrwarosh.screens.JumpScreen;
 import iryrwarosh.screens.Screen;
+import iryrwarosh.screens.SneakScreen;
 import iryrwarosh.screens.ThrowItemScreen;
 
 import java.awt.Color;
@@ -26,6 +27,7 @@ public class Factory {
 		minibossLoot.add(this.magicCarpet());
 		minibossLoot.add(this.advancedSpellBook());
 		minibossLoot.add(this.ringOfEvasion());
+		minibossLoot.add(this.darkCloak());
 		minibossLoot.add(this.evasionPotion());
 		minibossLoot.add(this.evasionPotion());
 		minibossLoot.add(this.evasionPotion());
@@ -254,7 +256,6 @@ public class Factory {
 		String name = first[(int)(Math.random() * first.length)]
 		            + " " + second[(int)(Math.random() * second.length)];
 		
-		System.out.println(name);
 		return name;
 	}
 	
@@ -599,6 +600,21 @@ public class Factory {
 
 	public Item ringOfEvasion() {
 		Item item = new Item("ring of evasion", '=', Tile.hsv(90, 33, 66), +4, "Makes you much more evasive.");
+		return item;
+	}
+	
+	public Item darkCloak() {
+		Item item = new Item("dark cloak", '[', Tile.hsv(180, 5, 25), +2, "Makes you harder to hit and see. Can be used to sneak."){
+			public Screen use(Screen screen, World world, Creature owner){
+				if (owner.rupees() < 5){
+					MessageBus.publish(new Note(world, owner, "You need at least 5 rupees to sneak."));
+					return screen;
+				}
+				
+				return new SneakScreen(screen, world, owner);
+			}
+		};
+		item.addTrait(Trait.CAMOUFLAGED);
 		return item;
 	}
 }
