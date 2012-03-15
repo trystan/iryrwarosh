@@ -59,7 +59,15 @@ public class World {
     	
     	List<Projectile> stillFlying = new ArrayList<Projectile>();
     	for (Projectile p : projectiles){
-    		p.update(this);
+    		p.checkForCollision(this);
+    		if (!p.isDone())
+    			stillFlying.add(p);
+    	}
+    	projectiles = stillFlying;
+    	
+    	stillFlying = new ArrayList<Projectile>();
+    	for (Projectile p : projectiles){
+    		p.moveAndCheckForCollision(this);
     		if (!p.isDone())
     			stillFlying.add(p);
     	}
@@ -70,15 +78,6 @@ public class World {
     	for (Creature c : toUpdate)
     		if (c.hearts() > 0)
     			c.update(this);
-    	
-    	stillFlying = new ArrayList<Projectile>();
-    	for (Projectile p : projectiles){
-    		p.move(this);
-    		if (!p.isDone())
-    			stillFlying.add(p);
-    	}
-    	projectiles = stillFlying;
-    	
     	
     	List<Creature> stillAlive = new ArrayList<Creature>();
     	

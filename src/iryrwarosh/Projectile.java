@@ -32,7 +32,7 @@ public class Projectile {
 		this.damage = damage;
 	}
 	
-	public void move(World world){
+	public void moveAndCheckForCollision(World world){
 		position.x += velocity.x;
 		position.y += velocity.y;
 		
@@ -44,10 +44,10 @@ public class Projectile {
 			return;
 		}
 		
-		update(world);
+		checkForCollision(world);
 	}
 	
-	public void update(World world){
+	public void checkForCollision(World world){
 		Creature creature = world.creature(position.x, position.y);
 		
 		if (creature == null || origin.isFriendlyTo(creature))
