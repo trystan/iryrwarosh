@@ -50,7 +50,7 @@ public class Projectile {
 	public void checkForCollision(World world){
 		Creature creature = world.creature(position.x, position.y);
 		
-		if (creature == null || origin.isFriendlyTo(creature))
+		if (creature == null || origin.isFriendlyTo(creature) || creature.hearts() < 1)
 			return;
 		
 		if (creature.rightHand() != null && creature.hasTrait(Trait.DEFLECT_RANGED) && Math.random() < 0.5){

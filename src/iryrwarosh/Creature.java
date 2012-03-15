@@ -479,6 +479,9 @@ public class Creature {
 	}
 
 	public void loseHearts(World world, Creature attacker, int amount, String specialType, String causeOfDeath) {
+		if (hearts < 1)
+			return;
+		
 		if (amount > 1 && hasTrait(Trait.EXTRA_DEFENSE)){
 			amount--;
 			MessageBus.publish(new BlockSomeDamage(world, attacker, this, rightHand));
