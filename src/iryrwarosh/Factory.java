@@ -470,6 +470,9 @@ public class Factory {
 				}
 				
 				Point dir = owner.lastMovedDirection();
+				if (dir.x == 0 && dir.y == 0)
+					dir = new Point(0, 1);
+				
 				char glyph = 9;
 				if (dir.x == -1 && dir.y == -1 || dir.x == 1 && dir.y == 1)
 					glyph = '\\';
