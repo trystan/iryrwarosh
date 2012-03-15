@@ -26,8 +26,15 @@ public class FameHandler implements Handler {
 	public void handle(Message message) {
 		if (Killed.class.isAssignableFrom(message.getClass()))
 			handle((Killed)message);
+		
 		if (ExploredNewLocation.class.isAssignableFrom(message.getClass()))
 			handle((ExploredNewLocation)message);
+		
+		if (ExploredNewBiome.class.isAssignableFrom(message.getClass()))
+			handle((ExploredNewBiome)message);
+		
+		if (DiscoveredLostArtifact.class.isAssignableFrom(message.getClass()))
+			handle((DiscoveredLostArtifact)message); 
 	}
 
 	private void handle(Killed message){
@@ -42,11 +49,25 @@ public class FameHandler implements Handler {
 			gainFame(message.attacker, 1);
 	}
 
+	private void handle(ExploredNewBiome message){
+		if (message.creature.glyph() != '@')
+			return;
+		
+		gainFame(message.creature, 8);
+	}
+	
 	private void handle(ExploredNewLocation message){
 		if (message.creature.glyph() != '@')
 			return;
 		
-		gainFame(message.creature, 1);
+		gainFame(message.creature, 2);
+	}
+	
+	private void handle(DiscoveredLostArtifact message){
+		if (message.creature.glyph() != '@')
+			return;
+		
+		gainFame(message.creature, 15);
 	}
 	
 	private void gainFame(Creature creature, int amount){

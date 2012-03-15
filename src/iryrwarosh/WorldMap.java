@@ -65,4 +65,11 @@ public class WorldMap {
 				exploration[p.x][p.y] = 1; 
 		}
 	}
+
+	public Tile biome(int sx, int sy) {
+		if (screens[sx][sy].defaultGround == Tile.DESERT_SAND1)
+			return Tile.DESERT_SAND1;
+		else
+			return screens[sx][sy].defaultWall;
+	}
 }

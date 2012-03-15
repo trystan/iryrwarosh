@@ -33,8 +33,7 @@ public class Factory {
 		minibossLoot.add(this.rupeeMachine());
 		minibossLoot.add(this.rupeeAmulet());
 		minibossLoot.add(this.evasionPotion());
-		minibossLoot.add(this.evasionPotion());
-		minibossLoot.add(this.evasionPotion());
+		minibossLoot.add(this.lostArtifact());
 		Collections.shuffle(minibossLoot);
 	}
 	
@@ -243,17 +242,17 @@ public class Factory {
 		else if (Math.random() < 0.5)
 			boss.setLoot(heartIncrease());
 		else
-			boss.setLoot(bigMoney());
+			boss.setLoot(lostArtifact());
 		
 		return boss;
 	}
 
 	private String makeMinibossName(List<Trait> traits) {
 		
-		String[] first = { "giant", "ugly", "malformed", "putrid", "rotten", "infested", "putrid", "crazed" };
+		String[] first = { "giant", "ugly", "malformed", "putrid", "rotten", "infested", "putrid", "crazed", "wild" };
 
 		String[] second = { "spider", "squid", "jellyfish", "bird", "urchin", "demon", "scorpion", "insect", "blob",
-				"wolf", "thing", "monster" };
+				"wolf", "lion", "serpent", "monster" };
 		
 		String name = first[(int)(Math.random() * first.length)]
 		            + " " + second[(int)(Math.random() * second.length)];
@@ -613,6 +612,25 @@ public class Factory {
 				
 				world.removeItem(collider.position.x, collider.position.y);
 				collider.modifyEvasion(1);
+			}
+		};
+	}
+
+	public Item lostArtifact(){
+		String[] first = { "ancient", "historic", "old", "lost", "antique", "famous", "missing" };
+		String[] second = { "heirloom", "artifact", "treasure", "item" };
+		
+		String name = first[(int)(Math.random() * first.length)]
+		            + " " + second[(int)(Math.random() * second.length)];
+		
+		int hue = (int)(Math.random() * 360);
+		return new Item(name, '?', Tile.hsv(hue, 33, 66), "A " + name + " from the past."){
+			public void onCollide(World world, Creature collider){
+				if (collider.glyph() != '@')
+					return; // only the player should be able to get these
+				
+				world.removeItem(collider.position.x, collider.position.y);
+				MessageBus.publish(new DiscoveredLostArtifact(world, collider, this));
 			}
 		};
 	}

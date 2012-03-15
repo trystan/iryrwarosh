@@ -182,7 +182,8 @@ public class PlayScreen implements Screen, Handler {
 	}
 	
 	private String clean(String text){
-		return text.replace("The player's", "Your").replace("the player's", "your").replace("player's", "your")
+		return text.replace("player has", "player have")
+		           .replace("The player's", "Your").replace("the player's", "your").replace("player's", "your")
 			       .replace("The player", "You").replace("the player", "you").replace("player", "you");
 	}
 	
