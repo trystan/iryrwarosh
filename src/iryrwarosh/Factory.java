@@ -498,7 +498,7 @@ public class Factory {
 					MessageBus.publish(new Note(world, owner, "You need more than 1 rupee or heart to dive underwater."));
 					return screen;
 				} if (!world.tile(owner.position.x, owner.position.y).isSwimmable()){
-					MessageBus.publish(new Note(world, owner, "You must he ob a bridge or water to dive underwater."));
+					MessageBus.publish(new Note(world, owner, "You must be on a bridge or water to dive underwater."));
 					return screen;
 				}
 				
