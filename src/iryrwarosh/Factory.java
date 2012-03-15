@@ -6,7 +6,6 @@ import iryrwarosh.screens.DiveScreen;
 import iryrwarosh.screens.JumpScreen;
 import iryrwarosh.screens.Screen;
 import iryrwarosh.screens.SneakScreen;
-import iryrwarosh.screens.ThrowItemScreen;
 import iryrwarosh.screens.WorldMapScreen;
 
 import java.awt.Color;
@@ -172,8 +171,25 @@ public class Factory {
 				if (owner.rupees() + owner.hearts() <= 2) {
 					MessageBus.publish(new Note(world, owner, "You need more than 2 rupees or hearts to throw a spear."));
 					return screen;
-				} else
-					return new ThrowItemScreen(screen, world, owner, this);
+				}
+
+				Point dir = owner.lastMovedDirection();
+				if (dir.x == 0 && dir.y == 0)
+					dir = new Point(0, 1);
+				
+				char glyph = 9;
+				if (dir.x == -1 && dir.y == -1 || dir.x == 1 && dir.y == 1)
+					glyph = '\\';
+				else if (dir.x == 1 && dir.y == -1 || dir.x == -1 && dir.y == 1)
+					glyph = '/';
+				else if (dir.x == 0 && (dir.y == -1 || dir.y == 1))
+					glyph = 179;
+				else if ((dir.x == -1 || dir.x == 1) && dir.y == 0)
+					glyph = 196;
+				
+				world.add(new Projectile("arrow", owner, glyph, AsciiPanel.white, 1, owner.position.copy(), owner.lastMovedDirection()));
+				owner.loseRupees(world, 1);
+				return screen;
 			}
 		};
 		item.addTrait(Trait.REACH_ATTACK);

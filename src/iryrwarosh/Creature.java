@@ -168,11 +168,11 @@ public class Creature {
 		Creature other = world.creature(position.x+x, position.y+y);
 		
 		if (other == null) {
+			lastMovedDirection.x = x;
+			lastMovedDirection.y = y;
 			if (canEnter(world.tile(position.x+x, position.y+y))){
 				position.x += x;
 				position.y += y;
-				lastMovedDirection.x = x;
-				lastMovedDirection.y = y;
 				hasMovedThisTurn = true;
 				MessageBus.publish(new Moved(world, this));
 			} else {
