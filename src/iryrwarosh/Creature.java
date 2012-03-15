@@ -176,11 +176,13 @@ public class Creature {
 				hasMovedThisTurn = true;
 				MessageBus.publish(new Moved(world, this));
 			} else {
-				lastWanderX = -lastWanderX;
-				lastWanderY = -lastWanderY;
+				lastWanderX = (int)(Math.random() * 3) - 1;
+				lastWanderY = (int)(Math.random() * 3) - 1;
 				MessageBus.publish(new BumpedIntoObsticle(world, this, position.x+x, position.y+y));
 			}
 		} else if (isFriendlyTo(other)) {
+			lastWanderX = (int)(Math.random() * 3) - 1;
+			lastWanderY = (int)(Math.random() * 3) - 1;
 			return;
 		} else if (hasDoubleAttackedThisTurn == false 
 				&& other.evadeCheck(world)){

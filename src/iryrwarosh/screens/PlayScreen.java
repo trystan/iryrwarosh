@@ -91,7 +91,11 @@ public class PlayScreen implements Screen, Handler {
 		if (people.size() == 0)
 			return;
 		
-		terminal.setCursorPosition(69, terminal.getCursorY() + 1);
+		if (getScrollX() == world.width() - screenWidth && getScrollY() == 0)
+			terminal.setCursorPosition(69, terminal.getHeightInCharacters() - 7);
+		else
+			terminal.setCursorPosition(69, terminal.getCursorY() + 1);
+		
 		terminal.write("- fame -", AsciiPanel.brightGreen, bg);
 		terminal.setCursorPosition(69, terminal.getCursorY() + 1);
 		for (Creature famousPerson : people){
