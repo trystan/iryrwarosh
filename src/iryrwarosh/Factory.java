@@ -44,7 +44,7 @@ public class Factory {
 			
 			List<Trait> traits = new ArrayList<Trait>();
 			
-			switch ((int)(Math.random() * 8)){
+			switch ((int)(Math.random() * 4)){
 			case 0: traits.add(Trait.POISONOUS); break;
 			case 1: traits.add(Trait.AGGRESSIVE); break;
 			case 2: traits.add(Trait.DOUBLE_ATTACK); break;
@@ -417,10 +417,11 @@ public class Factory {
 	public Creature rival(World world, String name){
 		int hue = (int)(Math.random() * 360);
 		
+		final RivalAi ai = new RivalAi();
 		Creature rival = new Creature(name, '@', Tile.hsv(hue, 80, 80), 10){
 			public void update(World world){
 				super.update(world);
-				wander(world);
+				ai.update(world, this);
 			}
 		};
 		
@@ -456,7 +457,7 @@ public class Factory {
 	}
 
 	public Item shield() {
-		Item item = new Item("shield", '[', AsciiPanel.yellow, -1, "Deflects projectiles half of the time.");
+		Item item = new Item("shield", '[', AsciiPanel.yellow, -1, "Deflects projectiles.");
 		item.addTrait(Trait.DEFLECT_RANGED);
 		return item;
 	}

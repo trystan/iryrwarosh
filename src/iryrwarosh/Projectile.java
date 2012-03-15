@@ -53,7 +53,7 @@ public class Projectile {
 		if (creature == null || origin.isFriendlyTo(creature) || creature.hearts() < 1)
 			return;
 		
-		if (creature.rightHand() != null && creature.hasTrait(Trait.DEFLECT_RANGED) && Math.random() < 0.5){
+		if (creature.hasTrait(Trait.DEFLECT_RANGED)){
 			MessageBus.publish(new DeflectRanged(world, creature, this));
 		} else {
 			creature.loseHearts(world, origin, damage, "from a distance", "You were slain by the " + name() + " from a " + origin.name());
