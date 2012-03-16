@@ -612,11 +612,12 @@ public class Factory {
 				world.removeItem(collider.position.x, collider.position.y);
 			}
 		};
+		item.collectableValue(15);
 		return item;
 	}
 	
 	public Item bigMoney(){
-		return new Item("rupees", 4, Tile.hsv(210, 25, 90), "Rupees are used for special actions."){
+		Item item = new Item("rupees", 4, Tile.hsv(210, 25, 90), "Rupees are used for special actions."){
 			public void onCollide(World world, Creature collider){
 				if (collider.glyph() != '@')
 					return; // only the player should be able to get these
@@ -625,10 +626,12 @@ public class Factory {
 				collider.gainRupees(50);
 			}
 		};
+		item.collectableValue(5);
+		return item;
 	}
 
 	public Item evasionPotion(){
-		return new Item("evasion potion", '!', Tile.hsv(90, 33, 66), "Permanently boost your evasion."){
+		Item item = new Item("evasion potion", '!', Tile.hsv(90, 33, 66), "Permanently boost your evasion."){
 			public void onCollide(World world, Creature collider){
 				if (collider.glyph() != '@')
 					return; // only the player should be able to get these
@@ -637,6 +640,8 @@ public class Factory {
 				collider.modifyEvasion(1);
 			}
 		};
+		item.collectableValue(5);
+		return item;
 	}
 
 	public Item lostArtifact(){
@@ -647,7 +652,7 @@ public class Factory {
 		            + " " + second[(int)(Math.random() * second.length)];
 		
 		int hue = (int)(Math.random() * 360);
-		return new Item(name, '?', Tile.hsv(hue, 33, 66), "A " + name + " from the past."){
+		Item item = new Item(name, '?', Tile.hsv(hue, 33, 66), "A " + name + " from the past."){
 			public void onCollide(World world, Creature collider){
 				if (collider.glyph() != '@')
 					return; // only the player should be able to get these
@@ -656,6 +661,8 @@ public class Factory {
 				MessageBus.publish(new DiscoveredLostArtifact(world, collider, this));
 			}
 		};
+		item.collectableValue(10);
+		return item;
 	}
 	
 	public Item jumpingBoots() {

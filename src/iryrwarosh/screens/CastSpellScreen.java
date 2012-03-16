@@ -32,7 +32,7 @@ public class CastSpellScreen implements Screen {
 		terminal.write(" [2] Blink         cost  5", 1, 22)
 				.write((char)4, Tile.hsv(60, 25, 75));
 		terminal.write(" [3] Fireblast     cost 25", 1, 23)
-				.write((char)3, AsciiPanel.red);
+				.write((char)4, Tile.hsv(60, 25, 75));
 	}
 
 	@Override

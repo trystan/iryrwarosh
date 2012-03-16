@@ -192,4 +192,36 @@ public class World {
 	public void add(Projectile projectile) {
 		projectiles.add(projectile);
 	}
+	
+	public List<Creature> creaturesNear(Creature creature){
+		List<Creature> near = new ArrayList<Creature>();
+		
+		for (Creature other : creatures){
+			if (other == creature)
+				continue;
+			
+			if (creature.canSee(other))
+				near.add(other);
+		}
+		
+		return near;
+	}
+
+	public List<Pair<Item,Point>> itemsNear(Creature creature){
+		List<Pair<Item,Point>> near = new ArrayList<Pair<Item,Point>>();
+		
+		for (int ox = -9; ox < 10; ox++)
+		for (int oy = -9; oy < 10; oy++){
+			int x = creature.position.x + ox;
+			int y = creature.position.y + oy;
+			
+			if (x < 0 || y < 0 || x >= items.length || y >= items[0].length)
+				continue;
+			
+			if (items[x][y] != null)
+				near.add(new Pair<Item,Point>(items[x][y], new Point(x,y)));
+		}
+		
+		return near;
+	}
 }

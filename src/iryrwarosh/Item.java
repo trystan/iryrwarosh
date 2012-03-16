@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Item {
+	private int collectableValue;
+	public int collectableValue() { return collectableValue; }
+	public void collectableValue(int value) { collectableValue = value; }
+	
 	private String name;
 	public String name() { return name; }
 
