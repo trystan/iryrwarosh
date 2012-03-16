@@ -5,7 +5,7 @@ public class DeflectedMelee extends Message {
 	public Creature attacked;
 	
 	public DeflectedMelee(World world, Creature attacker, Creature attacked){
-		super(world, "The " + attacked.name() + " deflects the attack.");
+		super(world, addArticle("The", attacked.name()) + " deflects the attack.");
 		this.attacker = attacker;
 		this.attacked = attacked;
 	}

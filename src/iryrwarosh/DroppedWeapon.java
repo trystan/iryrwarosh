@@ -5,7 +5,7 @@ public class DroppedWeapon extends Message {
 	public Item weapon;
 	
 	public DroppedWeapon(World world, Creature creature, Item weapon){
-		super(world, "The " + creature.name() + " dropped " + weapon.name());
+		super(world, addArticle("The", creature.name()) + " dropped " + weapon.name());
 		this.creature = creature;
 		this.weapon = weapon;
 	}

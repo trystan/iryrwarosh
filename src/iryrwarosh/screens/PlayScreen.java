@@ -35,12 +35,15 @@ public class PlayScreen implements Screen, Handler {
 	
 	private List<Message> messages = new ArrayList<Message>();
 	
+	private MessageLogScreen messageLogScreen;
+	
 	public PlayScreen(World world, Factory factory, Creature player){
 		MessageBus.subscribe(this);
 		this.fameHandler = new FameHandler();
 		this.world = world;
 		this.factory = factory;
 		this.player = player;
+		this.messageLogScreen = new MessageLogScreen(this);
 	}
 	
 	@Override
@@ -258,6 +261,9 @@ public class PlayScreen implements Screen, Handler {
 		case KeyEvent.VK_Q:
 		case KeyEvent.VK_ESCAPE:
 			return new ConfirmationScreen(this, new ChooseStartingItemsScreen(), "Are you sure you'd like to quit?");
+		case KeyEvent.VK_QUOTEDBL:
+		case KeyEvent.VK_QUOTE:
+			return messageLogScreen;
 		default:
 			return this;
 		}
@@ -284,8 +290,10 @@ public class PlayScreen implements Screen, Handler {
 	public void handle(Message message) {
 		fameHandler.handle(message);
 		
-		if (message.involves(player) && !Moved.class.isAssignableFrom(message.getClass()))
+		if (message.involves(player) && !Moved.class.isAssignableFrom(message.getClass())){
 			messages.add(message);
+			messageLogScreen.record(message);
+		}
 		
 		if (Killed.class.isAssignableFrom(message.getClass()))
 			addRandomBadGuy();

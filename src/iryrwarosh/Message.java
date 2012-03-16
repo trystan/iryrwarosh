@@ -12,4 +12,11 @@ public abstract class Message {
 	}
 
 	abstract public boolean involves(Creature player);
+
+	protected static String addArticle(String article, String word){
+		if (Character.isUpperCase(word.charAt(0)))
+			return word;
+		else
+			return article + " " + word;
+	}
 }

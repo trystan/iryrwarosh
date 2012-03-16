@@ -5,7 +5,7 @@ public class DiscoveredLostArtifact extends Message {
 	public Item item;
 	
 	public DiscoveredLostArtifact(World world, Creature creature, Item item) {
-		super(world, creature.name() + " has discovered a lost treasure: " + item.name());
+		super(world, addArticle("The", creature.name()) + " has discovered a lost treasure: " + item.name());
 		this.creature = creature;
 		this.item = item;
 	}
@@ -14,5 +14,4 @@ public class DiscoveredLostArtifact extends Message {
 	public boolean involves(Creature player) {
 		return false;
 	}
-
 }

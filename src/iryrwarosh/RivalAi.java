@@ -1,13 +1,21 @@
 package iryrwarosh;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RivalAi {
 	private int[][] baseValue;
 	
-	private Trait[] scaryTraits = { Trait.POISONOUS, Trait.AGGRESSIVE, Trait.REACH_ATTACK, 
-			Trait.DOUBLE_ATTACK, Trait.DOUBLE_MOVE, Trait.HUNTER };
+	protected List<Trait> scaryTraits;
+	private double explorationPercent;
+	
+	public RivalAi(double explorationPercent){
+		scaryTraits = Arrays.asList( Trait.POISONOUS, Trait.AGGRESSIVE, Trait.REACH_ATTACK, 
+			Trait.DOUBLE_ATTACK, Trait.DOUBLE_MOVE, Trait.HUNTER);
+		
+		this.explorationPercent = explorationPercent;
+	}
 	
 	public void update(World world, Creature self) {
 		if (baseValue == null)
@@ -21,12 +29,20 @@ public class RivalAi {
 		for (int x = 0; x < world.width(); x++)
 		for (int y = 0; y < world.height(); y++){
 			if (self.canEnter(world.tile(x, y)))
-				baseValue[x][y] = Math.random() < 0.01 ? 1 : 0; // encourage exploration
+				baseValue[x][y] = Math.random() < explorationPercent ? 1 : 0; // encourage exploration
 			else
 				baseValue[x][y] = -100;
 		}
 	}
 	
+	public int personalEvaluation(Creature creature){
+		return 0;
+	}
+	
+	public int personalEvaluation(Item item){
+		return 0;
+	}
+
 	private void goToNearestInterestingThing(World world, Creature self) {
 		if (self.isHidden())
 			return;
@@ -60,6 +76,8 @@ public class RivalAi {
 			if (other.description().contains(Trait.AGGRESSIVE.description()) 
 					&& self.position.distanceTo(other.position) == 1)
 				value = 9;
+
+			value += personalEvaluation(other);
 			
 			add(localValues, value, radius, world, self, other.position);
 		}
@@ -69,6 +87,8 @@ public class RivalAi {
 			
 			if (self.hearts() == self.maxHearts() && pair.first.name().equals("heart"))
 				value = 0;
+
+			value += personalEvaluation(pair.first);
 			
 			add(localValues, value, value , world, self, pair.second);
 		}
@@ -102,8 +122,10 @@ public class RivalAi {
 		return next;
 	}
 	
+	int[][] done = new int[80 / 3 * 19][24 / 3 * 9];
+	int doneCounter;
 	private void add(int[][] map, int amount, int maxDistance, World world, Creature self, Point position) {
-		boolean[][] done = new boolean[80 / 3 * 19][24 / 3 * 9];
+		doneCounter++;
 		int step = amount > 0 ? -1 : 1;
 
 		List<Point> frontiers = new ArrayList<Point>();
@@ -119,7 +141,7 @@ public class RivalAi {
 				
 				Point current = frontiers.remove(0);
 				
-				if (done[current.x][current.y])
+				if (done[current.x][current.y] == doneCounter)
 					continue;
 				
 				if (current.distanceTo(position) >= maxDistance)
@@ -129,13 +151,13 @@ public class RivalAi {
 					continue;
 				
 				map[current.x][current.y] += amount;
-				done[current.x][current.y] = true;
+				done[current.x][current.y] = doneCounter;
 				
 				for (Point p : current.neighbors()){
 					if (p.x < 0 || p.y < 0 || p.x >= map.length || p.y >= map[0].length)
 						continue;
 					
-					if (!done[p.x][p.y] && self.canEnter(world.tile(p.x, p.y)))
+					if (done[p.x][p.y] != doneCounter && self.canEnter(world.tile(p.x, p.y)))
 						nextFrontiers.add(p);
 				}
 			}
@@ -155,9 +177,13 @@ public class RivalAi {
 			frontiers.add(new Pair<Point,Point>(self.position, p));
 		
 		Point current = null;
+		int counter = 0;
 		while (frontiers.size() > 0){
 			Pair<Point,Point> pair = frontiers.remove(0);
 			current = pair.second;
+			
+			if (counter++ == 5000)
+				break;
 			
 			if (current.x < 0 || current.y < 0 || current.x >= map1.length || current.y >= map1[0].length)
 				continue;

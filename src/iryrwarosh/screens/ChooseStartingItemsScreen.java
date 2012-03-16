@@ -105,7 +105,7 @@ public class ChooseStartingItemsScreen implements Screen {
 		player.swapLeftHand(world, item1); 
 		player.swapRightHand(world, item2);
 		
-		for (int i = 0; i < 30; i++)
+		for (int i = 0; i < 60; i++)
 			factory.zora(world);
 		
 		for (int i = 0; i < 100; i++)
@@ -120,9 +120,15 @@ public class ChooseStartingItemsScreen implements Screen {
 				Tile.WHITE_TREE1, 
 				Tile.GREEN_ROCK, Tile.GREEN_ROCK, Tile.GREEN_ROCK, 
 				Tile.BROWN_ROCK, Tile.BROWN_ROCK, Tile.BROWN_ROCK, 
+				Tile.WHITE_ROCK,  
+				Tile.GREEN_TREE1, Tile.GREEN_TREE1, Tile.GREEN_TREE1,
+				Tile.BROWN_TREE1, Tile.BROWN_TREE1, Tile.BROWN_TREE1,  
+				Tile.WHITE_TREE1, 
+				Tile.GREEN_ROCK, Tile.GREEN_ROCK, Tile.GREEN_ROCK, 
+				Tile.BROWN_ROCK, Tile.BROWN_ROCK, Tile.BROWN_ROCK, 
 				Tile.WHITE_ROCK, 
 				Tile.DESERT_SAND1, Tile.WATER1 }){
-			for (int i = 0; i < 20; i++)
+			for (int i = 0; i < 10; i++)
 				factory.monster(world, biome);
 		}
 

@@ -78,7 +78,7 @@ public class FameHandler implements Handler {
 		if (message.creature.glyph() != '@')
 			return;
 		
-		gainFame(message.creature, 15, message.creature.name() + " has discovered a " + message.item.name());
+		gainFame(message.creature, 15, message.creature.name() + " has discovered treasure: " + message.item.name());
 	}
 	
 	private void gainFame(Creature creature, int amount, String string){

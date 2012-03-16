@@ -5,7 +5,7 @@ public class EquipedItem extends Message {
 	public Item item;
 	
 	public EquipedItem(World world, Creature creature, Item item){
-		super(world, "The " + creature.name() + " equipped " + item.name());
+		super(world, addArticle("The", creature.name()) + " equipped " + item.name());
 		this.creature = creature;
 		this.item = item;
 	}

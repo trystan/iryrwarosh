@@ -5,7 +5,7 @@ public class Attacked extends Message {
 	public Creature attacked;
 	
 	public Attacked(World world, Creature attacker, Creature attacked, String specialType){
-		super(world, "The " + attacker.name() + " attacked the " + attacked.name() + (specialType==null ? "" : " " + specialType) );
+		super(world, addArticle("The", attacker.name()) + " attacked " + addArticle("the", attacked.name()) + (specialType==null ? "" : " " + specialType) );
 		this.attacker = attacker;
 		this.attacked = attacked;
 	}

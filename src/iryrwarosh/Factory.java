@@ -37,18 +37,18 @@ public class Factory {
 		Collections.shuffle(minibossLoot);
 		
 		rivals = new ArrayList<Creature>();
-		rivals.add(rival("Dork",   0, knife(), bow()));
-		rivals.add(rival("Lame",  30, staff(), null));
-		rivals.add(rival("Bela",  60, spear(), null));
-		rivals.add(rival("Lulz",  90, club(), null));
-		rivals.add(rival("Link", 120, sword(), shield()));
-		rivals.add(rival("Dojj", 150, knife(), ringOfEvasion()));
-		rivals.add(rival("Majk", 180, staff(), advancedSpellBook()));
-		rivals.add(rival("Ring", 210, ringOfEvasion(), ringOfRegeneration()));
-		rivals.add(rival("Swim", 240, club(), snorkel()));
-		rivals.add(rival("Tify", 270, spear(), spectacles()));
-		rivals.add(rival("Hans", 300, spear(), club()));
-		rivals.add(rival("Mr X", 330, spear(), knife()));
+		rivals.add(rival("Dork",   0, knife(), bow(), new RivalAi(0.01)));
+		rivals.add(rival("Lame",  30, staff(), null, new RivalAi(0.00)));
+		rivals.add(rival("Bela",  60, spear(), null, new RivalAi(0.01)));
+		rivals.add(rival("Lulz",  90, club(), null, new RivalAi(0.05)));
+		rivals.add(rival("Link", 120, sword(), shield(), new RivalAi(0.005)));
+		rivals.add(rival("Dojj", 150, knife(), ringOfEvasion(), new RivalAi(0.005)));
+		rivals.add(rival("Majk", 180, staff(), advancedSpellBook(), new RivalAi(0.01)));
+		rivals.add(rival("Ring", 210, ringOfEvasion(), ringOfRegeneration(), new RivalAi(0.01)));
+		rivals.add(rival("Swim", 240, club(), snorkel(), new RivalAi(0.01)));
+		rivals.add(rival("Tify", 270, spear(), spectacles(), new RivalAi(0.01)));
+		rivals.add(rival("Hans", 300, spear(), club(), new RivalAi(0.01)));
+		rivals.add(rival("Mr X", 330, spear(), knife(), new RivalAi(0.005)));
 		Collections.shuffle(rivals);
 	}
 	
@@ -437,8 +437,7 @@ public class Factory {
 		return rival;
 	}
 	
-	public Creature rival(String name, int hue, Item item1, Item item2){
-		final RivalAi ai = new RivalAi();
+	public Creature rival(String name, int hue, Item item1, Item item2, final RivalAi ai){
 		Creature rival = new Creature(name, '@', Tile.hsv(hue, 80, 80), 10){
 			public void update(World world){
 				super.update(world);
@@ -492,7 +491,7 @@ public class Factory {
 	}
 
 	public Item bow() {
-		Item item = new Item("bow", ')', Tile.hsv(45, 50, 50), "Shoots arrows."){
+		Item item = new Item("bow", ')', Tile.hsv(45, 50, 50), "Shoots deady arrows."){
 			public Screen use(Screen screen, World world, Creature owner){
 				if (owner.rupees() + owner.hearts() <= 1){
 					MessageBus.publish(new Note(world, owner, "You need more than 1 rupee or heart to shoot arrows."));
@@ -513,7 +512,7 @@ public class Factory {
 				else if ((dir.x == -1 || dir.x == 1) && dir.y == 0)
 					glyph = 196;
 				
-				world.add(new Projectile("arrow", owner, glyph, AsciiPanel.white, 1, owner.position.copy(), owner.lastMovedDirection()));
+				world.add(new Projectile("arrow", owner, glyph, AsciiPanel.white, 3, owner.position.copy(), owner.lastMovedDirection()));
 				owner.loseRupees(world, 1);
 				return screen;
 			}

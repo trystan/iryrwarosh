@@ -5,7 +5,7 @@ public class CallForHelp extends Message {
 	public Creature attacker;
 	
 	public CallForHelp(World world, Creature attacked, Creature attacker){
-		super(world, "The " + attacked.name() + " calls for help");
+		super(world, addArticle("The", attacked.name()) + " calls for help");
 		this.attacked = attacked;
 		this.attacker = attacker;
 	}
