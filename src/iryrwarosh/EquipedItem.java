@@ -12,6 +12,6 @@ public class EquipedItem extends Message {
 
 	@Override
 	public boolean involves(Creature player) {
-		return creature == player || player.isInterestedIn(creature);
+		return creature == player;
 	}
 }

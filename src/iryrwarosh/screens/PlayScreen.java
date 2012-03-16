@@ -2,6 +2,7 @@ package iryrwarosh.screens;
 
 import iryrwarosh.Creature;
 import iryrwarosh.FameHandler;
+import iryrwarosh.GainedFame;
 import iryrwarosh.Trait;
 import iryrwarosh.Factory;
 import iryrwarosh.Handler;
@@ -180,8 +181,10 @@ public class PlayScreen implements Screen, Handler {
 
 	private void displayMessages(AsciiPanel terminal) {
 		int i = terminal.getHeightInCharacters() - messages.size();
-		for (Message m : messages)
-			terminal.writeCenter(clean(m.text()), i++);
+		for (Message m : messages){
+			Color color = (GainedFame.class.isAssignableFrom(m.getClass())) ? AsciiPanel.brightYellow : AsciiPanel.white;
+			terminal.writeCenter(clean(m.text()), i++, color, AsciiPanel.black);
+		}
 		messages.clear();
 	}
 	

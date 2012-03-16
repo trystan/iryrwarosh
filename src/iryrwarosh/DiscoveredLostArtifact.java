@@ -12,7 +12,7 @@ public class DiscoveredLostArtifact extends Message {
 
 	@Override
 	public boolean involves(Creature player) {
-		return creature == player || player.isInterestedIn(creature);
+		return false;
 	}
 
 }

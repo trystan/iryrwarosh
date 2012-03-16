@@ -12,8 +12,6 @@ public class Killed extends Message {
 
 	@Override
 	public boolean involves(Creature player) {
-		return attacker == player || attacked == player
-			|| player.isInterestedIn(attacked)
-			|| player.isInterestedIn(attacker) && attacked.isMiniboss();
+		return attacker == player || attacked == player;
 	}
 }

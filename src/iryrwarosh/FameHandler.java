@@ -42,38 +42,41 @@ public class FameHandler implements Handler {
 			return;
 		
 		if (message.attacked.glyph() == '@')
-			gainFame(message.attacker, 15);
+			gainFame(message.attacker, 15, message.attacker.name() + " has killed " + message.attacked.name());
 		else if (message.attacked.isMiniboss())
-			gainFame(message.attacker, 5);
+			gainFame(message.attacker, 5, message.attacker.name() + " has killed " + message.attacked.name());
 		else if (message.attacked.glyph() == 'M')
-			gainFame(message.attacker, 1);
+			gainFame(message.attacker, 1, message.attacker.name() + " has killed a giant monster");
 	}
 
 	private void handle(ExploredNewBiome message){
 		if (message.creature.glyph() != '@')
 			return;
 		
-		gainFame(message.creature, 8);
+		gainFame(message.creature, 8, null);
 	}
 	
 	private void handle(ExploredNewLocation message){
 		if (message.creature.glyph() != '@')
 			return;
 		
-		gainFame(message.creature, 2);
+		gainFame(message.creature, 2, null);
 	}
 	
 	private void handle(DiscoveredLostArtifact message){
 		if (message.creature.glyph() != '@')
 			return;
 		
-		gainFame(message.creature, 15);
+		gainFame(message.creature, 15, message.creature.name() + " has discovered a " + message.item.name());
 	}
 	
-	private void gainFame(Creature creature, int amount){
+	private void gainFame(Creature creature, int amount, String string){
 		if (fame.containsKey(creature))
 			fame.put(creature, amount + fame.get(creature));
 		else
 			fame.put(creature, amount);
+		
+		if (string != null)
+			MessageBus.publish(new GainedFame(null, creature, string));
 	}
 }

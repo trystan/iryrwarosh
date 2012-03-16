@@ -558,13 +558,4 @@ public class Creature {
 	public boolean canHear(Creature other) {
 		return position.distanceTo(other.position) < 12;
 	}
-	
-	public boolean isInterestedIn(Creature other) {
-		if (other == this)
-			return true;
-		else if (isPlayer())
-			return other.glyph == '@';
-		else
-			return false;
-	}
 }
