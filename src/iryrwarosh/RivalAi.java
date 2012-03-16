@@ -20,7 +20,8 @@ public class RivalAi {
 	public void update(World world, Creature self) {
 		if (baseValue == null)
 			initBaseValues(world, self);
-		
+	
+		self.registerAiForEvents(this);
 		goToNearestInterestingThing(world, self);
 	}
 
@@ -223,5 +224,18 @@ public class RivalAi {
 			next = parent[current.x][current.y];
 		}
 		return current;
+	}
+	
+	public void handle(Creature self, Message message){
+		if (Attacked.class.isAssignableFrom(message.getClass())){
+			MessageBus.publish(new SaidOutLoud(self, "Ouch!"));
+		}
+		if (Killed.class.isAssignableFrom(message.getClass())){
+			if (((Killed)message).attacked.isMiniboss())
+			MessageBus.publish(new SaidOutLoud(self, "Die " + ((Killed)message).attacked.name() + "!"));
+		}
+		if (DiscoveredLostArtifact.class.isAssignableFrom(message.getClass())){
+			MessageBus.publish(new SaidOutLoud(self, "Shiny!"));
+		}
 	}
 }

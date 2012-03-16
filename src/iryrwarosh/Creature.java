@@ -146,7 +146,7 @@ public class Creature {
 		
 		if (didJump) {
 			hasMovedThisTurn = true;
-			MessageBus.publish(new Jumped(world, this));
+			publishMessage(new Jumped(world, this));
 		}
 	}
 	
@@ -174,11 +174,11 @@ public class Creature {
 				position.x += x;
 				position.y += y;
 				hasMovedThisTurn = true;
-				MessageBus.publish(new Moved(world, this));
+				publishMessage(new Moved(world, this));
 			} else {
 				lastWanderX = (int)(Math.random() * 3) - 1;
 				lastWanderY = (int)(Math.random() * 3) - 1;
-				MessageBus.publish(new BumpedIntoObsticle(world, this, position.x+x, position.y+y));
+				publishMessage(new BumpedIntoObsticle(world, this, position.x+x, position.y+y));
 			}
 		} else if (isFriendlyTo(other)) {
 			lastWanderX = (int)(Math.random() * 3) - 1;
@@ -210,12 +210,12 @@ public class Creature {
 		hasAttackedThisTurn = true;
 		
 		if (hasTrait(Trait.DEFLECT_MELEE) && Math.random() < 0.33){
-			MessageBus.publish(new DeflectedMelee(world, other, this));
+			publishMessage(new DeflectedMelee(world, other, this));
 			return;
 		}
 
 		if (other.hasTrait(Trait.SPIKED)){
-			MessageBus.publish(new HitSpikes(world, this, other));
+			publishMessage(new HitSpikes(world, this, other));
 			loseHearts(world, other, 1, null, "You impaled youself on the spikes of a " + other.name());
 			
 			if (hearts < 1)
@@ -242,13 +242,13 @@ public class Creature {
 		other.reducedEvasionCounter += 10;
 		
 		if (other.reducedEvasionCounter == 10)
-			MessageBus.publish(new ReducedEvasion(world, this, other));
+			publishMessage(new ReducedEvasion(world, this, other));
 	}
 	
 	private void poison(World world, Creature other){
 		other.poisonCounter += 10;
 		other.lastPoisonedBy = this;
-		MessageBus.publish(new Poisoned(world, this, other));
+		publishMessage(new Poisoned(world, this, other));
 	}
 	
 	public void curePoison() {
@@ -297,7 +297,7 @@ public class Creature {
 	
 	public void evade(World world, Creature other){
 		position = evasionCandidates(world).get(0);
-		MessageBus.publish(new Evaded(world, other, this));
+		publishMessage(new Evaded(world, other, this));
 	}
 	
 	private Point positionBeforeHiding;
@@ -380,7 +380,7 @@ public class Creature {
 			positionBeforeHiding = null;
 		}
 		
-		MessageBus.publish(new Unhid(world, this));
+		publishMessage(new Unhid(world, this));
 		
 		if (hasTrait(Trait.ROCK_SPITTER))
 			spitRock(world);
@@ -388,7 +388,7 @@ public class Creature {
 
 	private void hide(World world) {
 		positionBeforeHiding = position.copy();
-		MessageBus.publish(new Hid(world, this));
+		publishMessage(new Hid(world, this));
 		position.x = -100;
 		position.y = -100;
 	}
@@ -486,19 +486,19 @@ public class Creature {
 		
 		if (amount > 1 && hasTrait(Trait.EXTRA_DEFENSE)){
 			amount--;
-			MessageBus.publish(new BlockSomeDamage(world, attacker, this, rightHand));
+			publishMessage(new BlockSomeDamage(world, attacker, this, rightHand));
 		}
 		
 		hearts -= amount;
 
 		if (specialType != null)
-			MessageBus.publish(new Attacked(world, attacker, this, specialType));
+			publishMessage(new Attacked(world, attacker, this, specialType));
 		
 		if (hearts < 1) {
 			this.causeOfDeath = causeOfDeath;
-			MessageBus.publish(new Killed(world, attacker, this));
+			publishMessage(new Killed(world, attacker, this));
 		} else if (hasTrait(Trait.SOCIAL))
-			MessageBus.publish(new CallForHelp(world, this, attacker));
+			publishMessage(new CallForHelp(world, this, attacker));
 	}
 
 	private Creature prey;
@@ -533,8 +533,8 @@ public class Creature {
 			world.removeItem(position.x, position.y);
 			world.add(leftHand, position.x, position.y);
 			if (leftHand != null)
-				MessageBus.publish(new DroppedWeapon(world, this, leftHand));
-			MessageBus.publish(new EquipedItem(world, this, item));
+				publishMessage(new DroppedWeapon(world, this, leftHand));
+			publishMessage(new EquipedItem(world, this, item));
 		}
 		leftHand = item;
 	}
@@ -544,8 +544,8 @@ public class Creature {
 			world.removeItem(position.x, position.y);
 			world.add(rightHand, position.x, position.y);
 			if (rightHand != null)
-				MessageBus.publish(new DroppedWeapon(world, this, rightHand));
-			MessageBus.publish(new EquipedItem(world, this, item));
+				publishMessage(new DroppedWeapon(world, this, rightHand));
+			publishMessage(new EquipedItem(world, this, item));
 		}
 		rightHand = item;
 	}
@@ -561,5 +561,17 @@ public class Creature {
 	
 	public boolean canHear(Creature other) {
 		return position.distanceTo(other.position) < 12;
+	}
+	
+	private RivalAi ai;
+	public void registerAiForEvents(RivalAi rivalAi) {
+		ai = rivalAi;
+	}
+	
+	private void publishMessage(Message message){
+		MessageBus.publish(message);
+		
+		if (ai != null)
+			ai.handle(this, message);
 	}
 }

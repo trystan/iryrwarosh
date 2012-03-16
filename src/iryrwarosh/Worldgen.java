@@ -359,7 +359,7 @@ public class Worldgen {
 	}
 	
 	private void setDeadEndTiles(int sx, int sy){
-		switch ((int)(Math.random() * 4)){
+		switch ((int)(Math.random() * 10)){
 		case 0:
 			addMap(sx, sy, 
 				    "###################"

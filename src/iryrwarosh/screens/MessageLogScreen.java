@@ -2,6 +2,7 @@ package iryrwarosh.screens;
 
 import iryrwarosh.GainedFame;
 import iryrwarosh.Message;
+import iryrwarosh.SaidOutLoud;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -32,6 +33,10 @@ public class MessageLogScreen implements Screen {
 			
 			Message m = messages.get(scroll + i); 
 			Color color = (GainedFame.class.isAssignableFrom(m.getClass())) ? AsciiPanel.brightYellow : AsciiPanel.white;
+			
+			if (SaidOutLoud.class.isAssignableFrom(m.getClass())) 
+				color = ((SaidOutLoud)m).creature.color();
+			
 			terminal.write(clean(m.text()), 1, i+2, color, AsciiPanel.black);
 		}
 	}
