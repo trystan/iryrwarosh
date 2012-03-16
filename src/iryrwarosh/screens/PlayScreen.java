@@ -20,7 +20,6 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import asciiPanel.AsciiPanel;
 
@@ -87,22 +86,23 @@ public class PlayScreen implements Screen, Handler {
 	}
 
 	private void displayFame(AsciiPanel terminal, Color bg) {
-		Set<Creature> people = fameHandler.getFamousPeople();
+		List<Creature> people = fameHandler.getFamousPeople();
+		int left = 69;
 		
 		if (people.size() == 0)
 			return;
 		
 		if (getScrollX() == world.width() - screenWidth && getScrollY() == 0)
-			terminal.setCursorPosition(69, terminal.getHeightInCharacters() - 7);
+			terminal.setCursorPosition(left, terminal.getHeightInCharacters() - 7);
 		else
-			terminal.setCursorPosition(69, terminal.getCursorY() + 1);
+			terminal.setCursorPosition(left, terminal.getCursorY() + 1);
 		
 		terminal.write("- fame -", AsciiPanel.brightGreen, bg);
-		terminal.setCursorPosition(69, terminal.getCursorY() + 1);
+		terminal.setCursorPosition(left, terminal.getCursorY() + 1);
 		for (Creature famousPerson : people){
-			terminal.write(" " + famousPerson.glyph(), famousPerson.color(), bg);
-			terminal.write(String.format(" %3d%% ", fameHandler.getFame(famousPerson)), AsciiPanel.white, bg);
-			terminal.setCursorPosition(69, terminal.getCursorY() + 1);
+			terminal.write(famousPerson.isPlayer() ? "You " : famousPerson.name(), famousPerson.color(), bg);
+			terminal.write(String.format(" %3d%%", fameHandler.getFame(famousPerson)), AsciiPanel.white, bg);
+			terminal.setCursorPosition(left, terminal.getCursorY() + 1);
 		}
 	}
 	

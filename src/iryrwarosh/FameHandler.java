@@ -1,7 +1,9 @@
 package iryrwarosh;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Hashtable;
-import java.util.Set;
+import java.util.List;
 
 public class FameHandler implements Handler {
 	private Hashtable<Creature, Integer> fame;
@@ -10,8 +12,17 @@ public class FameHandler implements Handler {
 		fame = new Hashtable<Creature, Integer>();
 	}
 	
-	public Set<Creature> getFamousPeople(){
-		return fame.keySet();
+	public List<Creature> getFamousPeople(){
+		List<Creature> list = Collections.list(fame.keys());
+		
+		Collections.sort(list, new Comparator<Creature>(){
+			@Override
+			public int compare(Creature c1, Creature c2) {
+				return ((Integer)getFame(c2)).compareTo(getFame(c1));
+			}
+		});
+		
+		return list;
 	}
 	
 	public int getFame(Creature creature){

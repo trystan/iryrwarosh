@@ -19,6 +19,7 @@ import asciiPanel.AsciiPanel;
 public class Factory {
 	private HashMap<Tile,List<Trait>> monsterTraits;
 	private List<Item> minibossLoot;
+	private List<Creature> rivals;
 	
 	public Factory(){
 		setMonsterTraits();
@@ -34,6 +35,21 @@ public class Factory {
 		minibossLoot.add(this.evasionPotion());
 		minibossLoot.add(this.lostArtifact());
 		Collections.shuffle(minibossLoot);
+		
+		rivals = new ArrayList<Creature>();
+		rivals.add(rival("Dork",   0, knife(), bow()));
+		rivals.add(rival("Lame",  30, staff(), null));
+		rivals.add(rival("Bela",  60, spear(), null));
+		rivals.add(rival("Lulz",  90, club(), null));
+		rivals.add(rival("Link", 120, sword(), shield()));
+		rivals.add(rival("Dojj", 150, knife(), ringOfEvasion()));
+		rivals.add(rival("Majk", 180, staff(), advancedSpellBook()));
+		rivals.add(rival("Ring", 210, ringOfEvasion(), ringOfRegeneration()));
+		rivals.add(rival("Swim", 240, club(), snorkel()));
+		rivals.add(rival("Tify", 270, spear(), spectacles()));
+		rivals.add(rival("Hans", 300, spear(), club()));
+		rivals.add(rival("Mr X", 330, spear(), knife()));
+		Collections.shuffle(rivals);
 	}
 	
 	private void setMonsterTraits(){
@@ -414,9 +430,14 @@ public class Factory {
 		return zora;
 	}
 
-	public Creature rival(World world, String name){
-		int hue = (int)(Math.random() * 360);
+	public Creature rival(World world){
+		Creature rival = rivals.remove(0);
+		world.add(rival);
 		
+		return rival;
+	}
+	
+	public Creature rival(String name, int hue, Item item1, Item item2){
 		final RivalAi ai = new RivalAi();
 		Creature rival = new Creature(name, '@', Tile.hsv(hue, 80, 80), 10){
 			public void update(World world){
@@ -426,23 +447,15 @@ public class Factory {
 		};
 		
 		rival.addTrait(Trait.WALKER);
-		rival.addTrait(Trait.HUNTER);
 		rival.addTrait(Trait.REGENERATES);
+
+		if (item1 != null)
+			rival.swapLeftHand(null, item1);
 		
-		Trait trait = Trait.getRandom();
-		while (rival.hasTrait(trait)){
-			trait = Trait.getRandom();
-		}
-		rival.addTrait(trait);
+		if (item2 != null)
+			rival.swapRightHand(null, item2);
 		
-		world.add(rival);
-		
-		rival.swapRightHand(world, weapon());
-		
-		if (minibossLoot.size() > 0) {
-			rival.setLoot(minibossLoot.remove(0));
-			rival.swapLeftHand(world, rival.loot());
-		} else if (Math.random() < 0.5)
+		if (Math.random() < 0.5)
 			rival.setLoot(heartIncrease());
 		else
 			rival.setLoot(bigMoney());

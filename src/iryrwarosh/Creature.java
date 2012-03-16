@@ -529,21 +529,25 @@ public class Creature {
 	}
 
 	public void swapLeftHand(World world, Item item) {
-		world.removeItem(position.x, position.y);
-		world.add(leftHand, position.x, position.y);
-		if (leftHand != null)
-			MessageBus.publish(new DroppedWeapon(world, this, leftHand));
+		if (world != null){
+			world.removeItem(position.x, position.y);
+			world.add(leftHand, position.x, position.y);
+			if (leftHand != null)
+				MessageBus.publish(new DroppedWeapon(world, this, leftHand));
+			MessageBus.publish(new EquipedItem(world, this, item));
+		}
 		leftHand = item;
-		MessageBus.publish(new EquipedItem(world, this, item));
 	}
 
 	public void swapRightHand(World world, Item item) {
-		world.removeItem(position.x, position.y);
-		world.add(rightHand, position.x, position.y);
-		if (rightHand != null)
-			MessageBus.publish(new DroppedWeapon(world, this, rightHand));
+		if (world != null){
+			world.removeItem(position.x, position.y);
+			world.add(rightHand, position.x, position.y);
+			if (rightHand != null)
+				MessageBus.publish(new DroppedWeapon(world, this, rightHand));
+			MessageBus.publish(new EquipedItem(world, this, item));
+		}
 		rightHand = item;
-		MessageBus.publish(new EquipedItem(world, this, item));
 	}
 	
 	public boolean canSee(Creature other){
