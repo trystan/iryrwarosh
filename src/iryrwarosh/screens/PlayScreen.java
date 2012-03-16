@@ -22,7 +22,9 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import asciiPanel.AsciiCharacterData;
 import asciiPanel.AsciiPanel;
+import asciiPanel.TileTransformer;
 
 public class PlayScreen implements Screen, Handler {
 	private FameHandler fameHandler;
@@ -37,6 +39,8 @@ public class PlayScreen implements Screen, Handler {
 	private List<Message> messages = new ArrayList<Message>();
 	
 	private MessageLogScreen messageLogScreen;
+	
+	private int turnNumber = 0;
 	
 	public PlayScreen(World world, Factory factory, Creature player){
 		MessageBus.subscribe(this);
@@ -181,6 +185,38 @@ public class PlayScreen implements Screen, Handler {
 				p.color(), 
 				world.tile(p.position.x, p.position.y).background());
 		}
+		
+		fadeIn(terminal);
+		turnNumber++;
+	}
+
+	private void fadeIn(AsciiPanel terminal) {
+		if (turnNumber == 0)
+			terminal.withEachTile(new TileTransformer(){
+				@Override
+				public void transformTile(int x, int y, AsciiCharacterData data) {
+					if (y== 0)
+						return;
+					if (data.character == '@' && data.foregroundColor == AsciiPanel.brightWhite)
+						return;
+					
+					data.foregroundColor = data.foregroundColor.darker().darker();
+					data.backgroundColor = data.backgroundColor.darker().darker();
+				}
+			});
+		else if (turnNumber == 1)
+			terminal.withEachTile(new TileTransformer(){
+				@Override
+				public void transformTile(int x, int y, AsciiCharacterData data) {
+					if (y== 0)
+						return;
+					if (data.character == '@' && data.foregroundColor == AsciiPanel.brightWhite)
+						return;
+					
+					data.foregroundColor = data.foregroundColor.darker();
+					data.backgroundColor = data.backgroundColor.darker();
+				}
+			});
 	}
 
 	private void displayMessages(AsciiPanel terminal) {

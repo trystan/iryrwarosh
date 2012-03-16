@@ -232,7 +232,7 @@ public class RivalAi {
 		}
 		if (Killed.class.isAssignableFrom(message.getClass())){
 			if (((Killed)message).attacked.isMiniboss())
-			MessageBus.publish(new SaidOutLoud(self, "Die " + ((Killed)message).attacked.name() + "!"));
+				MessageBus.publish(new SaidOutLoud(self, "Die " + ((Killed)message).attacked.name() + "!"));
 		}
 		if (DiscoveredLostArtifact.class.isAssignableFrom(message.getClass())){
 			MessageBus.publish(new SaidOutLoud(self, "Shiny!"));
