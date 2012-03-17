@@ -1,5 +1,6 @@
 package iryrwarosh.screens;
 
+import iryrwarosh.Common;
 import iryrwarosh.GainedFame;
 import iryrwarosh.Message;
 import iryrwarosh.SaidOutLoud;
@@ -26,18 +27,22 @@ public class MessageLogScreen implements Screen {
 	
 	@Override
 	public void displayOutput(AsciiPanel terminal) {
+		terminal.setDefaultForegroundColor(Common.guiForeground);
+		terminal.setDefaultBackgroundColor(Common.guiBackground);
+		terminal.clear();
+		
 		terminal.writeCenter("Message Log", 0);
-		for (int i = 0; i < 20; i++){
+		for (int i = 0; i < 22; i++){
 			if (scroll + i >= messages.size())
 				break;
 			
 			Message m = messages.get(scroll + i); 
-			Color color = (GainedFame.class.isAssignableFrom(m.getClass())) ? AsciiPanel.brightYellow : AsciiPanel.white;
+			Color color = (GainedFame.class.isAssignableFrom(m.getClass())) ? AsciiPanel.brightYellow : Common.guiForeground;
 			
 			if (SaidOutLoud.class.isAssignableFrom(m.getClass())) 
 				color = ((SaidOutLoud)m).creature.color();
 			
-			terminal.write(clean(m.text()), 1, i+2, color, AsciiPanel.black);
+			terminal.write(clean(m.text()), 1, i+2, color, null);
 		}
 	}
 	
@@ -71,10 +76,15 @@ public class MessageLogScreen implements Screen {
 		scroll++;
 		fixScrolling();
 	}
+	
+	public void scrollToEnd(){
+		scroll = messages.size();
+		fixScrolling();
+	}
 
 	private void fixScrolling() {
-		if (scroll > messages.size() - 5)
-			scroll = messages.size() - 5;
+		if (scroll > messages.size() - 8)
+			scroll = messages.size() - 8;
 		if (scroll < 0)
 			scroll = 0;
 	}

@@ -23,9 +23,9 @@ public class MapExplorationHandler implements Handler {
 	}
 
 	public void handle(Moved message) {
-		if (message.creature.glyph() != '@')
+		if (!message.creature.isHuman())
 			return;
-
+		
 		explored(message.world, message.creature);
 	}
 	

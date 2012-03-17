@@ -5,7 +5,7 @@ public class HitSpikes extends Message {
 	public Creature attacked;
 	
 	public HitSpikes(World world, Creature attacker, Creature attacked){
-		super(world, "The " + attacker.name() + " hit the spikes of the " + attacked.name());
+		super(world, addArticle("The", attacker.name()) + " bumped into " + addArticle("the", attacked.name()) + "'s spikes");
 		this.attacker = attacker;
 		this.attacked = attacked;
 	}

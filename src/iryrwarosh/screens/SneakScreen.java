@@ -73,6 +73,6 @@ public class SneakScreen implements Screen {
 	private void swim(int dx, int dy) {
 		player.moveBy(world, dx, dy);
 		player.update(world);
-		player.loseRupees(world, 5);
+		player.loseRupees(world, 1);
 	}
 }

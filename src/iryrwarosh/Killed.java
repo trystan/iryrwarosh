@@ -5,7 +5,7 @@ public class Killed extends Message {
 	public Creature attacked;
 	
 	public Killed(World world, Creature attacker, Creature attacked){
-		super(world, "The " + attacker.name() + " killed the " + attacked.name());
+		super(world, addArticle("The", attacker.name()) + " killed " + addArticle("the", attacked.name()));
 		this.attacker = attacker;
 		this.attacked = attacked;
 	}

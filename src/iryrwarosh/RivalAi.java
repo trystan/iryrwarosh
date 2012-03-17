@@ -9,12 +9,14 @@ public class RivalAi {
 	
 	protected List<Trait> scaryTraits;
 	private double explorationPercent;
+	private double talkativeness;
 	
-	public RivalAi(double explorationPercent){
+	public RivalAi(double explorationPercent, double talkativeness){
 		scaryTraits = Arrays.asList( Trait.POISONOUS, Trait.AGGRESSIVE, Trait.REACH_ATTACK, 
 			Trait.DOUBLE_ATTACK, Trait.DOUBLE_MOVE, Trait.HUNTER);
 		
 		this.explorationPercent = explorationPercent;
+		this.talkativeness = talkativeness;
 	}
 	
 	public void update(World world, Creature self) {
@@ -67,7 +69,7 @@ public class RivalAi {
 			if (self.hearts() < 5)
 				value--;
 			
-			if (other.glyph() == '@'){
+			if (other.isHuman()){
 				radius += 5;
 				
 				if (self.hearts() > other.hearts())
@@ -178,12 +180,12 @@ public class RivalAi {
 			frontiers.add(new Pair<Point,Point>(self.position, p));
 		
 		Point current = null;
-		int counter = 0;
+		int loops = 0;
 		while (frontiers.size() > 0){
 			Pair<Point,Point> pair = frontiers.remove(0);
 			current = pair.second;
 			
-			if (counter++ == 5000)
+			if (loops++ == 5000)
 				break;
 			
 			if (current.x < 0 || current.y < 0 || current.x >= map1.length || current.y >= map1[0].length)
@@ -217,7 +219,10 @@ public class RivalAi {
 
 	private Point walkBackToStartPoint(Point start, Point[][] parent, Point current) {
 		Point next = parent[current.x][current.y];
+		int loops = 0;
 		while (next != null){
+			if (loops++ == 1000)
+				return null;
 			if (next.x == start.x && next.y == start.y)
 				break;
 			current = next;
@@ -227,15 +232,39 @@ public class RivalAi {
 	}
 	
 	public void handle(Creature self, Message message){
-		if (Attacked.class.isAssignableFrom(message.getClass())){
-			MessageBus.publish(new SaidOutLoud(self, "Ouch!"));
+		String text = null;
+		if (Attacked.class.isAssignableFrom(message.getClass()) && Math.random() < talkativeness){
+			Attacked attackedMessage = (Attacked)message;
+			if (attackedMessage.attacked == self){
+				if (attackedMessage.attacker.hasTrait(Trait.POISONOUS))
+					text = "Ah! Poisoned!";
+				else if (self.hearts() < 4)
+					text = "Ouch! I'm almost dead!";
+				else if (attackedMessage.attacker.isHuman())
+					text = "I'll get you for that " + attackedMessage.attacker.name() + "!";
+				else
+					text = "Ouch!";
+			} else if (attackedMessage.attacked.hasTrait(Trait.SPIKED)){
+				text = "Ouch! Spikes!";
+			} else if (attackedMessage.attacked.isMiniboss()){
+				text = "I'll save the people from you " + attackedMessage.attacked.name() + "!";
+			} else if (attackedMessage.attacked.isHuman()){
+				text = "I'm going to rule, not you " + attackedMessage.attacked.name() + "!";
+			}
 		}
-		if (Killed.class.isAssignableFrom(message.getClass())){
-			if (((Killed)message).attacked.isMiniboss())
-				MessageBus.publish(new SaidOutLoud(self, "Die " + ((Killed)message).attacked.name() + "!"));
+		else if (Killed.class.isAssignableFrom(message.getClass()) && Math.random() < talkativeness){
+			Killed killedMessage = (Killed)message;
+			if (killedMessage.attacked.isHuman() && killedMessage.attacker == self)
+				text = "One fewer rival....";
+			else if (killedMessage.attacked == self && killedMessage.attacker.isHuman()){
+				text = "....I almost made it....";
+			}
 		}
-		if (DiscoveredLostArtifact.class.isAssignableFrom(message.getClass())){
-			MessageBus.publish(new SaidOutLoud(self, "Shiny!"));
+		else if (DiscoveredLostArtifact.class.isAssignableFrom(message.getClass()) && Math.random() < talkativeness){
+			text = "Shiny!";
 		}
+		
+		if (text != null)
+			MessageBus.publish(new SaidOutLoud(self, text));
 	}
 }

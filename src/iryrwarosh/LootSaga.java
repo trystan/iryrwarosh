@@ -29,7 +29,8 @@ public class LootSaga implements Handler {
 	}
 	
 	public void handle(Killed message){
-		if (message.attacked.hasTrait(Trait.LOOTLESS))
+		if (message.attacked.hasTrait(Trait.LOOTLESS)
+				|| message.attacked.isHidden())
 			return;
 		
 		if (message.attacked.loot() != null)
@@ -59,7 +60,7 @@ public class LootSaga implements Handler {
 	}
 	
 	public Item rupees_1(){
-		Item item = new Item("rupees", 4, Tile.hsv(60, 50, 75), "Rupees used for special actions."){
+		Item item = new Item("rupees", 4, Common.hsv(60, 50, 75), "Rupees used for special actions."){
 			public void onCollide(World world, Creature collider){
 				world.removeItem(collider.position.x, collider.position.y);
 				collider.gainRupees(1);
@@ -70,7 +71,7 @@ public class LootSaga implements Handler {
 	}
 	
 	public Item rupees_5(){
-		Item item =  new Item("rupees", 4, Tile.hsv(240, 50, 75), "Rupees used for special actions."){
+		Item item =  new Item("rupees", 4, Common.hsv(240, 50, 75), "Rupees used for special actions."){
 			public void onCollide(World world, Creature collider){
 				world.removeItem(collider.position.x, collider.position.y);
 				collider.gainRupees(5);

@@ -15,6 +15,7 @@ import iryrwarosh.Moved;
 import iryrwarosh.Note;
 import iryrwarosh.Projectile;
 import iryrwarosh.Tile;
+import iryrwarosh.Common;
 import iryrwarosh.World;
 
 import java.awt.Color;
@@ -53,49 +54,49 @@ public class PlayScreen implements Screen, Handler {
 	
 	@Override
 	public void displayOutput(AsciiPanel terminal) {
+		terminal.setDefaultForegroundColor(Common.playScreenForeground);
+		terminal.setDefaultBackgroundColor(Common.playScreenBackground);
 		displayTiles(terminal);
 		displayHud(terminal);
 		displayMessages(terminal);
 	}
 
 	private void displayHud(AsciiPanel terminal) {
-		Color bg = Tile.hsv(30, 30, 15);
-		terminal.clear(' ', 0, 0, 80, 1, Tile.hsv(0, 0, 15), bg);
+		terminal.clear(' ', 0, 0, 80, 1);
 		
-		terminal.write("[z] ", 1, 0, AsciiPanel.white, bg);
-		terminal.write(player.leftHand().name(), player.leftHand().color(), bg);
+		terminal.write("[z] ", 0, 0);
+		terminal.write(player.leftHand().name(), player.leftHand().color(), null);
 		
-		terminal.write("[x] ", 20, 0, AsciiPanel.white, bg);
-		terminal.write(player.rightHand().name(), player.rightHand().color(), bg);
+		terminal.write("[x] ", 22, 0);
+		terminal.write(player.rightHand().name(), player.rightHand().color(), null);
 
-		terminal.write("[m] ", 40, 0, AsciiPanel.white, bg);
-		terminal.write("map", AsciiPanel.white, bg);
+		terminal.write("[?] help", 44, 0);
 
-		terminal.write("evade: " + player.evadePercent(world) + "%", 52, 0, AsciiPanel.yellow, bg);
+		terminal.write("evade: " + player.evadePercent(world) + "%", 54, 0, AsciiPanel.yellow, null);
 
-		terminal.write(player.rupees() + "" + (char)4, 64, 0, Tile.hsv(60, 25, 75), bg);
+		terminal.write(String.format("%3d" + (char)4, player.rupees()), 64, 0, Common.hsv(60, 25, 75), null);
 		
 		Item item = world.item(player.position.x, player.position.y);
-		if (item != null){
-			terminal.write(" [g] ", 0, 1, AsciiPanel.white, bg);
-			terminal.write(item.name(), item.color(), bg);
-			terminal.write(" (at your feet)", AsciiPanel.white, bg);
+		if (item != null && item.canBePickedUp()){
+			terminal.write("[g] ", 0, 1);
+			terminal.write(item.name(), item.color(), null);
+			terminal.write(" (at your feet)");
 		}
 
 		terminal.setCursorPosition(69, 0);
 		Color heartColor = player.isPoisoned() ? AsciiPanel.green : AsciiPanel.red;
 		for (int i = 0; i < player.maxHearts(); i++){
-			terminal.write((char)3, i < player.hearts() ? heartColor : AsciiPanel.brightBlack, bg);
-			if (((i+1) % 10) == 0)
+			if (i > 0 && (i % 10) == 0)
 				terminal.setCursorPosition(69, terminal.getCursorY() + 1);
+			terminal.write((char)3, i < player.hearts() ? heartColor : AsciiPanel.brightBlack, null);
 		}
 
-		displayFame(terminal, bg);
+		displayFame(terminal);
 	}
 
-	private void displayFame(AsciiPanel terminal, Color bg) {
+	private void displayFame(AsciiPanel terminal) {
 		List<Creature> people = fameHandler.getFamousPeople();
-		int left = 69;
+		int left = 68;
 		
 		if (people.size() == 0)
 			return;
@@ -103,13 +104,13 @@ public class PlayScreen implements Screen, Handler {
 		if (getScrollX() == world.width() - screenWidth && getScrollY() == 0)
 			terminal.setCursorPosition(left, terminal.getHeightInCharacters() - 7);
 		else
-			terminal.setCursorPosition(left, terminal.getCursorY() + 1);
+			terminal.setCursorPosition(left, terminal.getCursorY() + 2);
 		
-		terminal.write("- fame -", AsciiPanel.brightGreen, bg);
+		terminal.write("-- fame --", AsciiPanel.brightGreen, null);
 		terminal.setCursorPosition(left, terminal.getCursorY() + 1);
 		for (Creature famousPerson : people){
-			terminal.write(famousPerson.isPlayer() ? "You " : famousPerson.name(), famousPerson.color(), bg);
-			terminal.write(String.format(" %3d%%", fameHandler.getFame(famousPerson)), AsciiPanel.white, bg);
+			terminal.write(" " + (famousPerson.isPlayer() ? "You " : famousPerson.name()), famousPerson.color(), null);
+			terminal.write(String.format(" %3d%%", fameHandler.getFame(famousPerson)), AsciiPanel.white, null);
 			terminal.setCursorPosition(left, terminal.getCursorY() + 1);
 		}
 	}
@@ -222,7 +223,7 @@ public class PlayScreen implements Screen, Handler {
 	private void displayMessages(AsciiPanel terminal) {
 		int i = terminal.getHeightInCharacters() - messages.size();
 		for (Message m : messages){
-			Color color = (GainedFame.class.isAssignableFrom(m.getClass())) ? AsciiPanel.brightYellow : AsciiPanel.white;
+			Color color = (GainedFame.class.isAssignableFrom(m.getClass())) ? AsciiPanel.brightYellow : null;
 
 			if (SaidOutLoud.class.isAssignableFrom(m.getClass())) 
 				color = ((SaidOutLoud)m).creature.color();
@@ -291,7 +292,8 @@ public class PlayScreen implements Screen, Handler {
         	break;
         case KeyEvent.VK_G:
         case KeyEvent.VK_COMMA:
-            if (world.item(player.position.x, player.position.y) == null) {
+        	Item item = world.item(player.position.x, player.position.y);
+            if (item == null || !item.canBePickedUp()) {
                 MessageBus.publish(new Note(world, player, "Nothing to pick up here"));
                 return this; //Don't spend an action when nothing to pick up
             } else {
@@ -304,8 +306,12 @@ public class PlayScreen implements Screen, Handler {
 			return new ConfirmationScreen(this, new ChooseStartingItemsScreen(), "Are you sure you'd like to quit?");
 		case KeyEvent.VK_QUOTEDBL:
 		case KeyEvent.VK_QUOTE:
+			messageLogScreen.scrollToEnd();
 			return messageLogScreen;
 		default:
+			if (key.getKeyChar() == '?')
+				return new HelpScreen(this);
+			
 			return this;
 		}
 		

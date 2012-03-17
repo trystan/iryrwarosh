@@ -15,6 +15,8 @@ public class AppletMain extends Applet implements KeyListener {
 	public AppletMain(){
 		super();
 		terminal = new AsciiPanel();
+		terminal.setDefaultBackgroundColor(Common.guiBackground);
+		terminal.setDefaultForegroundColor(Common.guiForeground);
 		add(terminal);
 		screen = new iryrwarosh.screens.StartScreen();
 		addKeyListener(this);

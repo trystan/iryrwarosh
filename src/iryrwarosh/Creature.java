@@ -84,6 +84,9 @@ public class Creature {
 		if (rightHand != null)
 			text += " " + rightHand.name();
 		
+		if (loot != null)
+			text += " (drops " + loot.name() + ")";
+		
 		return text;
 	}
 	
@@ -120,11 +123,18 @@ public class Creature {
 		return false;
 	}
 
+	public boolean isHuman(){
+		return glyph == '@';
+	}
+	
 	public void jumpBy(World world, int dx, int dy){
+		if (dx == 0 && dy == 0 || isHidden())
+			return;
+		
 		boolean didJump = false;
 		
 		for (int i = 0; i < 3; i++){
-			if (glyph == '@' && rupees < 1)
+			if (isHuman() && rupees < 1)
 				break;
 			
 			Tile tile = world.tile(position.x+dx, position.y+dy);
@@ -151,11 +161,10 @@ public class Creature {
 	}
 	
 	public void moveBy(World world, int x, int y) {
-		if (x==0 && y==0)
+		if (x==0 && y==0 || isHidden())
 			return;
 		
-		if (hasDoubleMovedThisTurn 
-				|| hasMovedThisTurn && !hasTrait(Trait.DOUBLE_MOVE))
+		if (hasMovedThisTurn && !hasTrait(Trait.DOUBLE_MOVE))
 			return;
 		
 		if (hasTrait(Trait.TERRITORIAL)
@@ -193,14 +202,14 @@ public class Creature {
 	}
 	
 	public boolean isFriendlyTo(Creature other){
-		if (glyph == '@' && other.glyph == '@')
+		if (isHuman() && other.isHuman())
 			return this == other;
 		else
 			return Character.toLowerCase(other.glyph) == Character.toLowerCase(this.glyph);
 	}
 	
 	public void attack(World world, Creature other, String specialType){
-		if (other.hearts < 1 || hearts < 1)
+		if (other.hearts < 1 || hearts < 1 || isHidden() || other.isHidden())
 			return;
 		
 		if (hasDoubleAttackedThisTurn
@@ -225,7 +234,7 @@ public class Creature {
 		if (hasTrait(Trait.SLOWING_ATTACK) && other.hearts > 0)
 			reduceEvasion(world, other);
 		
-		other.loseHearts(world, this, hasTrait(Trait.STRONG_ATTACK) ? 2 : 1, specialType, "You were slain by a " + name());
+		other.loseHearts(world, this, hasTrait(Trait.STRONG_ATTACK) ? 2 : 1, specialType, getSlainByText());
 
 		if (hasTrait(Trait.POISONOUS) && other.hearts > 0)
 			poison(world, other);
@@ -236,6 +245,20 @@ public class Creature {
 			hasDoubleAttackedThisTurn = true;
 			attack(world, other, "again");
 		}
+	}
+	
+	private String getSlainByText() {
+		String text = "You were slain by ";
+		char first = name().charAt(0);
+		
+		if (Character.isUpperCase(first))
+			text += name();
+		else if ("aeiou".contains(""+first)) 
+			text += "an " + name();
+		else 
+			text += "a " + name();
+		
+		return text;
 	}
 	
 	private void reduceEvasion(World world, Creature other) {
@@ -314,10 +337,10 @@ public class Creature {
 			homeScreenPosition = new Point(position.x / 19, position.y / 9); 
 		
 		if (leftHand != null)
-			leftHand.update(this);
+			leftHand.update(world, this);
 
 		if (rightHand != null)
-			rightHand.update(this);
+			rightHand.update(world, this);
 		
 		if (poisonCounter > 0 && poisonCounter-- % 5 == 0)
 			loseHearts(world, lastPoisonedBy, 1, null, "You died of poison from a " + lastPoisonedBy.name());
@@ -333,13 +356,14 @@ public class Creature {
 		
 		if (hasTrait(Trait.HIDER) && hiddenCounter-- < 1){
 			hiddenCounter = 5 + (int)(Math.random() * 5);
+			
 			if (positionBeforeHiding == null)
 				hide(world);
 			else
 				unhide(world);
 		}
 		
-		if (!canEnter(world.tile(position.x, position.y)))
+		if (!isHidden() && !canEnter(world.tile(position.x, position.y)))
 			loseHearts(world, this, 1, null, "You died from standing in " + world.tile(position.x, position.y).description());
 		
 		if (hasTrait(Trait.ROCK_SPITTER) 
@@ -379,7 +403,7 @@ public class Creature {
 			position.y = y;
 			positionBeforeHiding = null;
 		}
-		
+
 		publishMessage(new Unhid(world, this));
 		
 		if (hasTrait(Trait.ROCK_SPITTER))
@@ -387,6 +411,9 @@ public class Creature {
 	}
 
 	private void hide(World world) {
+		if (!world.tile(position.x, position.y).canHideIn())
+			return;
+		
 		positionBeforeHiding = position.copy();
 		publishMessage(new Hid(world, this));
 		position.x = -100;
@@ -398,12 +425,12 @@ public class Creature {
 	}
 
 	public void wander(World world){
-		if (prey != null && (prey.hearts < 1 || prey.isHidden()))
+		if (prey != null && (prey.hearts < 1 || prey.isHidden() || huntCounter-- < 1))
 			prey = null;
 		else if (prey != null && prey.hearts > 0)
 			moveTo(world, prey);
 
-		if (preditor != null && (preditor.hearts < 1 || preditor.isHidden()))
+		if (preditor != null && (preditor.hearts < 1 || preditor.isHidden() || fleeCounter-- < 1))
 			preditor = null;
 		else if (preditor != null && preditor.hearts > 0)
 			moveFrom(world, preditor);
@@ -502,13 +529,17 @@ public class Creature {
 	}
 
 	private Creature prey;
+	private int huntCounter;
 	public void hunt(Creature prey) {
 		this.prey = prey;
+		huntCounter = 6;
 	}
 
 	private Creature preditor;
+	private int fleeCounter;
 	public void fleeFrom(Creature preditor) {
 		this.preditor = preditor;
+		fleeCounter = 4;
 	}
 	
 	public void gainRupees(int amount) {

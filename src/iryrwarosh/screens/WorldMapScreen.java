@@ -28,6 +28,10 @@ public class WorldMapScreen implements Screen {
 	
 	@Override
 	public void displayOutput(AsciiPanel terminal) {
+		terminal.setDefaultBackgroundColor(AsciiPanel.black);
+		terminal.clear();
+		
+		
 		for (int x = 0; x < map.width(); x++)
 		for (int y = 0; y < map.height(); y++){
 			if (showAll)
@@ -41,7 +45,11 @@ public class WorldMapScreen implements Screen {
 				}
 			}
 		}
-		terminal.write('@', playerPosition.x / 19 * 3 + 1, playerPosition.y / 9 * 3 + 1);
+		terminal.write('@', 
+				playerPosition.x / 19 * 3 + 1, playerPosition.y / 9 * 3 + 1, 
+				
+				AsciiPanel.brightWhite, 
+				map.screen(playerPosition.x / 19, playerPosition.y / 9).defaultGround.background());
 	}
 
 	private void displayUnexploredScreen(int x, int y, WorldScreen screen, AsciiPanel terminal) {

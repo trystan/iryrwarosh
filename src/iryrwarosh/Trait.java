@@ -6,7 +6,7 @@ public enum Trait {
 	DOUBLE_ATTACK("double attack"), DOUBLE_MOVE("double move"),
 	SPIKED("spiked"), REGENERATES("regenerates"), POISONOUS("poisonous"), CAMOUFLAGED("camouflaged"), 
 	AGGRESSIVE("aggressive"), HIDER("hider"), TERRITORIAL("territorial"), ROCK_SPITTER("rock spitter"),
-	SOCIAL("social"), FEARFUL("fearful"), LOOTLESS("lootless"),
+	SOCIAL("social"), LOOTLESS("lootless"),
 	EVADE_ATTACK("evasive attacker"), COUNTER_ATTACK("counter attack"),
 	REACH_ATTACK("long reach"), DETECT_CAMOUFLAGED("perceptive"), 
 	DEFLECT_RANGED("deflects projectiles"), DEFLECT_MELEE("blocks melee"),

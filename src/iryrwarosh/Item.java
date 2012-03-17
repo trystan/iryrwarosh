@@ -10,6 +10,10 @@ public class Item {
 	private int collectableValue;
 	public int collectableValue() { return collectableValue; }
 	public void collectableValue(int value) { collectableValue = value; }
+
+	private Boolean canBePickedUp = true;
+	public Boolean canBePickedUp(){ return canBePickedUp; }
+	public void setCanBePickedUp(Boolean value) { canBePickedUp = value; }
 	
 	private String name;
 	public String name() { return name; }
@@ -48,7 +52,7 @@ public class Item {
 		this.evasionModifier = evasionModifier;
 	}
 	
-	public void update(Creature owner){
+	public void update(World world, Creature owner){
 		
 	}
 	

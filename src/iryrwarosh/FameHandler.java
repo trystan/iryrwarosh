@@ -49,36 +49,36 @@ public class FameHandler implements Handler {
 	}
 
 	private void handle(Killed message){
-		if (message.attacker.glyph() != '@')
+		if (!message.attacker.isHuman())
 			return;
 		
-		if (message.attacked.glyph() == '@')
+		if (message.attacked.isHuman())
 			gainFame(message.attacker, 15, message.attacker.name() + " has killed " + message.attacked.name());
 		else if (message.attacked.isMiniboss())
 			gainFame(message.attacker, 5, message.attacker.name() + " has killed " + message.attacked.name());
 		else if (message.attacked.glyph() == 'M')
-			gainFame(message.attacker, 1, message.attacker.name() + " has killed a giant monster");
+			gainFame(message.attacker, 1, message.attacker.name() + " has killed a " + message.attacked.name());
 	}
 
 	private void handle(ExploredNewBiome message){
-		if (message.creature.glyph() != '@')
+		if (!message.creature.isHuman())
 			return;
 		
-		gainFame(message.creature, 8, null);
+		gainFame(message.creature, 9, null);
 	}
 	
 	private void handle(ExploredNewLocation message){
-		if (message.creature.glyph() != '@')
+		if (!message.creature.isHuman())
 			return;
 		
-		gainFame(message.creature, 2, null);
+		gainFame(message.creature, 1, null);
 	}
 	
 	private void handle(DiscoveredLostArtifact message){
-		if (message.creature.glyph() != '@')
+		if (!message.creature.isHuman())
 			return;
 		
-		gainFame(message.creature, 15, message.creature.name() + " has discovered treasure: " + message.item.name());
+		gainFame(message.creature, 10, message.creature.name() + " has found something famous: " + message.item.name());
 	}
 	
 	private void gainFame(Creature creature, int amount, String string){

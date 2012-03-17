@@ -359,18 +359,33 @@ public class Worldgen {
 	}
 	
 	private void setDeadEndTiles(int sx, int sy){
+		Tile liquid = Math.random() < 0.66 ? Tile.WATER1 : Tile.LAVA1;
+		
+		if (Math.random() < 0.33){
+			cells[sx][sy].defaultGround = Tile.WHITE_TILE1;
+			cells[sx][sy].defaultWall = Tile.WHITE_WALL;
+		}
+		
+		Tile random = getRandomWall();
 		switch ((int)(Math.random() * 10)){
+		case 0:
+		case 1: random = Tile.WATER1; break;
+		case 2:
+		case 3: random = Tile.LAVA1; break;
+		case 4: random = Tile.STATUE; break;
+		}
+		switch ((int)(Math.random() * 20)){
 		case 0:
 			addMap(sx, sy, 
 				    "###################"
 				  + "#.................#"
-				  + "#.#.~~~~~t~~~~~.#.#"
-				  + "#...~~.......~~...#"
-				  + "#.~~~.........~~~.#"
-				  + "#...~~.......~~...#"
-				  + "#.#.~~~~~t~~~~~.#.#"
+				  + "#.#.ttttt=ttttt.#.#"
+				  + "#...tt.......tt...#"
+				  + "#.ttt.........ttt.#"
+				  + "#...tt.......tt...#"
+				  + "#.#.ttttt=ttttt.#.#"
 				  + "#.................#"
-				  + "###################", Tile.BRIDGE);
+				  + "###################", liquid);
 			break;
 		case 1:
 			addMap(sx, sy, 
@@ -382,19 +397,19 @@ public class Worldgen {
 				  + "#.t.............t.#"
 				  + "#.ttttttt.ttttttt.#"
 				  + "#.................#"
-				  + "###################", Tile.STATUE);
+				  + "###################", random);
 			break;
 		case 2:
 			addMap(sx, sy, 
 				    "###################"
 				  + "#.................#"
-				  + "# .~~~~~~t~~~~~~..#"
-				  + "#.~~~~~~...~~~~~~.#"
-				  + "#.t.............t.#"
-				  + "#.~~~~~~...~~~~~~.#"
-				  + "#..~~~~~~t~~~~~~..#"
+				  + "# .tttttt=tttttt..#"
+				  + "#.tttttt...tttttt.#"
+				  + "#.=.............=.#"
+				  + "#.tttttt...tttttt.#"
+				  + "#..tttttt=tttttt..#"
 				  + "#.................#"
-				  + "###################", Tile.BRIDGE);
+				  + "###################", liquid);
 			break;
 		case 3:
 			addMap(sx, sy, 
@@ -402,23 +417,23 @@ public class Worldgen {
 				  + "#.................#"
 				  + "#..ttt.......ttt..#"
 				  + "#.tt...........tt.#"
-				  + "#........t........#"
+				  + "#.......t.t.......#"
 				  + "#.tt...........tt.#"
 				  + "#..ttt.......ttt..#"
 				  + "#.................#"
-				  + "###################", Tile.LAVA1);
+				  + "###################", random);
 			break;
 		case 4:
 			addMap(sx, sy, 
-				    "ttttttttttttttttttt"
-				  + "tttttt.......tttttt"
+				    "##ttttttttttttttt##"
+				  + "#ttttt.......ttttt#"
 				  + "tt.....t...t.....tt"
 				  + "t..t..tt...tt..t..t"
 				  + "t.ttt.........ttt.t"
 				  + "t..t..tt...tt..t..t"
 				  + "tt.....t...t.....tt"
-				  + "tttttt.......tttttt"
-				  + "ttttttttttttttttttt", Tile.LAVA1);
+				  + "#ttttt.......ttttt#"
+				  + "##ttttttttttttttt##", liquid);
 			break;
 		case 5:
 			addMap(sx, sy, 
@@ -438,11 +453,11 @@ public class Worldgen {
 				  + "####...........####"
 				  + "##....t..t..t....##"
 				  + "#...t.........t...#"
-				  + "#.t......t......t.#"
+				  + "#.t.....t.t.....t.#"
 				  + "#...t.........t...#"
 				  + "##....t..t..t....##"
 				  + "####...........####"
-				  + "###################", Tile.STATUE);
+				  + "###################", random);
 			break;
 		case 7:
 			cells[sx][sy].defaultGround = Tile.DESERT_SAND1;
@@ -461,26 +476,146 @@ public class Worldgen {
 		case 8:
 			addMap(sx, sy, 
 				    "###################"
-				  + "#~~~~~~~~.~~~~~~~~#"
-				  + "#~~~~~~~~t~~~~~~~~#"
-				  + "#~~~~~~~...~~~~~~~#"
-				  + "#......t...t......#"
-				  + "#~~~~~~~...~~~~~~~#"
-				  + "#~~~~~~~~t~~~~~~~~#"
-				  + "#~~~~~~~~.~~~~~~~~#"
-				  + "###################", Tile.BRIDGE);
+				  + "#tttttttt.tttttttt#"
+				  + "#tttttttt=tttttttt#"
+				  + "#ttttttt...ttttttt#"
+				  + "#......=...=......#"
+				  + "#ttttttt...ttttttt#"
+				  + "#tttttttt=tttttttt#"
+				  + "#tttttttt.tttttttt#"
+				  + "###################", liquid);
 			break;
 		case 9:
 			addMap(sx, sy, 
-				    "ttttttttttttttttttt"
-				  + "tttt...........tttt"
+				    "##ttttttttttttttt##"
+				  + "#ttt...........ttt#"
 				  + "tt...............tt"
 				  + "t......ttttt......t"
 				  + "t.....ttttttt.....t"
 				  + "t......ttttt......t"
 				  + "tt...............tt"
-				  + "tttt...........tttt"
-				  + "ttttttttttttttttttt", Tile.LAVA1);
+				  + "#ttt...........ttt#"
+				  + "##ttttttttttttttt##", liquid);
+			break;
+		case 10:
+			addMap(sx, sy, 
+				    "###################"
+				  + "###.............###"
+				  + "##.....ttttt.....##"
+				  + "#.....tt#t#tt.....#"
+				  + "#.....ttttttt.....#"
+				  + "#.....tt#t#tt.....#"
+				  + "##.....ttttt.....##"
+				  + "###.............###"
+				  + "###################", liquid);
+			break;
+		case 11:
+			addMap(sx, sy, 
+				    "###################"
+				  + "#.................#"
+				  + "#.tt=ttttttttt=tt.#"
+				  + "#.t.............t.#"
+				  + "#.t.&.........&.t.#"
+				  + "#.t.............t.#"
+				  + "#.tt=ttttttttt=tt.#"
+				  + "#.................#"
+				  + "###################", liquid);
+			break;
+		case 12:
+			addMap(sx, sy, 
+				    "###################"
+				  + "##...............##"
+				  + "#...ttttttttttt...#"
+				  + "#.tttttt...tttttt.#"
+				  + "#.tttttt...tttttt.#"
+				  + "#.tttttt...tttttt.#"
+				  + "#...ttttt=ttttt...#"
+				  + "##...............##"
+				  + "###################", liquid);
+			break;
+		case 13:
+			addMap(sx, sy, 
+				    "###################"
+				  + "#.................#"
+				  + "#.&.&.&.&.&.&.&.&.#"
+				  + "#..tttttt=tttttt..#"
+				  + "#.&t...........t&.#"
+				  + "#..tttttt=tttttt..#"
+				  + "#.&.&.&.&.&.&.&.&.#"
+				  + "#.................#"
+				  + "###################", liquid);
+			break;
+		case 14:
+			addMap(sx, sy, 
+				    "###################"
+				  + "####x.........x####"
+				  + "##x.............x##"
+				  + "#x...............x#"
+				  + "#x.....x...x.....x#"
+				  + "#x...............x#"
+				  + "##x.............x##"
+				  + "####x.........x####"
+				  + "###################");
+			break;
+		case 15:
+			addMap(sx, sy, 
+				    "###################"
+				  + "#tt.............tt#"
+				  + "#tt.ttt.....ttt.tt#"
+				  + "#...txt.....txt...#"
+				  + "#.tttxt.....txttt.#"
+				  + "#...txt.....txt...#"
+				  + "#tt.ttt.....ttt.tt#"
+				  + "#tt.............tt#"
+				  + "###################", liquid);
+			break;
+		case 16:
+			addMap(sx, sy, 
+				    "#ttttttttttttttttt#"
+				  + "t...t...t..t..t...t"
+				  + "t...=...t..t..=...t"
+				  + "t...t...t==t..t...t"
+				  + "ttt=ttt==..==tt=ttt"
+				  + "t...t...t==t..t...t"
+				  + "t...=...t..t..=...t"
+				  + "t...t...t..t..t...t"
+				  + "#ttttttttttttttttt#", liquid);
+			break;
+		case 17:
+			addMap(sx, sy, 
+				    "###################"
+				  + "##tt.....=.....tt##"
+				  + "#tttttttt=tttttttt#"
+				  + "#ttttttt...ttttttt#"
+				  + "#=======...=======#"
+				  + "#ttttttt...ttttttt#"
+				  + "#tttttttt=tttttttt#"
+				  + "##tt.....=.....tt##"
+				  + "###################", liquid);
+			break;
+		case 18:
+			addMap(sx, sy,
+				    "###################"
+				  + "#..&...&...&...&..#"
+				  + "#&...x...x...x...&#"
+				  + "#..x...x...x...x..#"
+				  + "#&...x.......x...&#"
+				  + "#..x...x...x...x..#"
+				  + "#&...x...x...x...&#"
+				  + "#..&...&...&...&..#"
+				  + "###################");
+			break;
+		case 19:
+			addMap(sx, sy, 
+				    "###################"
+				  + "##.x.x.x...x.x.x.##"
+				  + "#.ttttttt=ttttttt.#"
+				  + "#xt.............tx#"
+				  + "#.=.............=.#"
+				  + "#xt.............tx#"
+				  + "#.ttttttt=ttttttt.#"
+				  + "##.x.x.x...x.x.x.##"
+				  + "###################");
 			break;
 		}
 		
@@ -756,7 +891,7 @@ public class Worldgen {
 				  + "                   "
 				  + "                   "
 				  + "   .&.x.#.#.x.&.   "
-				  + "   .&.x.#.#.x.&.   "
+				  + "   .............   "
 				  + "   .&.x.#.#.x.&.   "
 				  + "                   "
 				  + "                   "
@@ -842,13 +977,13 @@ public class Worldgen {
 		case 6:
 			addMap(sx, sy, 
 				    "###################"
-				  + "####...........####"
+				  + "###.............###"
 				  + "##...............##"
 				  + "#..             ..#"
 				  + "#..             ..#"
 				  + "#..             ..#"
 				  + "##...............##"
-				  + "####............###"
+				  + "###.............###"
 				  + "###################");
 			break;
 		case 7:
@@ -1280,20 +1415,30 @@ public class Worldgen {
 		Tile floor   = cells[sx][sy].defaultGround;
 		Tile wall    = cells[sx][sy].defaultWall;
 		Tile local   = Math.random() < 0.66 ? wall : getRandomWall();
+		Tile bridge  = Tile.BRIDGE;
 		
 		if (Math.random() < 0.025) local = Tile.STATUE;
 		
 		Tile special = Math.random() < 0.10 ? Tile.STATUE : (Math.random() < 0.50 ? floor : wall);
 		
+		if (wall == Tile.WHITE_WALL){
+			local = Tile.STATUE_WHITE;
+			special = Tile.STATUE_WHITE;
+			bridge = Tile.WHITE_TILE1;
+			if (specificTile != Tile.WATER1 && specificTile != Tile.LAVA1 && specificTile != Tile.BRIDGE)
+				specificTile = Tile.STATUE_WHITE;
+		}
+		
 		for (int x = 0; x < screenWidth; x++)
 		for (int y = 0; y < screenHeight; y++) {
 			switch (data.charAt(x + y * screenWidth)){
-			case '.': tiles[mx+x][my+y] = floor.variation(); break;
-			case '#': tiles[mx+x][my+y] = wall.variation(); break;
-			case 'x': tiles[mx+x][my+y] = local.variation(); break;
-			case '~': tiles[mx+x][my+y] = Tile.WATER1.variation(); break;
+			case '.': tiles[mx+x][my+y] = floor.variation(mx+x, my+y); break;
+			case '#': tiles[mx+x][my+y] = wall.variation(mx+x, my+y); break;
+			case 'x': tiles[mx+x][my+y] = local.variation(mx+x, my+y); break;
+			case '~': tiles[mx+x][my+y] = Tile.WATER1.variation(mx+x, my+y); break;
 			case '&': tiles[mx+x][my+y] = special; break;
 			case 't': tiles[mx+x][my+y] = specificTile; break;
+			case '=': tiles[mx+x][my+y] = bridge.variation(mx+x, my+y); break;
 			case ' ': break;
 			}
 		}
@@ -1351,7 +1496,7 @@ public class Worldgen {
 		for (int x2 = x; x2 < x + w; x2++)
 		for (int y2 = y; y2 < y + h; y2++)
 			if (x2 >= 0 && y2 >= 0 && x2 < tiles.length && y2 < tiles[0].length)
-				tiles[x2][y2] = tile.variation();
+				tiles[x2][y2] = tile.variation(x2, y2);
 	}
 	
 	public void addLakeToTiles(){

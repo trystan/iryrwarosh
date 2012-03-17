@@ -1,5 +1,6 @@
 package iryrwarosh.screens;
 
+import iryrwarosh.Common;
 import iryrwarosh.Creature;
 import iryrwarosh.Factory;
 import iryrwarosh.Item;
@@ -12,13 +13,15 @@ import iryrwarosh.Worldgen;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import asciiPanel.AsciiPanel;
 
 public class ChooseStartingItemsScreen implements Screen {
-	private boolean[] picked;
 	private Item[] items;
 	private Factory factory;
+	private List<Item> chosen = new ArrayList<Item>();
 	
 	public ChooseStartingItemsScreen(){
 		factory = new Factory();
@@ -37,28 +40,29 @@ public class ChooseStartingItemsScreen implements Screen {
 			factory.jumpingBoots(),
 			factory.heavyArmor(),
 		};
-		
-		picked = new boolean[items.length];
 	}
 	
 	@Override
 	public void displayOutput(AsciiPanel terminal) {
+		terminal.setDefaultForegroundColor(Common.guiForeground);
+		terminal.setDefaultBackgroundColor(Common.guiBackground);
 		terminal.clear();
-		terminal.write(" Choose your two items. Each item has at least one passive ability and an", 1, 1);
-		terminal.write("active ability that cost rupees to use. You should start with at least one", 1, 2);
-		terminal.write("melee weapon since they increase the damage done when bumping into others", 1, 3);
-		terminal.write("and give you chances to make free attacks.", 1, 4);
+		terminal.write(" Choose your two items. Most have at least one passive ability and an active", 1, 1);
+		terminal.write("ability that will cost a few rupees to use. Start with a melee weapon since", 1, 2);
+		terminal.write("they increase the damage done when bumping into others and often allow extra", 1, 3);
+		terminal.write("attacks when evading, moving, or defending. Even items that don't seem useful", 1, 4);
+		terminal.write("have their place. The world has many creatures who guard other items.", 1, 5);
 		
 		
-		for (int i = 0; i < picked.length; i++)
+		for (int i = 0; i < items.length; i++)
 			writeChoice(terminal, i);
 	}
 	
 	private void writeChoice(AsciiPanel terminal, int i){
-		Color fg = picked[i] ? AsciiPanel.brightWhite : AsciiPanel.white;
+		Color fg = chosen.contains(items[i]) ? AsciiPanel.brightWhite : Common.guiForeground;
 		
 		char key = (char)('a' + i);
-		terminal.write("[" + key + "] ", 1, 6 + i, fg);
+		terminal.write("[" + key + "] ", 1, 7 + i, fg);
 		terminal.write(items[i].name(), items[i].color());
 		terminal.write(". " + items[i].description(), fg);
 		
@@ -66,36 +70,19 @@ public class ChooseStartingItemsScreen implements Screen {
 
 	@Override
 	public Screen respondToUserInput(KeyEvent key) {
-		
-		switch (key.getKeyChar()){
-		case 'a': picked[0] = !picked[0]; break;
-		case 'b': picked[1] = !picked[1]; break;
-		case 'c': picked[2] = !picked[2]; break;
-		case 'd': picked[3] = !picked[3]; break;
-		case 'e': picked[4] = !picked[4]; break;
-		case 'f': picked[5] = !picked[5]; break;
-		case 'g': picked[6] = !picked[6]; break;
-		case 'h': picked[7] = !picked[7]; break;
-		case 'i': picked[8] = !picked[8]; break;
-		case 'j': picked[9] = !picked[8]; break;
-		case 'k': picked[10] = !picked[10]; break;
-		case 'l': picked[11] = !picked[11]; break;
-		case 'm': picked[11] = !picked[11]; break;
-		}
-		
-		Item item1 = null;
-		Item item2 = null;
-		for (int i = 0; i < picked.length; i++){
-			if (picked[i] && item1 == null)
-				item1 = items[i];
-			else if (picked[i] && item2 == null)
-				item2 = items[i];
-		}
-		
-		if (item1 == null || item2 == null)
+		int i = key.getKeyChar() - 'a';
+		if (i < 0 || i >= items.length)
 			return this;
+		
+		if (chosen.contains(items[i]))
+			chosen.remove(items[i]);
 		else
-			return newGame(factory, item1, item2);
+			chosen.add(items[i]);
+		
+		if (chosen.size() == 2)
+			return newGame(factory, chosen.get(0), chosen.get(1));
+		else 
+			return this;
 	}
 	
 	private Screen newGame(Factory factory, Item item1, Item item2){
@@ -105,7 +92,7 @@ public class ChooseStartingItemsScreen implements Screen {
 		player.swapLeftHand(world, item1); 
 		player.swapRightHand(world, item2);
 		
-		for (int i = 0; i < 60; i++)
+		for (int i = 0; i < 80; i++)
 			factory.zora(world);
 		
 		for (int i = 0; i < 100; i++)
@@ -133,13 +120,16 @@ public class ChooseStartingItemsScreen implements Screen {
 		}
 
 		for (Point screen : world.map().getDeadEnds()){
-			switch ((int)(Math.random() * 5)){
-			case 0: world.addToScreen(factory.evasionPotion(), screen.x, screen.y); break;
-			case 1: 
-			case 2: world.addToScreen(factory.heartIncrease(), screen.x, screen.y); break;
-			case 3: 
-			case 4: factory.miniboss(world, screen.x, screen.y); break;
-			}				
+			if (world.map().screen(screen.x, screen.y).defaultWall == Tile.WHITE_WALL){
+				factory.miniboss(world, screen.x, screen.y);
+				world.add(factory.lostArtifact(), screen.x * 19 + 19 / 2, screen.y * 9 + 9 / 2);
+			} else {
+				switch ((int)(Math.random() * 5)){
+				case 0: world.addToScreen(factory.evasionPotion(), screen.x, screen.y); break;
+				case 1: world.addToScreen(factory.heartContainer(), screen.x, screen.y); break;
+				default: factory.miniboss(world, screen.x, screen.y); break;
+				}
+			}
 		}
 		
 		world.update();

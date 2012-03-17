@@ -18,6 +18,8 @@ public class ApplicationMain extends JFrame implements KeyListener {
 	public ApplicationMain(){
 		super();
 		terminal = new AsciiPanel();
+		terminal.setDefaultBackgroundColor(Common.guiBackground);
+		terminal.setDefaultForegroundColor(Common.guiForeground);
 		add(terminal);
 		pack();
 		screen = new StartScreen();

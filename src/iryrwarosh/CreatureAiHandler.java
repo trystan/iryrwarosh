@@ -13,10 +13,10 @@ public class CreatureAiHandler implements Handler {
 
 	public void handle(CallForHelp message) {
 		for (Creature c : message.world.creatures()){
-			if (!message.attacked.isFriendlyTo(c) || c == message.attacked)
+			if (!c.isFriendlyTo(message.attacked) || c == message.attacked)
 				continue;
 			
-			if (c.canHear(message.attacked))
+			if (!c.canHear(message.attacked))
 				continue;
 			
 			c.hunt(message.attacker);
@@ -26,7 +26,5 @@ public class CreatureAiHandler implements Handler {
 	public void handle(Attacked message) {
 		if (message.attacked.hasTrait(Trait.HUNTER))
 			message.attacked.hunt(message.attacker);
-		else if (message.attacked.hasTrait(Trait.FEARFUL))
-			message.attacked.fleeFrom(message.attacker);
 	}
 }

@@ -23,7 +23,7 @@ public class ItemSpecialsSaga implements Handler {
 			if (other != null 
 					&& !m.creature.isFriendlyTo(other) 
 					&& other.hasTrait(Trait.REACH_ATTACK) && Math.random() < 0.75){
-				other.attack(m.world, m.creature, "with it's long reach");
+				other.attack(m.world, m.creature, other.isPlayer() ? "with your long reach" : "with it's long reach");
 			}
 		}
 	}

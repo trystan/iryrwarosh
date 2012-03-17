@@ -11,6 +11,7 @@ public class World {
 	public List<Creature> creatures() { return creatures; }
 	
 	private Item[][] items;
+	private List<Item> itemList;
 	
 	private List<Projectile> projectiles;
 	public List<Projectile> projectiles() { return projectiles; }
@@ -24,6 +25,7 @@ public class World {
 		this.map = map;
 		this.creatures = new ArrayList<Creature>();
 		this.items = new Item[tiles.length][tiles[0].length];
+		this.itemList = new ArrayList<Item>();
 		this.projectiles = new ArrayList<Projectile>();
 	}
 	
@@ -56,6 +58,11 @@ public class World {
     public void update(){
     	updateLava();
     	updateWater();
+    	
+    	List<Item> itemsToUpdate = new ArrayList<Item>();
+    	itemsToUpdate.addAll(itemList);
+    	for (Item item : itemsToUpdate)
+    		item.update(this, null);
     	
     	List<Projectile> stillFlying = new ArrayList<Projectile>();
     	for (Projectile p : projectiles){
@@ -97,7 +104,7 @@ public class World {
         	if (Math.random() < 0.75)
         		continue;
         	
-        	tiles[x][y] = Tile.LAVA1.variation();
+        	tiles[x][y] = Tile.LAVA1.variation(x, y);
         }
 	}
 
@@ -110,7 +117,7 @@ public class World {
         	if (x < tiles.length-1 && tiles[x+1][y].isWater())
         		tiles[x][y] = tiles[x+1][y];
         	else
-        		tiles[x][y] = Tile.WATER1.variation();
+        		tiles[x][y] = Tile.WATER1.variation(x, y);
         }
     }
 
@@ -118,6 +125,9 @@ public class World {
 		while (creature.position == null){
 			int x = (int)(Math.random() * tiles.length);
 			int y = (int)(Math.random() * tiles[0].length);
+			
+			if (creature.isHuman() && map.screen(x/19, y/9).defaultGround == Tile.DESERT_SAND1)
+				continue; // too crowded in the deserts
 			
 			if (creature.canEnter(tile(x,y)) && creature(x,y) == null)
 				creature.position = new Point(x, y);
@@ -145,25 +155,22 @@ public class World {
 				continue;
 			
 			items[x][y] = item;
+			itemList.add(item);
 			break;
 		}
 	}
 
 	public void add(Item item, int x, int y){
-	    ArrayList<Point> candidates = new ArrayList<Point>();
-        candidates.add(new Point(x,y));
-
-        int tries = 0;
-        while (candidates.size() > 0 && tries++ < 25){
-            Point dest = candidates.remove(0);
-
-            if (item(dest.x, dest.y) == null && tile(dest.x, dest.y).isGround()){
-                items[dest.x][dest.y] = item;
-                return;
-            } else {
-                candidates.addAll(dest.neighbors());
-            }
-        }
+		if (item == null || x < 0 || y < 0 || x >= items.length || y >= items[0].length)
+			return;
+		
+		removeItem(x, y);
+		
+        items[x][y] = item;
+		itemList.add(item);
+        Creature here = creature(x, y);
+        if (here != null && here.hearts() > 0)
+        	item.onCollide(this, here);
     }
 
 	public void add(Item item) {
@@ -175,9 +182,14 @@ public class World {
 			y = (int)(Math.random() * tiles[0].length);
 		}
 		items[x][y] = item;
+		itemList.add(item);
 	}
 
 	public void removeItem(int x, int y) {
+		if (items[x][y] == null)
+			return;
+		
+		itemList.remove(items[x][y]);
 		items[x][y] = null;
 	}
 	

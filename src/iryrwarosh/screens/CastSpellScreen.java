@@ -4,6 +4,7 @@ import iryrwarosh.Creature;
 import iryrwarosh.Point;
 import iryrwarosh.Projectile;
 import iryrwarosh.Tile;
+import iryrwarosh.Common;
 import iryrwarosh.World;
 
 import java.awt.event.KeyEvent;
@@ -28,11 +29,11 @@ public class CastSpellScreen implements Screen {
 		terminal.clear(' ', 1, 20, 31, 4);
 		terminal.write("What do you want to cast?", 1, 20);
 		terminal.write(" [1] Fireball      cost 10", 1, 21)
-				.write((char)4, Tile.hsv(60, 25, 75));
+				.write((char)4, Common.hsv(60, 25, 75));
 		terminal.write(" [2] Blink         cost  5", 1, 22)
-				.write((char)4, Tile.hsv(60, 25, 75));
+				.write((char)4, Common.hsv(60, 25, 75));
 		terminal.write(" [3] Fireblast     cost 25", 1, 23)
-				.write((char)4, Tile.hsv(60, 25, 75));
+				.write((char)4, Common.hsv(60, 25, 75));
 	}
 
 	@Override

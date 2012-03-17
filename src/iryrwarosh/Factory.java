@@ -1,6 +1,5 @@
 package iryrwarosh;
 
-import iryrwarosh.screens.CastAdvancedSpellScreen;
 import iryrwarosh.screens.CastSpellScreen;
 import iryrwarosh.screens.DiveScreen;
 import iryrwarosh.screens.JumpScreen;
@@ -20,35 +19,39 @@ public class Factory {
 	private HashMap<Tile,List<Trait>> monsterTraits;
 	private List<Item> minibossLoot;
 	private List<Creature> rivals;
+	private int defaultHearts;
 	
 	public Factory(){
+		defaultHearts = 15;
 		setMonsterTraits();
 		
 		minibossLoot = new ArrayList<Item>();
 		minibossLoot.add(this.ringOfRegeneration());
 		minibossLoot.add(this.magicCarpet());
-		minibossLoot.add(this.advancedSpellBook());
+		minibossLoot.add(this.mutationRing());
 		minibossLoot.add(this.ringOfEvasion());
 		minibossLoot.add(this.darkCloak());
 		minibossLoot.add(this.rupeeMachine());
 		minibossLoot.add(this.rupeeAmulet());
-		minibossLoot.add(this.evasionPotion());
-		minibossLoot.add(this.lostArtifact());
+		minibossLoot.add(this.spikedArmor());
+		minibossLoot.add(this.bagOfImps());
+		minibossLoot.add(this.magicWand());
+		minibossLoot.add(this.bombs());
 		Collections.shuffle(minibossLoot);
 		
 		rivals = new ArrayList<Creature>();
-		rivals.add(rival("Dork",   0, knife(), bow(), new RivalAi(0.01)));
-		rivals.add(rival("Lame",  30, staff(), null, new RivalAi(0.00)));
-		rivals.add(rival("Bela",  60, spear(), null, new RivalAi(0.01)));
-		rivals.add(rival("Lulz",  90, club(), null, new RivalAi(0.05)));
-		rivals.add(rival("Link", 120, sword(), shield(), new RivalAi(0.005)));
-		rivals.add(rival("Dojj", 150, knife(), ringOfEvasion(), new RivalAi(0.005)));
-		rivals.add(rival("Majk", 180, staff(), advancedSpellBook(), new RivalAi(0.01)));
-		rivals.add(rival("Ring", 210, ringOfEvasion(), ringOfRegeneration(), new RivalAi(0.01)));
-		rivals.add(rival("Swim", 240, club(), snorkel(), new RivalAi(0.01)));
-		rivals.add(rival("Tify", 270, spear(), spectacles(), new RivalAi(0.01)));
-		rivals.add(rival("Hans", 300, spear(), club(), new RivalAi(0.01)));
-		rivals.add(rival("Mr X", 330, spear(), knife(), new RivalAi(0.005)));
+		rivals.add(rival("Lame",   0, knife(), bow(), new RivalAi(0.01, 1.0)));
+		rivals.add(rival("Dork",  30, staff(), null, new RivalAi(0.00, 1.0)));
+		rivals.add(rival("Max" + (char)4, 60, knife(), ringOfEvasion(), new RivalAi(0.005, 0.5)));
+		rivals.add(rival("Lulz",  90, club(), null, new RivalAi(0.05, 1.0)));
+		rivals.add(rival("Link", 120, sword(), shield(), new RivalAi(0.005, 0.1)));
+		rivals.add(rival("Bela", 150, spear(), null, new RivalAi(0.01, 0.5)));
+		rivals.add(rival("L33t", 180, knife(), club(), new RivalAi(0.01, 0.5)));
+		rivals.add(rival("Mr X", 210, darkCloak(), knife(), new RivalAi(0.005, 0.0)));
+		rivals.add(rival("Toad", 240, club(), snorkel(), new RivalAi(0.01, 0.5)));
+		rivals.add(rival("Tify", 270, spear(), spectacles(), new RivalAi(0.01, 0.5)));
+		rivals.add(rival("Muto", 130, staff(), mutationRing(), new RivalAi(0.01, 0.5)));
+		rivals.add(rival("Al  ", 330, magicCarpet(), null, new RivalAi(0.01, 0.5)));
 		Collections.shuffle(rivals);
 	}
 	
@@ -60,17 +63,17 @@ public class Factory {
 			
 			List<Trait> traits = new ArrayList<Trait>();
 			
+			if (biome == Tile.WATER1){
+				traits.add(Trait.SWIMMER);
+			} else {
+				traits.add(Trait.WALKER);
+			}
+			
 			switch ((int)(Math.random() * 4)){
 			case 0: traits.add(Trait.POISONOUS); break;
 			case 1: traits.add(Trait.AGGRESSIVE); break;
 			case 2: traits.add(Trait.DOUBLE_ATTACK); break;
 			case 3: traits.add(Trait.DOUBLE_MOVE); break;
-			}
-			
-			if (biome == Tile.WATER1){
-				traits.add(Trait.SWIMMER);
-			} else {
-				traits.add(Trait.WALKER);
 			}
 			
 			while (traits.size() < 4){
@@ -86,17 +89,17 @@ public class Factory {
 	public Item knife(){
 		Item item = new Item("knife", ')', Tile.WHITE_ROCK.background(), "Melee weapon that attacks when you evade. Can be poisoned."){
 			int poisonCounter = 0;
-			World world;
 			
-			public void update(Creature owner){
-				super.update(owner);
+			public void update(World world, Creature owner){
+				super.update(world, owner);
 				
 				if (poisonCounter > 0)
 					poisonCounter--;
 				
 				if (poisonCounter == 0 && hasTrait(Trait.POISONOUS)) {
 					removeTrait(Trait.POISONOUS);
-					MessageBus.publish(new Note(world, owner, "Your knife is no longer poisonous."));
+					if (owner != null)
+						MessageBus.publish(new Note(world, owner, "Your knife is no longer poisonous."));
 				}
 			}
 
@@ -105,8 +108,6 @@ public class Factory {
 					MessageBus.publish(new Note(world, owner, "You need more than 1 rupee or heart to poison your knife."));
 					return screen;
 				}
-				
-				this.world = world;
 				
 				if (!hasTrait(Trait.POISONOUS))
 					addTrait(Trait.POISONOUS);
@@ -133,11 +134,12 @@ public class Factory {
 				
 				for (Point p : owner.position.neighbors()){
 					Creature other = world.creature(p.x, p.y);
-					if (other == null || owner.isFriendlyTo(other))
+					if (other == null)
 						continue;
 					
 					owner.attack(world, other, "with a wide swing");
 				}
+				owner.loseRupees(world, 1);
 				return screen;
 			}
 		};
@@ -182,7 +184,7 @@ public class Factory {
 	}
 	
 	public Item spear(){
-		Item item = new Item("spear", ')', Tile.BROWN_ROCK.background(), "Melee weapon that auto-attacks near you. Can be thrown."){
+		Item item = new Item("spear", ')', Tile.BROWN_ROCK.background(), "Long melee weapon that auto-attacks near you. Can be thrown."){
 			public Screen use(Screen screen, World world, Creature owner){
 				if (owner.rupees() + owner.hearts() <= 2) {
 					MessageBus.publish(new Note(world, owner, "You need more than 2 rupees or hearts to throw a spear."));
@@ -214,8 +216,9 @@ public class Factory {
 	}
 	
 	public Item staff(){
-		Item item = new Item("staff", ')', Tile.BROWN_ROCK.background(), "Melee weapon that can parry attacks and will counter attack.");
+		Item item = new Item("long staff", ')', Tile.BROWN_ROCK.background(), "Long melee weapon that can also parry and counter attack.");
 		item.addTrait(Trait.COUNTER_ATTACK);
+		item.addTrait(Trait.REACH_ATTACK);
 		item.addTrait(Trait.DEFLECT_MELEE);
 		item.addTrait(Trait.STRONG_ATTACK);
 		return item;
@@ -238,7 +241,7 @@ public class Factory {
 		char glyph = glyphs[(int)(Math.random() * glyphs.length)];
 		
 		int hue = (int)(Math.random() * 360);
-		int hp = 5 + (int)(Math.random() * 6);
+		int hp = defaultHearts / 2 + (int)(Math.random() * defaultHearts / 2);
 		
 		List<Trait> traits = new ArrayList<Trait>();
 		traits.add(Trait.WALKER);
@@ -253,7 +256,7 @@ public class Factory {
 				traits.add(trait);
 		}
 		
-		Creature boss = new Creature(makeMinibossName(traits), glyph, Tile.hsv(hue, 33, 66), hp){
+		Creature boss = new Creature(makeMinibossName(traits), glyph, Common.hsv(hue, 33, 66), hp){
 			public void update(World world){
 				super.update(world);
 				wander(world);
@@ -274,20 +277,24 @@ public class Factory {
 		
 		if (minibossLoot.size() > 0)
 			boss.setLoot(minibossLoot.remove(0));
-		else if (Math.random() < 0.5)
-			boss.setLoot(heartIncrease());
-		else
-			boss.setLoot(lostArtifact());
+		else {
+			switch ((int)(Math.random() * 4)){
+			case 0: boss.setLoot(heartContainer()); break;
+			case 1: boss.setLoot(bigMoney()); break;
+			case 2: boss.setLoot(evasionPotion()); break;
+			case 3: boss.setLoot(this.lostArtifact()); break;
+			}
+		}
 		
 		return boss;
 	}
 
 	private String makeMinibossName(List<Trait> traits) {
 		
-		String[] first = { "giant", "ugly", "malformed", "putrid", "rotten", "infested", "putrid", "crazed", "wild" };
+		String[] first = { "giant", "ugly", "malformed", "putrid", "rotten", "infested", "ancient", "crazed", "wild", "hated" };
 
 		String[] second = { "spider", "squid", "jellyfish", "bird", "urchin", "demon", "scorpion", "insect", "blob",
-				"wolf", "lion", "serpent", "monster" };
+				"evil", "best", "serpent", "monster" };
 		
 		String name = first[(int)(Math.random() * first.length)]
 		            + " " + second[(int)(Math.random() * second.length)];
@@ -297,7 +304,7 @@ public class Factory {
 	
 	public Creature goblin(final World world){
 		int hue = 30 + (int)(Math.random() * 90);
-		Creature goblin = new Creature("goblin", 'g', Tile.hsv(hue, 50, 50), 3){
+		Creature goblin = new Creature("goblin", 'g', Common.hsv(hue, 50, 50), 3){
 			public void update(World world){
 				super.update(world);
 				wander(world);
@@ -385,6 +392,9 @@ public class Factory {
 		
 		boolean isBigMonster = Math.random() * 1000 < (monstersCreated - 300);
 		
+		if (isBigMonster)
+			name = "giant " + name;
+		
 		Creature monster = new Creature(name, isBigMonster ? 'M' : 'm', color, isBigMonster ? 7 : 3){
 			public void update(World world){
 				super.update(world);
@@ -413,7 +423,7 @@ public class Factory {
 	}
 
 	public Creature player(World world) {
-		Creature player = new Creature("player", '@', AsciiPanel.brightWhite, 10);
+		Creature player = new Creature("player", '@', AsciiPanel.brightWhite, defaultHearts);
 		player.addTrait(Trait.WALKER);
 		player.addTrait(Trait.LOOTLESS);
 		world.add(player);
@@ -438,7 +448,7 @@ public class Factory {
 	}
 	
 	public Creature rival(String name, int hue, Item item1, Item item2, final RivalAi ai){
-		Creature rival = new Creature(name, '@', Tile.hsv(hue, 80, 80), 10){
+		Creature rival = new Creature(name, '@', Common.hsv(hue, 80, 80), defaultHearts){
 			public void update(World world){
 				super.update(world);
 				ai.update(world, this);
@@ -455,7 +465,7 @@ public class Factory {
 			rival.swapRightHand(null, item2);
 		
 		if (Math.random() < 0.5)
-			rival.setLoot(heartIncrease());
+			rival.setLoot(heartContainer());
 		else
 			rival.setLoot(bigMoney());
 		
@@ -463,19 +473,57 @@ public class Factory {
 	}
 
 	public Item heavyArmor() {
-		Item item = new Item("heavy armor", '[', AsciiPanel.yellow, -2, "Reduces damage done from heavy hitters.");
+		Item item = new Item("heavy armor", '[', AsciiPanel.yellow, -2, "Reduces damage from heavy hitters.");
 		item.addTrait(Trait.EXTRA_DEFENSE);
+		return item;
+	}
+	
+	public Item spikedArmor() {
+		Item item = new Item("spiked armor", '[', AsciiPanel.yellow, -2, "Reduces damage from heavy hitters. Also covered in spikes.");
+		item.addTrait(Trait.EXTRA_DEFENSE);
+		item.addTrait(Trait.SPIKED);
 		return item;
 	}
 
 	public Item shield() {
-		Item item = new Item("shield", '[', AsciiPanel.yellow, -1, "Deflects projectiles.");
+		Item item = new Item("large shield", '[', AsciiPanel.yellow, -1, "Deflects projectiles. Can be used to scare others nearby."){
+			public Screen use(Screen screen, World world, Creature player) {
+				if (player.rupees() + player.hearts() <= 1){
+					MessageBus.publish(new Note(world, player, "You need more than 1 rupee or heart to intimidate others."));
+					return screen;
+				}
+
+				int number = 0;
+				
+				for (Creature c : world.creaturesNear(player)){
+					if (c.isFriendlyTo(player) || c.isMiniboss())
+						continue;
+					
+					number++;
+					c.fleeFrom(player);
+					player.loseRupees(world, 1);
+				}
+				
+				switch(number){
+				case 0:
+					MessageBus.publish(new Note(world, player, "You swing wildly but didn't scare anyone away."));
+					break;
+				case 1:
+					MessageBus.publish(new Note(world, player, "You swing wildly and scare 1 nearby creature."));
+					break;
+				default:
+					MessageBus.publish(new Note(world, player, "You swing wildly and scare " + number + " nearby creatures."));
+					break;
+				}
+				return screen;
+			}
+		};
 		item.addTrait(Trait.DEFLECT_RANGED);
 		return item;
 	}
 
 	public Item spectacles() {
-		Item item = new Item("spectacles", '/', Tile.hsv(220, 15, 50), "Allows you to see camouflaged creatures. Use to see far away."){
+		Item item = new Item("spectacles", '/', Common.hsv(220, 15, 50), "Allows you to see camouflaged creatures. Use to see far away."){
 			public Screen use(Screen screen, World world, Creature player) {
 				if (player.rupees() + player.hearts() <= 1){
 					MessageBus.publish(new Note(world, player, "You need more than 1 rupee or heart to look far away."));
@@ -491,7 +539,7 @@ public class Factory {
 	}
 
 	public Item bow() {
-		Item item = new Item("bow", ')', Tile.hsv(45, 50, 50), "Shoots deady arrows."){
+		Item item = new Item("bow", ')', Common.hsv(45, 50, 50), "Shoots deady arrows."){
 			public Screen use(Screen screen, World world, Creature owner){
 				if (owner.rupees() + owner.hearts() <= 1){
 					MessageBus.publish(new Note(world, owner, "You need more than 1 rupee or heart to shoot arrows."));
@@ -520,6 +568,67 @@ public class Factory {
 		return item;
 	}
 
+	public Item bombs() {
+		Item item = new Item("bombs", ')', Common.hsv(220, 75, 75), "Pay 3" + (char)4 + " to place a bomb."){
+			public Screen use(Screen screen, World world, Creature owner){
+				if (owner.rupees() + owner.hearts() <= 3){
+					MessageBus.publish(new Note(world, owner, "You need more than 3 rupees and hearts to place a bomb."));
+					return screen;
+				}
+				
+				Point where = owner.position;
+				
+				world.add(bomb(owner, where.x, where.y), where.x, where.y);
+				owner.loseRupees(world, 1);
+				return screen;
+			}
+		};
+		item.setCanBePickedUp(false);
+		return item;
+	}
+	
+	private Item bomb(final Creature owner, final int x, final int y) {
+		Item item = new Item("bomb", 248, Common.hsv(220, 75, 75), "Stand back!"){
+			int countdown = 3;
+			
+			public void update(World world, Creature owner){
+				if (countdown-- == 0)
+					explode(world);
+			}
+			
+			private void explode(World world){
+				Creature here = world.creature(x, y);
+				if (here != null)
+					here.loseHearts(world, owner, 5, "with a bomb", "You have been blown up by one of " + owner.name() + "'s bomb");
+				
+				for (Point p : new Point(x, y).neighbors()){
+					here = world.creature(p.x, p.y);
+					if (here != null)
+						here.loseHearts(world, owner, 2, "with a bomb", "You have been blown up by one of " + owner.name() + "'s bomb");
+				}
+				world.removeItem(x, y);
+				world.add(smoke(x, y), x, y);
+				for (Point p : new Point(x, y).neighbors()){
+					world.removeItem(p.x, p.y);
+					world.add(smoke(p.x, p.y), p.x, p.y);
+				}
+			}
+		};
+		item.setCanBePickedUp(false);
+		return item;
+	}
+	
+	private Item smoke(final int x, final int y) {
+		Item item = new Item("smoke", '*', Common.hsv(220, 0, 75), "Smoke from a bomb"){
+			
+			public void update(World world, Creature owner){
+				world.removeItem(x, y);
+			}
+		};
+		item.setCanBePickedUp(false);
+		return item;
+	}
+	
 	public Item snorkel() {
 		Item item = new Item("snorkel", '/', Tile.WATER2.color(), "Allows you to swim. Can be used to swim underwater."){
 			public Screen use(Screen screen, World world, Creature owner){
@@ -539,7 +648,7 @@ public class Factory {
 	}
 
 	public Item firstAidKit() {
-		Item item = new Item("first aid kit", '+', Tile.hsv(20, 50, 50), "Use to cure poison or recover health."){
+		Item item = new Item("first aid kit", '+', Common.hsv(20, 50, 50), "Use to cure poison or recover health."){
 			public Screen use(Screen screen, World world, Creature owner){
 				if (owner.rupees() < 5){
 					MessageBus.publish(new Note(world, owner, "You need at least 5 rupees to cure poison or heal yourself."));
@@ -567,11 +676,11 @@ public class Factory {
 	}
 
 	public Item rupeeMachine() {
-		Item item = new Item("rupee machine", '/', Tile.hsv(60, 75, 25), "Automatically creates rupees."){
-			public void update(Creature owner){
-				super.update(owner);
+		Item item = new Item("rupee machine", '/', Common.hsv(210, 25, 90), "Automatically creates rupees."){
+			public void update(World world, Creature owner){
+				super.update(world, owner);
 				
-				if (Math.random() < 0.05)
+				if (owner != null && Math.random() < 0.1)
 					owner.gainRupees(1);
 			}
 		};
@@ -579,10 +688,10 @@ public class Factory {
 	}
 	
 	public Item rupeeAmulet() {
-		Item item = new Item("rupee amulet", '=', Tile.hsv(60, 75, 25), "Can be used to convert your hearts into rupees."){
+		Item item = new Item("rupee amulet", '=', Common.hsv(210, 25, 90), "Can be used to convert your hearts into rupees."){
 			public Screen use(Screen screen, World world, Creature owner){
 				owner.loseHearts(world, owner, 1, null, "You turned the last of your hearts into rupees");
-				owner.gainRupees(10);
+				owner.gainRupees(20);
 				return screen;
 			}
 		};
@@ -590,7 +699,7 @@ public class Factory {
 	}
 	
 	public Item spellBook() {
-		Item item = new Item("spellbook", '+', Tile.hsv(200, 50, 50), "Used to cast one of 3 basic spells."){
+		Item item = new Item("spellbook", '+', Common.hsv(200, 50, 50), "Used to cast one of 3 basic spells."){
 			public Screen use(Screen screen, World world, Creature owner){
 				return new CastSpellScreen(screen, world, owner);
 			}
@@ -603,24 +712,15 @@ public class Factory {
 		item.addTrait(Trait.FLIER);
 		return item;
 	}
-
-	public Item advancedSpellBook() {
-		Item item = new Item("advanced spellbook", '+', AsciiPanel.white, "Use to cast one of 3 advanced spells."){
-			public Screen use(Screen screen, World world, Creature owner){
-				return new CastAdvancedSpellScreen(screen, world, owner);
-			}
-		};
-		return item;
-	}
 	
-	public Item heartIncrease(){
+	public Item heartContainer(){
 		Item item = new Item("heart increase", 3, AsciiPanel.brightRed, "Increases your max hearts."){
 			public void onCollide(World world, Creature collider){
-				if (collider.glyph() != '@')
-					return; // only the player should be able to get these
+				if (!collider.isHuman())
+					return;
 				
 				collider.increaseMaxHearts(1);
-				collider.recoverHearts(100);
+				collider.recoverHearts(10);
 				world.removeItem(collider.position.x, collider.position.y);
 			}
 		};
@@ -629,10 +729,10 @@ public class Factory {
 	}
 	
 	public Item bigMoney(){
-		Item item = new Item("rupees", 4, Tile.hsv(210, 25, 90), "Rupees are used for special actions."){
+		Item item = new Item("rupees", 4, Common.hsv(210, 25, 90), "Rupees are used for special actions."){
 			public void onCollide(World world, Creature collider){
-				if (collider.glyph() != '@')
-					return; // only the player should be able to get these
+				if (!collider.isHuman())
+					return;
 				
 				world.removeItem(collider.position.x, collider.position.y);
 				collider.gainRupees(50);
@@ -643,10 +743,10 @@ public class Factory {
 	}
 
 	public Item evasionPotion(){
-		Item item = new Item("evasion potion", '!', Tile.hsv(90, 33, 66), "Permanently boost your evasion."){
+		Item item = new Item("evasion potion", '!', Common.hsv(90, 33, 66), "Permanently boost your evasion."){
 			public void onCollide(World world, Creature collider){
-				if (collider.glyph() != '@')
-					return; // only the player should be able to get these
+				if (!collider.isHuman())
+					return;
 				
 				world.removeItem(collider.position.x, collider.position.y);
 				collider.modifyEvasion(1);
@@ -657,17 +757,17 @@ public class Factory {
 	}
 
 	public Item lostArtifact(){
-		String[] first = { "ancient", "historic", "old", "lost", "antique", "famous", "missing" };
+		String[] first = { "ancient", "historic", "old", "lost", "antique", "famous", "missing", "forgotten", "stolen" };
 		String[] second = { "heirloom", "artifact", "treasure", "item" };
 		
 		String name = first[(int)(Math.random() * first.length)]
 		            + " " + second[(int)(Math.random() * second.length)];
 		
 		int hue = (int)(Math.random() * 360);
-		Item item = new Item(name, '?', Tile.hsv(hue, 33, 66), "A " + name + " from the past."){
+		Item item = new Item(name, '?', Common.hsv(hue, 33, 66), "A " + name + " from the past."){
 			public void onCollide(World world, Creature collider){
-				if (collider.glyph() != '@')
-					return; // only the player should be able to get these
+				if (!collider.isHuman())
+					return;
 				
 				world.removeItem(collider.position.x, collider.position.y);
 				MessageBus.publish(new DiscoveredLostArtifact(world, collider, this));
@@ -678,7 +778,7 @@ public class Factory {
 	}
 	
 	public Item jumpingBoots() {
-		Item item = new Item("jumping boots", '[', Tile.hsv(180, 50, 50), "Makes you more evasive and can be used to jump."){
+		Item item = new Item("jumping boots", '[', Common.hsv(180, 50, 50), "Makes you more evasive and can be used to jump."){
 			public Screen use(Screen screen, World world, Creature owner){
 				return new JumpScreen(screen, world, owner);
 			}
@@ -687,12 +787,12 @@ public class Factory {
 	}
 
 	public Item ringOfEvasion() {
-		Item item = new Item("ring of evasion", '=', Tile.hsv(90, 33, 66), +5, "Makes you much more evasive.");
+		Item item = new Item("ring of evasion", '=', Common.hsv(90, 33, 66), +5, "Makes you much more evasive.");
 		return item;
 	}
 	
 	public Item darkCloak() {
-		Item item = new Item("dark cloak", '[', Tile.hsv(180, 5, 25), +2, "Makes you harder to hit and see. Can be used to sneak."){
+		Item item = new Item("dark cloak", '[', Common.hsv(180, 5, 25), +2, "Makes you harder to hit and see. Can be used to sneak."){
 			public Screen use(Screen screen, World world, Creature owner){
 				if (owner.rupees() < 5){
 					MessageBus.publish(new Note(world, owner, "You need at least 5 rupees to sneak."));
@@ -705,4 +805,112 @@ public class Factory {
 		item.addTrait(Trait.CAMOUFLAGED);
 		return item;
 	}
+	
+	public Item bagOfImps() {
+		Item item = new Item("bag of imps", '+', Common.hsv(350, 90, 75), "Costs 5" + (char)4 + " to pull an imp out."){
+			public Screen use(Screen previous, World world, Creature owner){
+				if (owner.rupees() + owner.hearts() <= 5){
+					MessageBus.publish(new Note(world, owner, "You need more than 5 rupees and hearts to summon an imp."));
+					return previous;
+				}
+				
+				summonImp(world, owner);
+				owner.loseRupees(world, 5);
+				return previous;
+			}
+		};
+		return item;
+	}
+	
+	private void summonImp(World world, final Creature master) {
+		Creature imp = new Creature("imp", (char)139, Common.hsv(350, 90, 75), 5){
+			public void update(World world){
+				super.update(world);
+				if (position.distanceTo(master.position) > 3){
+					int dx = 0;
+					int dy = 0;
+					if (master.position.x < position.x)
+						dx = -1;
+					else if (master.position.x > position.x)
+						dx = 1;
+					
+					if (master.position.y < position.y)
+						dy = -1;
+					else if (master.position.y > position.y)
+						dy = 1;
+					
+					moveBy(world, dx, dy);
+				} else {
+					wander(world);
+				}
+			}
+			
+			public boolean isFriendlyTo(Creature other){
+				return other == master || other.name().equals(name());
+			}
+		};
+		imp.addTrait(Trait.AGGRESSIVE);
+		imp.addTrait(Trait.HUNTER);
+		imp.addTrait(Trait.FLIER);
+		imp.addTrait(Trait.REGENERATES);
+		world.add(imp);
+		Point dir = master.lastMovedDirection();
+		imp.position = master.position.plus(dir.x, dir.y).plus(dir.x, dir.y);
+	}
+	
+	public Item magicWand() {
+		Item item = new Item("Magic Missile wand", '/', Common.hsv(0, 0, 75), "Use to shoot 8 weak magic missiles."){
+			public Screen use(Screen previous, World world, Creature owner){
+				magicMissiles(world, owner);
+				owner.loseRupees(world, 8);
+				return previous;
+			}
+		};
+		return item;
+	}
+	
+	private void magicMissiles(World world, Creature caster) {
+		world.add(new Projectile("magic missile", caster, 7, Common.hsv(210, 33, 66), 2, caster.position.plus(1, 0), new Point( 1, 0)));
+		world.add(new Projectile("magic missile", caster, 7, Common.hsv(210, 33, 66), 2, caster.position.plus(-1, 0), new Point(-1, 0)));
+		world.add(new Projectile("magic missile", caster, 7, Common.hsv(210, 33, 66), 2, caster.position.plus(0, 1), new Point( 0, 1)));
+		world.add(new Projectile("magic missile", caster, 7, Common.hsv(210, 33, 66), 2, caster.position.plus(0,-1), new Point( 0,-1)));
+		world.add(new Projectile("magic missile", caster, 7, Common.hsv(210, 33, 66), 2, caster.position.plus(-1,-1), new Point(-1,-1)));
+		world.add(new Projectile("magic missile", caster, 7, Common.hsv(210, 33, 66), 2, caster.position.plus(-1, 1), new Point(-1, 1)));
+		world.add(new Projectile("magic missile", caster, 7, Common.hsv(210, 33, 66), 2, caster.position.plus(1,-1), new Point( 1,-1)));
+		world.add(new Projectile("magic missile", caster, 7, Common.hsv(210, 33, 66), 2, caster.position.plus(1, 1), new Point( 1, 1)));
+	}
+
+	public Item mutationRing() {
+		Item item = new Item("mutation ring", '=', Common.hsv(60, 33, 90), "A slight chance of random mutations when wearing this."){
+			public void update(World world, Creature owner){
+				super.update(null, owner);
+				
+				if (owner != null && Math.random() < 0.005)
+					mutateSelf(world, owner);
+			}
+		};
+		return item;
+	}
+	
+	private void mutateSelf(World world, Creature self) {
+		Trait[] traits = {
+				Trait.CAMOUFLAGED, Trait.COUNTER_ATTACK, Trait.DEFLECT_MELEE, Trait.DEFLECT_RANGED, Trait.DETECT_CAMOUFLAGED,
+				Trait.EVADE_ATTACK, Trait.EXTRA_DEFENSE, Trait.EXTRA_EVADE, Trait.EXTRA_HP, Trait.FLIER, Trait.KNOCKBACK, 
+				Trait.POISONOUS, Trait.REACH_ATTACK, Trait.REGENERATES, Trait.SLOWING_ATTACK, Trait.SPIKED, Trait.STRONG_ATTACK,
+				Trait.SWIMMER
+		};
+		
+		int tries = 0;
+		while (tries++ < 100){
+			Trait trait = traits[(int)(Math.random() * traits.length)];
+			if (self.hasTrait(trait))
+				continue;
+			
+			self.addTrait(trait);
+			MessageBus.publish(new Note(null, self, "You have gained the trait \"" + trait.description() + "\""));
+			self.loseRupees(world, 10);
+			break;
+		}
+	}
 }
+
