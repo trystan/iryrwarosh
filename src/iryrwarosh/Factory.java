@@ -583,7 +583,6 @@ public class Factory {
 				return screen;
 			}
 		};
-		item.setCanBePickedUp(false);
 		return item;
 	}
 	
