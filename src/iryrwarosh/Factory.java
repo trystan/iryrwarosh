@@ -43,7 +43,7 @@ public class Factory {
 		rivals.add(rival("Lame",   0, knife(), bow(), new RivalAi(0.01, 1.0)));
 		rivals.add(rival("Dork",  30, staff(), null, new RivalAi(0.00, 1.0)));
 		rivals.add(rival("Max" + (char)4, 60, knife(), ringOfEvasion(), new RivalAi(0.005, 0.5)));
-		rivals.add(rival("Lulz",  90, club(), null, new RivalAi(0.05, 1.0)));
+		rivals.add(rival("Lulz",  90, club(), ringOfRegeneration(), new RivalAi(0.05, 1.0)));
 		rivals.add(rival("Link", 120, sword(), shield(), new RivalAi(0.005, 0.1)));
 		rivals.add(rival("Bela", 150, spear(), null, new RivalAi(0.01, 0.5)));
 		rivals.add(rival("L33t", 180, knife(), club(), new RivalAi(0.01, 0.5)));
@@ -456,7 +456,6 @@ public class Factory {
 		};
 		
 		rival.addTrait(Trait.WALKER);
-		rival.addTrait(Trait.REGENERATES);
 
 		if (item1 != null)
 			rival.swapLeftHand(null, item1);
