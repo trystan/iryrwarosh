@@ -93,9 +93,14 @@ public class HelpScreen implements Screen {
 		terminal.setDefaultBackgroundColor(Common.guiBackground);
 		terminal.clear();
 		
-		for (int i = 0; i < 22; i++){
+		for (int i = 0; i < 23; i++){
 			if (scroll + i >= lines.length)
 				break;
+			
+			if (i == 22){
+				terminal.write("... more ...", 2, 23);
+				break;
+			}
 			
 			terminal.write(lines[scroll + i], 0, 1+i);
 		}

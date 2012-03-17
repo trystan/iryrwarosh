@@ -714,7 +714,7 @@ public class Factory {
 	}
 	
 	public Item heartContainer(){
-		Item item = new Item("heart increase", 3, AsciiPanel.brightRed, "Increases your max hearts."){
+		Item item = new Item("heart container", 3, AsciiPanel.brightRed, "Increases your max hearts."){
 			public void onCollide(World world, Creature collider){
 				if (!collider.isHuman())
 					return;
