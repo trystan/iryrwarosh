@@ -325,8 +325,10 @@ public class PlayScreen implements Screen, Handler {
 			return new VictoryScreen(this);
 		} else {
 			for (Creature creature : fameHandler.getFamousPeople()){
-				if (fameHandler.getFame(creature) > 99)
+				if (fameHandler.getFame(creature) > 99){
+					MessageBus.unsubscribe(this);
 					return new LostScreen(this);
+				}
 			}
 		}
 		
